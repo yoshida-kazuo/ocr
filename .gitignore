@@ -21,3 +21,8 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+
+.venv
+.python-version
+.vscode
+/src/bootstrap/ssr

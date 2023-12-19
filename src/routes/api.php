@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +13,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::prefix('/')
+    ->group(function() {
+
+        //
+
+    });
+
+Route::prefix('v1')
+    ->middleware([
+        'auth:sanctum',
+    ])
+    ->group(function() {
+
+        Route::prefix('user')
+            ->group(function() {
+
+                Route::post('post', \App\Http\Controllers\V1\Api\User\Post\StoreController::class)
+                    ->name('api.user.post.store');
+                Route::get('post', \App\Http\Controllers\V1\Api\User\Post\IndexController::class)
+                    ->name('api.user.post');
+
+                Route::prefix('ocr')
+                    ->group(function() {
+
+                        Route::post('analyze', \App\Http\Controllers\V1\Api\User\Ocr\Analyze\StoreController::class)
+                            ->name('api.user.ocr.analyze.store');
+                        Route::get('analyze/{documentId}', \App\Http\Controllers\V1\Api\User\Ocr\Analyze\IndexController::class)
+                            ->name('api.user.ocr.analyze');
+
+                    });
+
+            });
+
+    });

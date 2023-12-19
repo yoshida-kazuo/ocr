@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  web:
+    hostname: ${APP_HOST_NAME}
+    build: ${APP_BUILD_PATH}/web
+    volumes:
+      - ${APP_SOURCE_PATH}:/var/www
+    ports:
+      - "${APP_PORT}:80"
+      - "5173:5173"
+
+networks:
+  default:
+    external:
+      name: ${APP_NETWORK}

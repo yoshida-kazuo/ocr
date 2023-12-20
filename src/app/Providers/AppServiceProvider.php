@@ -10,6 +10,8 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
+     *
+     * @return void
      */
     public function register(): void
     {
@@ -18,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
+     *
+     * @return void
      */
     public function boot(): void
     {
@@ -25,38 +29,41 @@ class AppServiceProvider extends ServiceProvider
             PersonalAccessToken::class
         );
 
-        $viewTimezoneDefault = config('app.view_timezone_default');
-        $timezoneCookie = request()
+        $viewTimezone = config('app.timezone_view');
+        $timezone = request()
             ->cookie('timezone');
 
-        if (! $timezoneCookie) {
-            $timezoneCookie = $viewTimezoneDefault;
+        if (! $timezone) {
+            $timezone = $viewTimezone;
         } else {
-            $timezoneCookie = explode(
-                '|',
-                decrypt($timezoneCookie, false)[1] ?? $viewTimezoneDefault
-            );
+            $timezone = explode('|', decrypt($timezone, false))[1] ?? $viewTimezone;
         }
 
-        $timezone = collect(
-            config("timezone.{$timezoneCookie}", [
-                'name'  => 'UTC',
-                'zone'  => 'UTC',
-                'lang'  => 'en',
-            ])
-        );
+        $lang = request()
+            ->cookie('lang');
+
+        if (! $lang) {
+            $lang = config('app.locale');
+        } else {
+            $lang = explode('|', decrypt($lang, false))[1] ?? config('app.locale');
+        }
+
+        $timezone = config("timezone.{$timezone}") ? $timezone : config('app.timezone');
+        $lang = config("locale.{$lang}") ? $lang : config('app.locale');
 
         config([
             'app' => array_merge(
                 config('app'), [
-                    'timezone'  => $timezone->get('zone'),
-                    'locale'    => $timezone->get('lang'),
+                    'timezone_view' => $timezone,
+                    'locale'        => $lang,
                 ]
             )
         ]);
 
-        unset($viewTimezoneDefault,
-            $timezoneCookie,
-            $timezone);
+        unset(
+            $viewTimezone,
+            $timezone,
+            $lang
+        );
     }
 }

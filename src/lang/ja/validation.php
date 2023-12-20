@@ -179,9 +179,12 @@ return [
     */
 
     'attributes' => [
+        'email'                 => 'Eメールアドレス',
         'current_password'      => '現在のパスワード',
         'password'              => 'パスワード',
         'password_confirmation' => '確認用パスワード',
+        'lang'                  => '言語',
+        'timezone'              => 'タイムゾーン',
     ],
 
 ];

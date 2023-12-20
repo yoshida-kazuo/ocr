@@ -71,7 +71,7 @@ return [
     */
 
     'timezone' => 'UTC',
-    'view_timezone_default' => env('APP_VIEW_TIMEZONE_DEFAULT', 'UTC'),
+    'timezone_view' => env('APP_TIMEZONE_VIEW', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------

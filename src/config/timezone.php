@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'Asia/Tokyo'    => [
-        'name'  => 'Tokyo',
-        'zone'  => 'Asia/Tokyo',
-        'lang'  => 'ja',
-    ],
+    'UTC'           => 'UTC 0:00',
+    'Asia/Tokyo'    => 'Asia/Tokyo +9:00',
 ];

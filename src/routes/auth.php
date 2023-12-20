@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')
+    ->prefix('/')
     ->group(function () {
         Route::get('register', [
                 \App\Http\Controllers\V1\Web\Auth\RegisteredUserController::class,
@@ -52,6 +53,7 @@ Route::middleware('guest')
     });
 
 Route::middleware('auth')
+    ->prefix('/')
     ->group(function () {
         Route::get('verify-email',
                 \App\Http\Controllers\V1\Web\Auth\EmailVerificationPromptController::class

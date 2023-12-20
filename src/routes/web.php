@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,24 +25,37 @@ Route::get('/', function () {
         ]);
     });
 
+Route::prefix('/')
+    ->group(function () {
+
+        Route::get('lang/{lang}', \App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController::class)
+            ->name('guest-lang-update');
+
+        Route::get('timezone/{timezone}', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController::class)
+            ->where('timezone', '(.*)')
+            ->name('guest-timezone-update');
+
+    });
+
 Route::middleware([
         'auth',
     ])
+    ->prefix('/')
     ->group(function() {
 
-        Route::get('/profile', [
+        Route::get('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'edit'
             ])
             ->name('profile.edit');
 
-        Route::patch('/profile', [
+        Route::patch('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'update'
             ])
             ->name('profile.update');
 
-        Route::delete('/profile', [
+        Route::delete('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'destroy'
             ])
@@ -54,9 +68,10 @@ Route::middleware([
         'auth.role:user',
         'verified',
     ])
+    ->prefix('/')
     ->group(function() {
 
-        Route::get('/dashboard', function () {
+        Route::get('dashboard', function () {
                 return Inertia::render('Dashboard');
             })
             ->name('dashboard');
@@ -68,6 +83,7 @@ Route::middleware([
         'auth.role:admin',
         'verified',
     ])
+    ->prefix('/')
     ->group(function() {
 
         //
@@ -79,6 +95,7 @@ Route::middleware([
         'auth.role:root',
         'verified',
     ])
+    ->prefix('/')
     ->group(function() {
 
         //

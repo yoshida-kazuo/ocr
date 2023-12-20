@@ -71,6 +71,7 @@ return [
     */
 
     'timezone' => 'UTC',
+    'view_timezone_default' => env('APP_VIEW_TIMEZONE_DEFAULT', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------

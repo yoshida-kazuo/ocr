@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\V1\Web\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules;
-use App\Models\User;
 
-class RegisterRequest extends FormRequest
+class UpadatePasswordRequest extends FormRequest
 {
 
     /**
@@ -27,22 +26,14 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
+            'current_password'  => [
                 'required',
-                'string',
-                'max:255',
-            ],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                'unique:' . User::class,
+                'current_password',
             ],
             'password' => [
                 'required',
-                'confirmed',
                 Rules\Password::defaults(),
+                'confirmed',
             ],
         ];
     }

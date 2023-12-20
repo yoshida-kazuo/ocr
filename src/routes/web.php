@@ -16,62 +16,73 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    });
 
 Route::middleware([
-    'auth',
-])
-->group(function() {
+        'auth',
+    ])
+    ->group(function() {
 
-    Route::get('/profile', [\App\Http\Controllers\User\ProfileController::class, 'edit'])
-        ->name('profile.edit');
-    Route::patch('/profile', [\App\Http\Controllers\User\ProfileController::class, 'update'])
-        ->name('profile.update');
-    Route::delete('/profile', [\App\Http\Controllers\User\ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+        Route::get('/profile', [
+                \App\Http\Controllers\V1\Web\User\ProfileController::class,
+                'edit'
+            ])
+            ->name('profile.edit');
 
-});
+        Route::patch('/profile', [
+                \App\Http\Controllers\V1\Web\User\ProfileController::class,
+                'update'
+            ])
+            ->name('profile.update');
 
-Route::middleware([
-    'auth',
-    'auth.role:user',
-    'verified',
-])
-->group(function() {
+        Route::delete('/profile', [
+                \App\Http\Controllers\V1\Web\User\ProfileController::class,
+                'destroy'
+            ])
+            ->name('profile.destroy');
 
-    Route::get('/dashboard', function () {
-            return Inertia::render('Dashboard');
-        })
-        ->name('dashboard');
-
-});
+    });
 
 Route::middleware([
-    'auth',
-    'auth.role:admin',
-    'verified',
-])
-->group(function() {
+        'auth',
+        'auth.role:user',
+        'verified',
+    ])
+    ->group(function() {
 
-    //
+        Route::get('/dashboard', function () {
+                return Inertia::render('Dashboard');
+            })
+            ->name('dashboard');
 
-});
+    });
 
 Route::middleware([
-    'auth',
-    'auth.role:root',
-    'verified',
-])
-->group(function() {
+        'auth',
+        'auth.role:admin',
+        'verified',
+    ])
+    ->group(function() {
 
-    //
+        //
 
-});
+    });
+
+Route::middleware([
+        'auth',
+        'auth.role:root',
+        'verified',
+    ])
+    ->group(function() {
+
+        //
+
+    });
 
 require __DIR__.'/auth.php';

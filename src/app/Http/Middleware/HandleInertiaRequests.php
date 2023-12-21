@@ -39,6 +39,8 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+            'timezone'  => config('app.timezone_view'),
+            'lang'      => config('app.locale'),
         ]);
     }
 }

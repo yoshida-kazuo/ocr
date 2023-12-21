@@ -93,5 +93,6 @@ class Kernel extends HttpKernel
         \Illuminate\Auth\Middleware\Authorize::class,
         \App\Http\Middleware\InteriaRole::class,
         \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+        \App\Http\Middleware\HandleInertiaRequests::class,
     ];
 }

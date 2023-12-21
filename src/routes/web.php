@@ -28,12 +28,15 @@ Route::get('/', function () {
 Route::prefix('/')
     ->group(function () {
 
-        Route::get('lang/{lang}', \App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController::class)
-            ->name('guest-lang-update');
+        Route::get('lang', \App\Http\Controllers\V1\Web\Guest\Env\LangController::class)
+            ->name('guest-lang');
+        Route::put('lang', \App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController::class)
+            ->name('guest-lang-put');
 
-        Route::get('timezone/{timezone}', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController::class)
-            ->where('timezone', '(.*)')
-            ->name('guest-timezone-update');
+        Route::get('timezone', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneController::class)
+            ->name('guest-timezone');
+        Route::put('timezone', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController::class)
+            ->name('guest-timezone-put');
 
     });
 

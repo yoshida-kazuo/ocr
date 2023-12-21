@@ -9,6 +9,11 @@ use Tightenco\Ziggy\Ziggy;
 class InteriaRole extends HandleInertiaRequests
 {
 
+    /**
+     * rootView variable
+     *
+     * @var string
+     */
     protected $rootView = 'app';
 
     /**

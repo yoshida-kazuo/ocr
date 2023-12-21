@@ -8,14 +8,17 @@ use App\Http\Requests\V1\Web\Guest\Env\TimezoneUpdateRequest as Request;
 
 class TimezoneUpdateController extends Controller
 {
+
     /**
      * Handle the incoming request.
+     *
+     * @param Request $request
+     *
+     * @return array
      */
-    public function __invoke(
-        Request $request,
-        string $timezone
-    ): array {
-        Cookie::queue('timezone', $timezone);
+    public function __invoke(Request $request): array
+    {
+        Cookie::queue('timezone', $request->post('timezone'));
 
         return [
             'result'    => 'ok',
@@ -23,4 +26,5 @@ class TimezoneUpdateController extends Controller
             'errors'    => null,
         ];
     }
+
 }

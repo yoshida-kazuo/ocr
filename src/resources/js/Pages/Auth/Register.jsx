@@ -33,7 +33,7 @@ export default function Register({ lang, timezone }) {
 
     return (
         <GuestLayout timezone={timezone} lang={lang}>
-            <Head title="Register" />
+            <Head title={t('Register')} />
 
             <form onSubmit={submit}>
                 <div>

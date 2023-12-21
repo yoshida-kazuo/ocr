@@ -33,7 +33,7 @@ export default function Login({ status, canResetPassword, lang, timezone }) {
 
     return (
         <GuestLayout timezone={timezone} lang={lang}>
-            <Head title="Log in" />
+            <Head title={t('Log in')} />
 
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
 

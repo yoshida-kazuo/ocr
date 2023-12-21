@@ -25,7 +25,7 @@ export default function ForgotPassword({ status, lang, timezone }) {
 
     return (
         <GuestLayout timezone={timezone} lang={lang}>
-            <Head title="Forgot Password" />
+            <Head title={t('Forgot Password')} />
 
             <div className="mb-4 text-sm text-gray-600">
                 {t('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.')}

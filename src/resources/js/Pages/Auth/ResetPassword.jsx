@@ -5,8 +5,11 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
-export default function ResetPassword({ token, email }) {
+export default function ResetPassword({ token, email, lang, timezone }) {
+    const { t } = useTranslation();
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
         email: email,
@@ -15,10 +18,12 @@ export default function ResetPassword({ token, email }) {
     });
 
     useEffect(() => {
+        i18n.changeLanguage(lang);
+
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [lang]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -28,7 +33,7 @@ export default function ResetPassword({ token, email }) {
 
     return (
         <GuestLayout>
-            <Head title="Reset Password" />
+            <Head title={t('Reset Password')} />
 
             <form onSubmit={submit}>
                 <div>
@@ -81,7 +86,7 @@ export default function ResetPassword({ token, email }) {
 
                 <div className="flex items-center justify-end mt-4">
                     <PrimaryButton className="ml-4" disabled={processing}>
-                        Reset Password
+                        {t('Reset Password')}
                     </PrimaryButton>
                 </div>
             </form>

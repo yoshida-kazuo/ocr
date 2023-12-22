@@ -13,6 +13,7 @@ $fn = function(): array {
         $offsetFormatted = gmdate('G:i', abs($timeOffset));
 
         $timezones[] = [
+            'key'       => $timezone,
             'label'     => $timezone . ' ' . $offsetPrefix . $offsetFormatted,
             'offset'    => $timeOffset
         ];
@@ -24,7 +25,7 @@ $fn = function(): array {
 
     $sortedTimezones = [];
     foreach ($timezones as $timezone) {
-        $sortedTimezones[$timezone['label']] = $timezone['label'];
+        $sortedTimezones[$timezone['key']] = $timezone['label'];
     }
 
     return $sortedTimezones;

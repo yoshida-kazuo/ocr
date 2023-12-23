@@ -30,20 +30,19 @@ RUN pecl bundle igbinary
 RUN pecl install igbinary
 RUN pecl bundle redis
 RUN pecl bundle mcrypt
-RUN pecl install imagick
+RUN pecl bundle imagick
 RUN docker-php-ext-configure redis \
         --enable-redis-igbinary \
         --enable-redis-lzf
-RUN docker-php-ext-enable \
-        imagick
-RUN docker-php-ext-install \
-        pdo_mysql \
-        zip \
-        gd \
-        redis \
-        xdebug \
-        mcrypt \
-        opcache
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install zip
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install redis
+RUN docker-php-ext-install xdebug
+RUN docker-php-ext-install mcrypt
+RUN docker-php-ext-install imagick
+RUN docker-php-ext-install igbinary
+RUN docker-php-ext-install opcache
 
 RUN a2enmod rewrite
 RUN find /etc -type f -path "*\/ImageMagick-*" -name "policy.xml" | xargs sed -i.orig -e 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read" pattern="PDF"/g'

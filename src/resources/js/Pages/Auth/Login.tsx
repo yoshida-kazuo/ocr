@@ -5,6 +5,8 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import TimezoneSelector from '@/Components/TimezoneSelector';
+import LangSelector from '@/Components/LangSelector';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
@@ -70,6 +72,22 @@ export default function Login({ status, canResetPassword, lang, timezone }) {
                     />
 
                     <InputError message={errors.password} className="mt-2" />
+                </div>
+
+                <div className="block mt-4">
+                    <LangSelector
+                        id="lang"
+                        defaultLang={lang}
+                        className='form-select border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full'
+                    />
+                </div>
+
+                <div className="block mt-4">
+                    <TimezoneSelector
+                        id="timezone"
+                        defaultTimezone={timezone}
+                        className='form-select border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full'
+                    />
                 </div>
 
                 <div className="block mt-4">

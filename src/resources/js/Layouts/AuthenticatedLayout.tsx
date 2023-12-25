@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import Navbar from '@/Components/User/Navbar';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
 import TimezoneSelector from '@/Components/TimezoneSelector';
 import LangSelector from '@/Components/LangSelector';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -123,6 +124,8 @@ export default function Authenticated({ user, header, children, lang, timezone }
                     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
                 </header>
             )}
+
+            <Navbar />
 
             <main>
                 {children}

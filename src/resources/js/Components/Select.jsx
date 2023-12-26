@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 
 const Select = ({
-    options = {},
+    options = [],
     value = '',
-    onChange = undefined,
+    onChange = event => {},
     id = '',
     name = '',
     className = ''

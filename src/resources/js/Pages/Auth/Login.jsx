@@ -11,7 +11,12 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function Login({ status, canResetPassword, lang, timezone }) {
+export default function Login({
+    status,
+    canResetPassword,
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',

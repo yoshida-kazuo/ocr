@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Checkbox from '@/Components/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -39,7 +39,7 @@ export default function Login({
     };
 
     return (
-        <GuestLayout timezone={timezone} lang={lang}>
+        <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Log in')} />
 
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
@@ -121,6 +121,6 @@ export default function Login({
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

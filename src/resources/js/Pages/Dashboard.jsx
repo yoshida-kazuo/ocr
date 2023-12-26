@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import UserLayout from '@/Layouts/UserLayout';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function Dashboard({ auth, lang, timezone }) {
+export default function Dashboard({
+    auth,
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -12,21 +16,19 @@ export default function Dashboard({ auth, lang, timezone }) {
     }, [lang]);
 
     return (
-        <AuthenticatedLayout
+        <UserLayout
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{t('Dashboard')}</h2>}
             timezone={timezone}
             lang={lang}
         >
-            <Head title="Dashboard" />
+            <Head title={t('Dashboard')} />
 
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">{t('You\'re logged in!')}</div>
-                    </div>
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div className="p-6 text-gray-900">{t('You\'re logged in!')}</div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </UserLayout>
     );
 }

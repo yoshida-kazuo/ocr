@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -8,7 +8,10 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function Register({ lang, timezone }) {
+export default function Register({
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -32,7 +35,7 @@ export default function Register({ lang, timezone }) {
     };
 
     return (
-        <GuestLayout timezone={timezone} lang={lang}>
+        <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Register')} />
 
             <form onSubmit={submit}>
@@ -117,6 +120,6 @@ export default function Register({ lang, timezone }) {
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

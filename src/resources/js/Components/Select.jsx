@@ -17,9 +17,7 @@ const Select = ({
             className={className}
         >
             {options.map(({ value, label }) => (
-                <option key={value} value={value}>
-                    {label}
-                </option>
+                <option key={value} value={value}>{label}</option>
             ))}
         </select>
     )

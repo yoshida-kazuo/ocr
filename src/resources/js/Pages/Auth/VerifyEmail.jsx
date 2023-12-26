@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ export default function VerifyEmail({ status, lang, timezone }) {
     };
 
     return (
-        <GuestLayout timezone={timezone} lang={lang}>
+        <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Email Verification')} />
 
             <div className="mb-4 text-sm text-gray-600">
@@ -47,6 +47,6 @@ export default function VerifyEmail({ status, lang, timezone }) {
                     </Link>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

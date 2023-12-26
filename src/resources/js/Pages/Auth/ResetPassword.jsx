@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -8,7 +8,12 @@ import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function ResetPassword({ token, email, lang, timezone }) {
+export default function ResetPassword({
+    token,
+    email,
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
@@ -32,7 +37,7 @@ export default function ResetPassword({ token, email, lang, timezone }) {
     };
 
     return (
-        <GuestLayout>
+        <AuthLayout>
             <Head title={t('Reset Password')} />
 
             <form onSubmit={submit}>
@@ -90,6 +95,6 @@ export default function ResetPassword({ token, email, lang, timezone }) {
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

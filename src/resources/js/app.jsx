@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import './bootstrap';
-import '../css/app.css';
+import '../css/app.scss';
 import.meta.glob([
     '../images/**',
     '../fonts/**',

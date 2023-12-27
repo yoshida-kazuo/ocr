@@ -20,6 +20,7 @@
         "@vitejs/plugin-react": "^4.2.1",
         "autoprefixer": "^10.4.16",
         "axios": "^1.6.1",
+        "daisyui": "^4.4.24",
         "i18next": "^23.7.11",
         "laravel-vite-plugin": "^0.8.0",
         "postcss": "^8.4.32",

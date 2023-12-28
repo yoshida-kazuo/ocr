@@ -50,6 +50,16 @@ Route::middleware('guest')
                 'store'
             ])
             ->name('password.store');
+
+        Route::prefix('auth')
+            ->group(function() {
+
+                Route::get('google', \App\Http\Controllers\V1\Web\Auth\Google\AuthController::class)
+                    ->name('auth.google');
+                Route::get('google-callback', \App\Http\Controllers\V1\Web\Auth\Google\CallbackController::class)
+                    ->name('auth.google.callback');
+
+            });
     });
 
 Route::middleware('auth')

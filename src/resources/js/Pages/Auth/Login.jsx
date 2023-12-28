@@ -12,6 +12,7 @@ import i18n from '@/i18n';
 export default function Login({
     status,
     canResetPassword,
+    googleAuth,
     lang,
     timezone
 }) {
@@ -103,6 +104,14 @@ export default function Login({
                     </PrimaryButton>
                 </div>
             </form>
+
+            {googleAuth && (
+                <a
+                    href={route('auth.google')}
+                >
+                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" />
+                </a>
+            )}
         </AuthLayout>
     );
 }

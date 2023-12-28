@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -6,8 +6,15 @@ import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
-export default function DeleteUserForm({ className = '' }) {
+export default function DeleteUserForm({
+    className = '',
+    lang,
+    timezone
+}) {
+    const { t } = useTranslation();
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const passwordInput = useRef();
 
@@ -22,6 +29,10 @@ export default function DeleteUserForm({ className = '' }) {
         password: '',
     });
 
+    useEffect(() => {
+        i18n.changeLanguage(lang);
+    }, [lang]);
+
     const confirmUserDeletion = () => {
         setConfirmingUserDeletion(true);
     };
@@ -29,7 +40,7 @@ export default function DeleteUserForm({ className = '' }) {
     const deleteUser = (e) => {
         e.preventDefault();
 
-        destroy(route('profile-destroy'), {
+        destroy(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => passwordInput.current.focus(),
@@ -46,25 +57,25 @@ export default function DeleteUserForm({ className = '' }) {
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Delete Account</h2>
+                <h2 className="text-lg font-medium text-gray-900">{t('Delete Account')}</h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    アカウントが削除されると、そのすべてのリソースとデータは完全に削除されます。
-                    アカウントを削除する前に、保存しておきたいデータや情報をダウンロードしてください。
+                    {t('When the account is deleted, all of its resources and data will be permanently removed.')}
+                    {t('Before deleting your account, please download any data or information you want to save.')}
                 </p>
             </header>
 
-            <DangerButton onClick={confirmUserDeletion}>Delete Account</DangerButton>
+            <DangerButton onClick={confirmUserDeletion}>{t('Delete Account')}</DangerButton>
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        本当にアカウントを削除しますか？
+                        {t('Are you sure you want to delete your account?')}
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-600">
-                        アカウントが削除されると、そのすべてのリソースとデータは完全に削除されます。
-                        アカウントを永久に削除することを確認するために、パスワードを入力してください。
+                    {t('When the account is deleted, all of its resources and data will be permanently removed.')}
+                    {t('To confirm the permanent deletion of your account, please enter your password.')}
                     </p>
 
                     <div className="mt-6">
@@ -86,10 +97,10 @@ export default function DeleteUserForm({ className = '' }) {
                     </div>
 
                     <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
+                        <SecondaryButton onClick={closeModal}>{t('Cancel')}</SecondaryButton>
 
                         <DangerButton className="ml-3" disabled={processing}>
-                            Delete Account
+                            {t('Delete Account')}
                         </DangerButton>
                     </div>
                 </form>

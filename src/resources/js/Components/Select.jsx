@@ -14,7 +14,7 @@ const Select = ({
             name={name}
             value={value}
             onChange={onChange}
-            className={className}
+            className={'select w-full max-w-xs ' + className}
         >
             {options.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>

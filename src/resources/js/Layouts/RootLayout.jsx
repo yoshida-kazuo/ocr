@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Navbar from '@/Components/User/Navbar';
-import Sidebar from '@/Components/User/Sidebar';
+import Navbar from '@/Components/Root/Navbar';
+import Sidebar from '@/Components/Root/Sidebar';
 import { useTranslation } from 'react-i18next';
 
 export default function User({

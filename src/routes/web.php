@@ -50,19 +50,19 @@ Route::middleware([
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'edit'
             ])
-            ->name('profile-edit');
+            ->name('profile.edit');
 
         Route::patch('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'update'
             ])
-            ->name('profile-update');
+            ->name('profile.update');
 
         Route::delete('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'destroy'
             ])
-            ->name('profile-destroy');
+            ->name('profile.destroy');
 
     });
 

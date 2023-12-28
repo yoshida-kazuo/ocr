@@ -10,7 +10,13 @@ import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function Authenticated({ user, header, children, lang, timezone }) {
+export default function Admin({
+    user,
+    header,
+    children,
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
@@ -61,7 +67,7 @@ export default function Authenticated({ user, header, children, lang, timezone }
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                                        <Dropdown.Link href={route('profile-edit')}>Profile</Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
                                             {t('Log Out')}
                                         </Dropdown.Link>

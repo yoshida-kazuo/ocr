@@ -23,6 +23,9 @@ i18n.use(initReactI18next)
                     "Confirm Password": "パスワード確認用",
                     "Already registered?": "すでに登録済みですか？",
                     "Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "サインアップしていただきありがとうございます！始める前に、私たちがあなたに送ったメール内のリンクをクリックして、メールアドレスを確認していただけますか？もしメールが届いていない場合は、喜んで別のメールをお送りします。",
+                    "Profile edit": "プロフィール更新",
+                    "Log out": "ログアウト",
+                    "Dashboard": "ダッシュボード",
                 }
             }
         },

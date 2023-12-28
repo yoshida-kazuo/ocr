@@ -1,18 +1,23 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function Register({ lang, timezone }) {
+export default function ResetPassword({
+    token,
+    email,
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
+        token: token,
+        email: email,
         password: '',
         password_confirmation: '',
     });
@@ -28,33 +33,16 @@ export default function Register({ lang, timezone }) {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'));
+        post(route('password.store'));
     };
 
     return (
-        <GuestLayout timezone={timezone} lang={lang}>
-            <Head title={t('Register')} />
+        <AuthLayout>
+            <Head title={t('Reset Password')} />
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value={t('Name')} />
-
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value={t('Email')} />
+                    <InputLabel htmlFor="email" value="Email" />
 
                     <TextInput
                         id="email"
@@ -64,14 +52,13 @@ export default function Register({ lang, timezone }) {
                         className="mt-1 block w-full"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
-                        required
                     />
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value={t('Password')} />
+                    <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
                         id="password"
@@ -80,43 +67,34 @@ export default function Register({ lang, timezone }) {
                         value={data.password}
                         className="mt-1 block w-full"
                         autoComplete="new-password"
+                        isFocused={true}
                         onChange={(e) => setData('password', e.target.value)}
-                        required
                     />
 
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value={t('Confirm Password')} />
+                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
 
                     <TextInput
-                        id="password_confirmation"
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData('password_confirmation', e.target.value)}
-                        required
                     />
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        {t('Already registered?')}
-                    </Link>
-
                     <PrimaryButton className="ml-4" disabled={processing}>
-                        {t('Register')}
+                        {t('Reset Password')}
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

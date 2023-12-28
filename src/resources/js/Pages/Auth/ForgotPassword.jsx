@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
@@ -7,7 +7,11 @@ import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function ForgotPassword({ status, lang, timezone }) {
+export default function ForgotPassword({
+    status,
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors } = useForm({
         email: '',
@@ -24,7 +28,7 @@ export default function ForgotPassword({ status, lang, timezone }) {
     };
 
     return (
-        <GuestLayout timezone={timezone} lang={lang}>
+        <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Forgot Password')} />
 
             <div className="mb-4 text-sm text-gray-600">
@@ -52,6 +56,6 @@ export default function ForgotPassword({ status, lang, timezone }) {
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

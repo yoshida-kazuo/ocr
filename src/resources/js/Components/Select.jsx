@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 
 const Select = ({
-    options = {},
+    options = [],
     value = '',
-    onChange = undefined,
+    onChange = event => {},
     id = '',
     name = '',
     className = ''
@@ -17,9 +17,7 @@ const Select = ({
             className={className}
         >
             {options.map(({ value, label }) => (
-                <option key={value} value={value}>
-                    {label}
-                </option>
+                <option key={value} value={value}>{label}</option>
             ))}
         </select>
     )

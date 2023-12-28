@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -8,7 +8,10 @@ import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function ConfirmPassword({ lang, timezone }) {
+export default function ConfirmPassword({
+    lang,
+    timezone
+}) {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors, reset } = useForm({
         password: '',
@@ -29,7 +32,7 @@ export default function ConfirmPassword({ lang, timezone }) {
     };
 
     return (
-        <GuestLayout timezone={timezone} lang={lang}>
+        <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Confirm Password')} />
 
             <div className="mb-4 text-sm text-gray-600">
@@ -59,6 +62,6 @@ export default function ConfirmPassword({ lang, timezone }) {
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

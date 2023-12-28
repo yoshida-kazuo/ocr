@@ -16,17 +16,25 @@ class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
+     *
+     * @return Response
      */
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword'  => Route::has('password.request'),
             'status'            => session('status'),
+            'googleAuth'        => config('services.google.client_id')
+                && config('services.google.client_secret'),
         ]);
     }
 
     /**
      * Handle an incoming authentication request.
+     *
+     * @param LoginRequest $request
+     *
+     * @return RedirectResponse
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -45,6 +53,10 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Destroy an authenticated session.
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
      */
     public function destroy(Request $request): RedirectResponse
     {

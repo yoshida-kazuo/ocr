@@ -6,13 +6,14 @@ export default defineConfig({
     server: {
         host: true,
         port: 3031,
+        strictPort: true,
         hmr: {
             host: 'localhost',
         },
     },
     plugins: [
         laravel({
-            input: 'resources/js/app.jsx',
+            input: 'resources/js/app.tsx',
             refresh: true,
         }),
         react(),

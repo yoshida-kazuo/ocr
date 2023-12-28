@@ -37,6 +37,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
 
     return (
         <Select
+            id={id}
             name={name}
             value={selectedTimezone}
             onChange={handleTimezoneChange}

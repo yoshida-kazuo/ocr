@@ -41,6 +41,8 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()
             ->regenerate();
+        $redirectRoute = user()
+            ->dashboardRoute();
 
         activity()
             ->info(__(':name has logged in.', [
@@ -48,7 +50,7 @@ class AuthenticatedSessionController extends Controller
             ]));
 
         return redirect()
-            ->intended(RouteServiceProvider::HOME);
+            ->intended(route($redirectRoute));
     }
 
     /**

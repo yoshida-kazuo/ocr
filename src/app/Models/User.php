@@ -61,6 +61,17 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * dashboardRoutes variable
+     *
+     * @var array
+     */
+    protected $dashboardRoutes = [
+        'user'  => 'user.dashboard',
+        'admin' => 'admin.dashboard',
+        'root'  => 'root.dashboard',
+    ];
+
+    /**
      * roles function
      *
      * @param string|null $role
@@ -75,6 +86,25 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $roles;
+    }
+
+    /**
+     * dashboardRoute function
+     *
+     * @param string|null $role
+     *
+     * @return string|array
+     */
+    public function dashboardRoute(?string $role = null): string|array
+    {
+        $dashboardRoute = $this->dashboardRoutes;
+
+        if (is_null($role) && $this->role_id) {
+            $role = array_flip($this->roles)[$this->role_id];
+            $dashboardRoute = data_get($this->dashboardRoutes, $role);
+        }
+
+        return $dashboardRoute;
     }
 
     /**

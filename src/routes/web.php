@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers;
 use Inertia\Inertia;
-use App\Http\Controllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,10 +74,8 @@ Route::middleware([
     ->prefix('/')
     ->group(function() {
 
-        Route::get('dashboard', function () {
-                return Inertia::render('Dashboard');
-            })
-            ->name('dashboard');
+        Route::get('dashboard', \App\Http\Controllers\V1\Web\User\DashboardController::class)
+            ->name('user.dashboard');
 
     });
 

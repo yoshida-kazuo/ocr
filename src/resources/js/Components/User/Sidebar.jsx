@@ -11,7 +11,7 @@ export default function Sidebar({
     const { t } = useTranslation();
     const sideMenus = [
         {
-            "route": "dashboard",
+            "route": "user.dashboard",
             "label": t('Dashboard'),
             "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         },

@@ -23,7 +23,7 @@ export default function Navbar({
                 <div className="navbar text-gray-500">
                     <div className="flex">
                         <div className="shrink-0 flex items-center">
-                            <Link href={route('dashboard')} className="mx-6">
+                            <Link href={route('user.dashboard')} className="mx-6">
                                 <ApplicationLogo className="block h-9 w-auto fill-current" />
                             </Link>
                         </div>

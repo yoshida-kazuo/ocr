@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use App\Providers\RouteServiceProvider;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
@@ -39,7 +38,9 @@ class CallbackController extends Controller
         Auth::login($user);
 
         return redirect()
-            ->intended(RouteServiceProvider::HOME);
+            ->intended(
+                route(user()->dashboardRoute())
+            );
     }
 
 }

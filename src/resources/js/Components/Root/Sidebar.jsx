@@ -11,12 +11,12 @@ export default function Sidebar({
     const { t } = useTranslation();
     const sideMenus = [
         {
-            "route": "dashboard",
+            "route": "root.dashboard",
             "label": t('Dashboard'),
             "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         },
         {
-            "route": 'profile.edit',
+            "route": 'root.profile.edit',
             "label": t('Profile edit'),
             "icon": <UserIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         },

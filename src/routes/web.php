@@ -2,18 +2,17 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers;
 use Inertia\Inertia;
+
+use App\Http\Controllers\V1\Web\Guest\Env\LangController;
+use App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController;
+use App\Http\Controllers\V1\Web\Guest\Env\TimezoneController;
+use App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', function () {
@@ -28,79 +27,20 @@ Route::get('/', function () {
 Route::prefix('/')
     ->group(function () {
 
-        Route::get('lang', \App\Http\Controllers\V1\Web\Guest\Env\LangController::class)
+        Route::get('lang', LangController::class)
             ->name('guest-lang');
-        Route::put('lang', \App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController::class)
+        Route::put('lang', LangUpdateController::class)
             ->name('guest-lang-put');
 
-        Route::get('timezone', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneController::class)
+        Route::get('timezone', TimezoneController::class)
             ->name('guest-timezone');
-        Route::put('timezone', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController::class)
+        Route::put('timezone', TimezoneUpdateController::class)
             ->name('guest-timezone-put');
 
     });
 
-Route::middleware([
-        'auth',
-    ])
-    ->prefix('/')
-    ->group(function() {
-
-        Route::get('profile', [
-                \App\Http\Controllers\V1\Web\User\ProfileController::class,
-                'edit'
-            ])
-            ->name('profile.edit');
-
-        Route::patch('profile', [
-                \App\Http\Controllers\V1\Web\User\ProfileController::class,
-                'update'
-            ])
-            ->name('profile.update');
-
-        Route::delete('profile', [
-                \App\Http\Controllers\V1\Web\User\ProfileController::class,
-                'destroy'
-            ])
-            ->name('profile.destroy');
-
-    });
-
-Route::middleware([
-        'auth',
-        'auth.role:user',
-        'verified',
-    ])
-    ->prefix('/')
-    ->group(function() {
-
-        Route::get('dashboard', \App\Http\Controllers\V1\Web\User\DashboardController::class)
-            ->name('user.dashboard');
-
-    });
-
-Route::middleware([
-        'auth',
-        'auth.role:admin',
-        'verified',
-    ])
-    ->prefix('/')
-    ->group(function() {
-
-        //
-
-    });
-
-Route::middleware([
-        'auth',
-        'auth.role:root',
-        'verified',
-    ])
-    ->prefix('/')
-    ->group(function() {
-
-        //
-
-    });
+require __DIR__.'/web-user.php';
+require __DIR__.'/web-admin.php';
+require __DIR__.'/web-root.php';
 
 require __DIR__.'/auth.php';

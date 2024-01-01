@@ -10,7 +10,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        axios.get(route('guest-timezone'))
+        axios.get(route('timezone'))
             .then(response => {
                 setTimezones(
                     Object.entries(response.data.data)
@@ -29,7 +29,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
         const oldTimezone = selectedTimezone;
         setSelectedTimezone(event.target.value);
 
-        axios.put(route('guest-timezone-put'), {timezone: event.target.value})
+        axios.put(route('timezone-put'), {timezone: event.target.value})
             .then(response => {
                 window.location.reload();
             })

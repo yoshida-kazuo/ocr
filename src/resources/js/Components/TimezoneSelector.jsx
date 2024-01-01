@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from '@/Components/Select';
+import { useTranslation } from 'react-i18next';
 
 const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) => {
+    const { t } = useTranslation();
     const [timezones, setTimezones] = useState([]);
     const [selectedTimezone, setSelectedTimezone] = useState(defaultTimezone);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        axios.get(route('guest-timezone'))
+        axios.get(route('timezone'))
             .then(response => {
                 setTimezones(
                     Object.entries(response.data.data)
@@ -17,21 +20,26 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
                         }))
                 );
             })
-            .catch(error => console.error('タイムゾーンの取得に失敗'));
+            .catch(error => console.error(t('Failed to retrieve a list of time zones.')));
     }, []);
 
     const handleTimezoneChange = (event) => {
+        setIsLoading(true);
+
         const oldTimezone = selectedTimezone;
         setSelectedTimezone(event.target.value);
 
-        axios.put(route('guest-timezone-put'), {timezone: event.target.value})
+        axios.put(route('timezone-put'), {timezone: event.target.value})
             .then(response => {
-                //
+                window.location.reload();
             })
             .catch(error => {
-                console.error('タイムゾーンの設定に失敗');
+                console.error('Failed to set the time zone');
 
                 setSelectedTimezone(oldTimezone);
+            })
+            .finallly(() => {
+                setIsLoading(false);
             });
     };
 
@@ -43,6 +51,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
             onChange={handleTimezoneChange}
             options={timezones}
             className={className}
+            disabled={isLoading}
         />
     );
 };

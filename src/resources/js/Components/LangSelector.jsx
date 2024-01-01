@@ -14,7 +14,7 @@ export default function LangSelector({
     const [selectedLang, setSelectedLang] = useState(defaultLang);
 
     useEffect(() => {
-        axios.get(route('guest-lang'))
+        axios.get(route('lang'))
             .then(response => {
                 const lang = Object.entries(response.data.data)
                     .map(([key, label]) => ({
@@ -32,7 +32,7 @@ export default function LangSelector({
             newLang = event.target.value;
         setSelectedLang(newLang);
 
-        axios.put(route('guest-lang-put'), {lang: newLang})
+        axios.put(route('lang-put'), {lang: newLang})
             .then(() => {
                 i18n.changeLanguage(newLang);
             })

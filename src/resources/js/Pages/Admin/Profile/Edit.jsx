@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import UserLayout from '@/Layouts/UserLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
@@ -21,7 +21,7 @@ export default function Edit({
     }, [lang]);
 
     return (
-        <UserLayout
+        <AdminLayout
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{t('Profile')}</h2>}
             timezone={timezone}
@@ -44,6 +44,6 @@ export default function Edit({
             <div className="p-4 sm:p-8 bg-white shadow sm:rounded-md">
                 <DeleteUserForm className="max-w-xl" />
             </div>
-        </UserLayout>
+        </AdminLayout>
     );
 }

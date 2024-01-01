@@ -43,11 +43,12 @@ i18n.use(initReactI18next)
                     "Before deleting your account, please download any data or information you want to save.": "アカウントを削除する前に、保存しておきたいデータや情報をダウンロードしてください。",
                     "To confirm the permanent deletion of your account, please enter your password.": "アカウントを永久に削除することを確認するために、パスワードを入力してください。",
                     "Are you sure you want to delete your account?": "本当にアカウントを削除しますか？",
+                    "Failed to retrieve a list of time zones.": "タイムゾーン一覧の取得に失敗",
+                    "Failed to set the time zone": "タイムゾーンの設定に失敗",
                 }
             }
         },
         fallbackLng: "en",
-
         interpolation: {
             escapeValue: false
         }

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
 export default function Navbar({
+    user,
     lang,
     timezone
 }) {
@@ -30,6 +31,7 @@ export default function Navbar({
                     </div>
 
                     <div className="flex justify-end flex-1 px-2">
+                        <p className="mr-3">{user.name}</p>
                         <div className="flex items-stretch my-auto">
                             <div className="dropdown dropdown-end">
                                 <div tabIndex={0} role="button" className="btn btn-ghost rounded-btn">

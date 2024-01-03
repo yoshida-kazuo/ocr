@@ -1,6 +1,10 @@
 import Navbar from '@/Components/Auth/Navbar';
 
-export default function Auth({ children, lang, timezone }) {
+export default function Auth({
+    children,
+    lang,
+    timezone
+}) {
     return (
         <>
             <Navbar lang={lang} timezone={timezone} />

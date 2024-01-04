@@ -4,7 +4,7 @@ namespace App\Console\Commands\User;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\V1\Web\Auth\RegisterRequest;
 use App\Models\User;
 
 class Create extends Command

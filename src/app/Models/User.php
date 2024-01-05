@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Trait\Timezone;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens,
         HasFactory,
@@ -27,6 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role_id',
+        'email_verified_at',
     ];
 
     /**
@@ -72,6 +74,13 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * defaultRole variable
+     *
+     * @var integer
+     */
+    protected $defaultRole = 90;
+
+    /**
      * roles function
      *
      * @param string|null $role
@@ -98,6 +107,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function dashboardRoute(?string $role = null): string|array
     {
         $dashboardRoute = $this->dashboardRoutes;
+
+        if (isset($role) && ! empty($role)) {
+            $dashboardRoute = data_get($this->dashboardRoutes, $role);
+        }
 
         if (is_null($role) && $this->role_id) {
             $role = array_flip($this->roles)[$this->role_id];

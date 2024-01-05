@@ -19,7 +19,7 @@ export default function Navbar({
 
     return (
         <header className="absolute w-full z-20">
-            <nav className="mt-3 mb-0 mx-auto w-full sm:w-9/12 bg-white rounded-md shadow-md relative">
+            <nav className="mt-3 mb-0 mx-auto w-full sm:w-9/12 bg-white relative">
                 <div className="navbar text-gray-500">
                     <div className="flex">
                         <div className="shrink-0 flex items-center">

@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import Navbar from '@/Components/Admin/Navbar';
 import Sidebar from '@/Components/Admin/Sidebar';
-import { useTranslation } from 'react-i18next';
 
 export default function User({
     user,
@@ -10,13 +8,10 @@ export default function User({
     lang,
     timezone
 }) {
-    const { t } = useTranslation();
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
     return (
         <>
-            <Navbar lang={lang} timezone={timezone} />
-            <Sidebar lang={lang} timezone={timezone} />
+            <Navbar lang={lang} timezone={timezone} user={user} header={header} />
+            <Sidebar lang={lang} timezone={timezone} user={user} header={header} />
 
             <main className="absolute w-full max-w-full sm:max-w-[calc(100%-16rem)] mt-28 transition-transform sm:translate-x-64">
                 <div className="w-auto">

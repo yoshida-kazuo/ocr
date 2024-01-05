@@ -24,15 +24,16 @@ class CallbackController extends Controller
         $googleUser = Socialite::driver('google')
             ->user();
 
-        $user = User::updateOrCreate([
-            'email' => $googleUser->getEmail()
+        $user = User::firstOrCreate([
+            'email'             => $googleUser->getEmail()
         ], [
-            'name'  => $googleUser->getName(),
+            'name'              => $googleUser->getName(),
+            'password'          => 'no-login-' . Str::random(60),
+            'email_verified_at' => now(),
         ]);
 
-        if (is_null($user->password)) {
-            $user->password = 'no-login-' . Str::random(60);
-            $user->save();
+        if ($user->wasRecentlyCreated) {
+            $user->refresh();
         }
 
         Auth::login($user);

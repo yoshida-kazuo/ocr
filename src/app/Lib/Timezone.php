@@ -11,14 +11,14 @@ class Timezone
      * app function
      *
      * @param mixed $time
-     * @return Carbon|null
+     *
+     * @return String|null
      */
-    public function app(mixed $time): Carbon|null
+    public function app(mixed $time): String|null
     {
         return ! is_null($time) ? Carbon::parse($time)
-            ->setTimezone(
-                config('app.timezone')
-            ) : null;
+            ->setTimezone(config('app.timezone_view'))
+            ->format('Y/m/d H:i:s') : null;
     }
 
 }

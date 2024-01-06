@@ -23,7 +23,7 @@ export default function Edit({
     return (
         <AdminLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{t('Profile')}</h2>}
+            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('Profile')}</h2>}
             timezone={timezone}
             lang={lang}
         >

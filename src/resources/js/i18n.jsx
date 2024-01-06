@@ -45,6 +45,10 @@ i18n.use(initReactI18next)
                     "Are you sure you want to delete your account?": "本当にアカウントを削除しますか？",
                     "Failed to retrieve a list of time zones.": "タイムゾーン一覧の取得に失敗",
                     "Failed to set the time zone": "タイムゾーンの設定に失敗",
+                    "Registration datetime": "登録日時",
+                    "Type": "タイプ",
+                    "Message": "メッセージ",
+                    "Activity": "操作ログ",
                 }
             }
         },

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified as VendorEnsureEmailIsVerified;
 
 class EnsureEmailIsVerified extends VendorEnsureEmailIsVerified
@@ -12,6 +13,7 @@ class EnsureEmailIsVerified extends VendorEnsureEmailIsVerified
      * Specify the redirect route for the middleware.
      *
      * @param  string  $route
+     *
      * @return string
      */
     public static function redirectTo($route)
@@ -33,7 +35,14 @@ class EnsureEmailIsVerified extends VendorEnsureEmailIsVerified
         Closure $next,
         $redirectToRoute = null
     ) {
-        //
+        if (! $request->user()
+            || ($request->user() instanceof MustVerifyEmail
+                && ! $request->user()->hasVerifiedEmail())
+        ) {
+            if ($request->expectsJson()) {
+                abort(403, 'Your email address is not verified.');
+            }
+        }
 
         return $next($request);
     }

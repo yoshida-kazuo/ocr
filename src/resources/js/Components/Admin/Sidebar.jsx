@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from '@inertiajs/react';
-import { UserIcon, DesktopComputerIcon } from "@heroicons/react/solid";
+import { UserIcon, DesktopComputerIcon, EyeIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -14,6 +14,11 @@ export default function Sidebar({
             "route": "admin.dashboard",
             "label": t('Dashboard'),
             "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
+        },
+        {
+            "route": "admin.activity",
+            "label": t('Activity'),
+            "icon": <EyeIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
         },
         {
             "route": 'admin.profile.edit',

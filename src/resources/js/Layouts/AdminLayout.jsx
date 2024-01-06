@@ -15,6 +15,8 @@ export default function User({
 
             <main className="absolute w-full max-w-full sm:max-w-[calc(100%-16rem)] mt-28 transition-transform sm:translate-x-64">
                 <div className="w-auto">
+                    {header}
+
                     <div className="mx-auto sm:px-6 lg:px-8 space-y-6 mb-6">
                         {children}
                     </div>

@@ -38,6 +38,13 @@ class CallbackController extends Controller
 
         Auth::login($user);
 
+        activity()
+            ->info(__(':id : :email : :name : has logged in with Google authentication.', [
+                'id'    => $googleUser->id,
+                'name'  => user('name'),
+                'email' => user('email'),
+            ]));
+
         return redirect()
             ->intended(
                 route(user()->dashboardRoute())

@@ -38,7 +38,7 @@ class Activity
         string $type
     ): Activity {
         $message = implode(' : ' , [
-                'v' . config('env.app_version'),
+                'v' . config('app.version'),
                 $message,
             ]);
 

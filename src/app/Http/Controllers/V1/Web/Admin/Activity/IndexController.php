@@ -20,7 +20,7 @@ class IndexController extends Controller
     public function __invoke(Request $request): \Inertia\Response
     {
         $activities = Activity::orderBy('id', 'desc')
-            ->paginate(5)
+            ->paginate(15)
             ->onEachSide(1);
 
         return Inertia::render(

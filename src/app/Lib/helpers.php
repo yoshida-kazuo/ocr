@@ -9,6 +9,7 @@ if (! function_exists('activity')) {
      *
      * @param string|null $message
      * @param string|null $type
+     *
      * @return mixed
      */
     function activity(
@@ -46,6 +47,7 @@ if (! function_exists('user')) {
      *
      * @param string|null $key
      * @param string|null $guard
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|Carbon\Carbon|null
      */
     function user(

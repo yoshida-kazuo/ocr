@@ -44,7 +44,7 @@ export default function Index({
                                 <th>{activity.id}</th>
                                 <td>{activity.created_at}</td>
                                 <td>{activity.type}</td>
-                                <td>{activity.user_id}</td>
+                                <td>{activity?.user?.name}</td>
                                 <td>{activity.message}</td>
                             </tr>
                         ))}

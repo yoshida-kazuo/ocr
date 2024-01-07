@@ -5,7 +5,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -17,11 +17,12 @@ export default function Login({
     timezone
 }) {
     const { t } = useTranslation();
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, reset } = useForm({
         email: '',
         password: '',
         remember: false,
     });
+    const { errors } = usePage().props;
 
     useEffect(() => {
         i18n.changeLanguage(lang);
@@ -106,11 +107,14 @@ export default function Login({
             </form>
 
             {googleAuth && (
-                <a
-                    href={route('auth.google')}
-                >
-                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" />
-                </a>
+                <>
+                    <a
+                        href={route('auth.google')}
+                    >
+                        <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" />
+                    </a>
+                    <InputError message={errors.google_auth} className="mt-2" />
+                </>
             )}
         </AuthLayout>
     );

@@ -19,7 +19,8 @@ class IndexController extends Controller
      */
     public function __invoke(Request $request): \Inertia\Response
     {
-        $activities = Activity::orderBy('id', 'desc')
+        $activities = Activity::with('user')
+            ->orderBy('id', 'desc')
             ->paginate(15)
             ->onEachSide(1);
 

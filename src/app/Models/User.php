@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Trait\Timezone;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -131,4 +132,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role_id <= $this->roles($role);
     }
+
+    /**
+     * activities function
+     *
+     * @return HasMany
+     */
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
+
 }

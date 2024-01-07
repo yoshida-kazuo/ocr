@@ -14,7 +14,8 @@ export default function Login({
     canResetPassword,
     googleAuth,
     lang,
-    timezone
+    timezone,
+    errors
 }) {
     const { t } = useTranslation();
     const { data, setData, post, processing, reset } = useForm({
@@ -22,7 +23,6 @@ export default function Login({
         password: '',
         remember: false,
     });
-    const { errors } = usePage().props;
 
     useEffect(() => {
         i18n.changeLanguage(lang);

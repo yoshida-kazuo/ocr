@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\Web\Auth\Google;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -23,6 +24,28 @@ class CallbackController extends Controller
     {
         $googleUser = Socialite::driver('google')
             ->user();
+
+        $validator = Validator::make([
+            'google_auth' => $googleUser->getEmail(),
+        ], [
+            'google_auth' => [
+                'unique:App\Models\User,email',
+            ],
+        ], [
+            'google_auth.unique'  => __('auth.failed'),
+        ]);
+
+        if ($validator->fails()) {
+            activity(__(':id : :email : Google authentication failed. The email is already registered.', [
+                    'id'    => $googleUser->id,
+                    'name'  => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                ]),
+                'info');
+
+            return to_route('login')
+                ->withErrors($validator);
+        }
 
         $user = User::firstOrCreate([
             'email'             => $googleUser->getEmail()

@@ -49,6 +49,7 @@ i18n.use(initReactI18next)
                     "Type": "タイプ",
                     "Message": "メッセージ",
                     "Activity": "操作ログ",
+                    "User": "ユーザ",
                 }
             }
         },

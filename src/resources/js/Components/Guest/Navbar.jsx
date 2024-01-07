@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import LangSelector from '@/Components/LangSelector';
 import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '../ResponsiveNavLink';
-import Dropdown from '@/Components/Dropdown';
 import { Link } from '@inertiajs/react';
 import { UserCircleIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
 export default function Navbar({
-    lang = '',
-    timezone = ''
+    user,
+    lang
 }) {
     const { t } = useTranslation();
 
@@ -24,9 +23,51 @@ export default function Navbar({
                 <div className="navbar text-gray-500">
                     <div className="flex">
                         <div className="shrink-0 flex items-center">
-                            <Link href={route('user.dashboard')} className="mx-6">
-                                <ApplicationLogo className="block h-9 w-auto fill-current text-gray-500" />
+                            <Link href={route('top')} className="mx-6">
+                                <ApplicationLogo className="block h-9 w-auto fill-current" />
                             </Link>
+                        </div>
+
+                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <NavLink href={route('top')} active={route().current('top')}>
+                                {t('Top')}
+                            </NavLink>
+                            <NavLink href={route('contact')} active={route().current('contact')}>
+                                {t('Contact')}
+                            </NavLink>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end flex-1 px-2">
+                        <div className="flex items-stretch my-auto">
+                            <div className="dropdown dropdown-end">
+                                <div tabIndex={0} role="button" className="btn btn-ghost rounded-btn">
+                                    <UserCircleIcon className="w-7" />
+                                </div>
+                                <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                                    {user ? (
+                                        <li>
+                                            <Link
+                                                href={route('logout')}
+                                                method="post"
+                                                as="button"
+                                            >{t('Log out')}</Link>
+                                        </li>
+                                    ) : (
+                                        <li>
+                                            <Link
+                                                href={route('login')}
+                                                as="button"
+                                            >{t('Log in')}</Link>
+                                        </li>
+                                    )}
+                                    <li>
+                                        <LangSelector
+                                            defaultLang={lang}
+                                        />
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

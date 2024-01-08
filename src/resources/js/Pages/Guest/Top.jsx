@@ -12,7 +12,7 @@ export default function Top({
     return (
         <GuestLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('Dashboard')}</h2>}
+            header={t('Top page')}
             lang={lang}
         >
             <Head title={t('Top page')} />

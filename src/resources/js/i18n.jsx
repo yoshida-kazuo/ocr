@@ -52,6 +52,9 @@ i18n.use(initReactI18next)
                     "User": "ユーザ",
                     "Top page": "トップページ",
                     "Contact": "お問い合わせ",
+                    "I have sent it.": "送信しました。",
+                    "Send": "送信",
+                    "Please enter the inquiry details.": "問い合わせ内容を入力して下さい。",
                 }
             }
         },

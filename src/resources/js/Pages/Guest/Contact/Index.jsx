@@ -13,12 +13,12 @@ export default function Index({
     return (
         <GuestLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('Dashboard')}</h2>}
+            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('Contact')}</h2>}
             lang={lang}
         >
             <Head title={t('Contact')} />
 
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-md">
+            <div className="">
                 <div className="p-6 text-gray-900">{t('おといあわせ')}</div>
             </div>
         </GuestLayout>

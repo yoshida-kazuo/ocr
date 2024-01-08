@@ -50,6 +50,8 @@ i18n.use(initReactI18next)
                     "Message": "メッセージ",
                     "Activity": "操作ログ",
                     "User": "ユーザ",
+                    "Top page": "トップページ",
+                    "Contact": "お問い合わせ",
                 }
             }
         },

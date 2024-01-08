@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
 import { UserIcon, DesktopComputerIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
@@ -27,9 +28,14 @@ export default function Sidebar({
     }, [lang]);
 
     return (
-        <aside id="default-sidebar" className="fixed top-0 left-0 z-10 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0">
-            <div className="absolute top-0 h-28"></div>
-            <div className="scrollbar relative top-28 max-h-[calc(100%-7rem)] pb-4 overflow-y-auto px-3 bg-white">
+        <aside id="default-sidebar" className="drawer-side z-20 sm:z-0">
+            <label htmlFor="root-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+            <div className="absolute top-0 h-28 w-64 bg-white">
+                <Link href={route('root.dashboard')} className="sm:hidden justify-center flex flex-col h-28">
+                    <ApplicationLogo className="block h-16 w-auto fill-current text-gray-500" />
+                </Link>
+            </div>
+            <div className="scrollbar relative top-28 w-64 h-screen max-h-[calc(100%-7rem)] pb-4 overflow-y-auto px-3 bg-white">
                 <ul className="menu px-0 py-0">
                     {sideMenus.map((menu, index) => (
                         <li key={index}>

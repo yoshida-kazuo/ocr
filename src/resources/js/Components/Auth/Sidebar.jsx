@@ -1,31 +1,18 @@
 import React, { useEffect } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import { UserIcon, DesktopComputerIcon, EyeIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
 export default function Sidebar({
-    lang,
-    timezone
+    lang
 }) {
     const { t } = useTranslation();
     const sideMenus = [
         {
-            "route": "admin.dashboard",
-            "label": t('Dashboard'),
-            "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
-        },
-        {
-            "route": "admin.activity",
-            "label": t('Activity'),
-            "icon": <EyeIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
-        },
-        {
-            "route": 'admin.profile.edit',
-            "label": t('Profile edit'),
-            "icon": <UserIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
-        },
+            "route": "top",
+            "label": t('Top page'),
+        }
     ];
 
     useEffect(() => {
@@ -33,10 +20,10 @@ export default function Sidebar({
     }, [lang]);
 
     return (
-        <aside id="default-sidebar" className="drawer-side z-20 sm:z-0">
-            <label htmlFor="admin-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+        <aside id="default-sidebar" className="drawer-side z-20 sm:z-0 sm:hidden">
+            <label htmlFor="auth-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
             <div className="absolute top-0 h-28 w-64 bg-white">
-                <Link href={route('admin.dashboard')} className="sm:hidden justify-center flex flex-col h-28">
+                <Link href={route('top')} className="sm:hidden justify-center flex flex-col h-28">
                     <ApplicationLogo className="block h-16 w-auto fill-current text-gray-500" />
                 </Link>
             </div>

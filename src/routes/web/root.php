@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\V1\Web\Root\DashboardController;
-use App\Http\Controllers\V1\Web\Root\ProfileController;
-
 Route::middleware([
         'auth',
         'auth.role:root',
@@ -13,23 +10,23 @@ Route::middleware([
     ->prefix('root/')
     ->group(function() {
 
-        Route::get('dashboard', DashboardController::class)
+        Route::get('dashboard', \App\Http\Controllers\V1\Web\Root\DashboardController::class)
             ->name('root.dashboard');
 
         Route::get('profile', [
-                ProfileController::class,
+                \App\Http\Controllers\V1\Web\Root\ProfileController::class,
                 'edit',
             ])
             ->name('root.profile.edit');
 
         Route::patch('profile', [
-                ProfileController::class,
+                \App\Http\Controllers\V1\Web\Root\ProfileController::class,
                 'update',
             ])
             ->name('root.profile.update');
 
         Route::delete('profile', [
-                ProfileController::class,
+                \App\Http\Controllers\V1\Web\Root\ProfileController::class,
                 'destroy',
             ])
             ->name('root.profile.destroy');

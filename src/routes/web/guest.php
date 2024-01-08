@@ -4,31 +4,23 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-use App\Http\Controllers\V1\Web\Guest\Env\LangController;
-use App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController;
-use App\Http\Controllers\V1\Web\Guest\Env\TimezoneController;
-use App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController;
-
-Route::get('/', function () {
-        return Inertia::render('Welcome', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-            'laravelVersion' => Application::VERSION,
-            'phpVersion' => PHP_VERSION,
-        ]);
-    });
+Route::get('/', \App\Http\Controllers\V1\Web\Guest\TopController::class)
+    ->name('top');
 
 Route::prefix('/')
     ->group(function () {
 
-        Route::get('lang', LangController::class)
+        Route::get('lang', \App\Http\Controllers\V1\Web\Guest\Env\LangController::class)
             ->name('lang');
-        Route::put('lang', LangUpdateController::class)
+        Route::put('lang', \App\Http\Controllers\V1\Web\Guest\Env\LangUpdateController::class)
             ->name('lang-put');
 
-        Route::get('timezone', TimezoneController::class)
+        Route::get('timezone', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneController::class)
             ->name('timezone');
-        Route::put('timezone', TimezoneUpdateController::class)
+        Route::put('timezone', \App\Http\Controllers\V1\Web\Guest\Env\TimezoneUpdateController::class)
             ->name('timezone-put');
+
+        Route::get('contact', \App\Http\Controllers\V1\Web\Guest\Contact\IndexController::class)
+            ->name('contact');
 
     });

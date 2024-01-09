@@ -51,10 +51,6 @@ export default function UpdatePasswordForm({
         <section className={className}>
             <header>
                 <h2 className="text-lg font-medium text-gray-900">{t('Update Password')}</h2>
-
-                <p className="mt-1 text-sm text-gray-600">
-                    {t('To ensure the security of your account, please use a long and random password.')}
-                </p>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">

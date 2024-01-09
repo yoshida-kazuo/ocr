@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Lib\Support;
+namespace App\Lib\Support\Activity;
 
 use App\Jobs\ProcessAcitivity;
 use App\Models\Activity as ActivityModel;
 
-class Activity
+class ActivitySupport
 {
 
     /**
@@ -31,12 +31,12 @@ class Activity
      * @param string $message
      * @param string $type
      *
-     * @return Activity
+     * @return ActivitySupport
      */
     public function create(
         string $message,
         string $type
-    ): Activity {
+    ): ActivitySupport {
         $message = implode(' : ' , [
                 'v' . config('app.version'),
                 $message,
@@ -60,9 +60,9 @@ class Activity
      *
      * @param string $message
      *
-     * @return Activity
+     * @return ActivitySupport
      */
-    public function info(string $message): Activity
+    public function info(string $message): ActivitySupport
     {
         $this->create($message, 'info');
 
@@ -74,9 +74,9 @@ class Activity
      *
      * @param string $message
      *
-     * @return Activity
+     * @return ActivitySupport
      */
-    public function warning(string $message): Activity
+    public function warning(string $message): ActivitySupport
     {
         $this->create($message, 'warning');
 
@@ -88,9 +88,9 @@ class Activity
      *
      * @param string $message
      *
-     * @return Activity
+     * @return ActivitySupport
      */
-    public function error(string $message): Activity
+    public function error(string $message): ActivitySupport
     {
         $this->create($message, 'error');
 
@@ -102,9 +102,9 @@ class Activity
      *
      * @param string $message
      *
-     * @return Activity
+     * @return ActivitySupport
      */
-    public function dev(string $message): Activity
+    public function dev(string $message): ActivitySupport
     {
         if (! app()->isProduction()) {
             $this->create($message, 'dev');

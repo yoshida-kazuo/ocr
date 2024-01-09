@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
-use App\Lib\Support\Activity;
+use App\Lib\Support\Activity\ActivitySupport;
 
 if (! function_exists('activity')) {
     /**
@@ -16,7 +16,7 @@ if (! function_exists('activity')) {
         ?string $message = null,
         ?string $type = null
     ) {
-        $activity = app(Activity::class);
+        $activity = app(ActivitySupport::class);
 
         if (isset($message)
             && isset($type)

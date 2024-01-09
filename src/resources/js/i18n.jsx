@@ -55,6 +55,7 @@ i18n.use(initReactI18next)
                     "I have sent it.": "送信しました。",
                     "Send": "送信",
                     "Please enter the inquiry details.": "お問い合わせ内容を入力して下さい。",
+                    "Register Here for New Account": "新規登録はこちら",
                 }
             }
         },

@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', \App\Http\Controllers\V1\Web\Guest\TopController::class)
     ->name('top');
@@ -22,5 +20,7 @@ Route::prefix('/')
 
         Route::get('contact', \App\Http\Controllers\V1\Web\Guest\Contact\IndexController::class)
             ->name('contact');
+        Route::post('contact', \App\Http\Controllers\V1\Web\Guest\Contact\SendController::class)
+            ->name('contact.send');
 
     });

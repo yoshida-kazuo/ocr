@@ -3,7 +3,6 @@ import { Link } from '@inertiajs/react';
 export default function Pagination({
     items
 }) {
-    console.log(items);
     return (
         <div className="join">
             {items.links.map((link, index) => (

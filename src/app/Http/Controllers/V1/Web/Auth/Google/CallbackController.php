@@ -24,29 +24,30 @@ class CallbackController extends Controller
     {
         $googleUser = Socialite::driver('google')
             ->user();
+        $activityData = [
+            'id'    => $googleUser->id,
+            'name'  => $googleUser->getName(),
+            'email' => $googleUser->getEmail(),
+        ];
 
         try {
             $user = User::firstOrCreate([
                 'email'             => $googleUser->getEmail()
             ], [
                 'name'              => $googleUser->getName(),
-                'password'          => 'no-login-' . Str::random(60),
+                'password'          => 'no-login-' . Str::random(255),
                 'email_verified_at' => now(),
             ]);
 
             if ($user->wasRecentlyCreated) {
                 $user->refresh();
+
+                activity()
+                    ->info(__(':id : :email : There was a new login with Google authentication.', $activityData));
             }
         } catch(\Illuminate\Database\UniqueConstraintViolationException $e) {
-            report($e);
-            activity(
-                __(':id : :email : Google authentication failed. The email is already registered.', [
-                    'id'    => $googleUser->id,
-                    'name'  => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                ]),
-                'info'
-            );
+            activity()
+                ->info(__(':id : :email : Google authentication failed. The email is already registered.', $activityData));
 
             return to_route('login')
                 ->withErrors([
@@ -54,24 +55,14 @@ class CallbackController extends Controller
                 ]);
         } catch(Throwable $e) {
             report($e);
-            activity(
-                __(':id : :email : Google authentication failed.', [
-                    'id'    => $googleUser->id,
-                    'name'  => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                ]),
-                'info'
-            );
+            activity()
+                ->error(__(':id : :email : Google authentication failed.', $activityData));
         }
 
         Auth::login($user);
 
         activity()
-            ->info(__(':id : :email : :name : has logged in with Google authentication.', [
-                'id'    => $googleUser->id,
-                'name'  => user('name'),
-                'email' => user('email'),
-            ]));
+            ->info(__(':id : :email : :name : has logged in with Google authentication.', $activityData));
 
         return redirect()
             ->intended(

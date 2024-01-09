@@ -13,7 +13,6 @@ class Activity
      *
      * @param string|null $message
      * @param string|null $type
-     * @return void
      */
     public function __construct(
         ?string $message = null,
@@ -31,6 +30,7 @@ class Activity
      *
      * @param string $message
      * @param string $type
+     *
      * @return Activity
      */
     public function create(
@@ -59,6 +59,7 @@ class Activity
      * info function
      *
      * @param string $message
+     *
      * @return Activity
      */
     public function info(string $message): Activity
@@ -69,9 +70,24 @@ class Activity
     }
 
     /**
+     * warning function
+     *
+     * @param string $message
+     *
+     * @return Activity
+     */
+    public function warning(string $message): Activity
+    {
+        $this->create($message, 'warning');
+
+        return $this;
+    }
+
+    /**
      * error function
      *
      * @param string $message
+     *
      * @return Activity
      */
     public function error(string $message): Activity
@@ -85,6 +101,7 @@ class Activity
      * dev function
      *
      * @param string $message
+     *
      * @return Activity
      */
     public function dev(string $message): Activity
@@ -102,6 +119,7 @@ class Activity
      * @param array $conditions
      * @param integer $perPage
      * @param string $catalogName
+     *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function catalog(

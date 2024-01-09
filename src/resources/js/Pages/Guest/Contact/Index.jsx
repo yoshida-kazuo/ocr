@@ -30,7 +30,9 @@ export default function Index({
 
     useEffect(() => {
         if (recentlySuccessful) {
-            reset();
+            setData('name', '');
+            setData('email', '');
+            setData('message', '');
         }
     }, [recentlySuccessful, reset]);
 

@@ -1,5 +1,3 @@
-import React, { ChangeEvent } from 'react';
-
 const Select = ({
     options = [],
     value = '',

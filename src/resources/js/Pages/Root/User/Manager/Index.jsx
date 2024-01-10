@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import RootLayout from '@/Layouts/RootLayout';
 import Pagination from '@/Components/Pagination';
 import Sortable from '@/Components/Sortable';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -37,28 +37,24 @@ export default function Index({
                                     <Sortable
                                         title={t('Role')}
                                         column="role_id"
-                                        className=""
                                     />
                                 </th>
                                 <th>
                                     <Sortable
                                         title={t('Name')}
                                         column="name"
-                                        className=""
                                     />
                                 </th>
                                 <th>
                                     <Sortable
                                         title={t('Email')}
                                         column="email"
-                                        className=""
                                     />
                                 </th>
                                 <th>
                                     <Sortable
-                                        title={t('Last Update')}
+                                        title={t('Last Updated')}
                                         column="updated_at"
-                                        className=""
                                     />
                                 </th>
                             </tr>
@@ -67,8 +63,12 @@ export default function Index({
                         {users?.data?.map(user => (
                             <tr key={user.id}>
                                 <th>{user.id}</th>
-                                <td>{user.role_id}</td>
-                                <td>{user.name}</td>
+                                <td>{user.role.role}</td>
+                                <td>
+                                    <Link
+                                        href={route('root.user.manager.edit', { id: user.id })}
+                                    >{user.name}</Link>
+                                </td>
                                 <td>{user.email}</td>
                                 <td>{user.updated_at}</td>
                             </tr>

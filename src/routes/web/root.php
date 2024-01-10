@@ -29,6 +29,12 @@ Route::middleware([
             ])
             ->name('root.profile.destroy');
 
-        Route::get('user/manager', \App\Http\Controllers\V1\Web\Root\User\Manager\IndexController::class)
-            ->name('root.user.manager');
+        Route::prefix('user')
+            ->group(function() {
+                Route::get('manager', \App\Http\Controllers\V1\Web\Root\User\Manager\IndexController::class)
+                    ->name('root.user.manager');
+                Route::get('manager/{id}', \App\Http\Controllers\V1\Web\Root\User\Manager\EditController::class)
+                    ->where('id', '[0-9]+')
+                    ->name('root.user.manager.edit');
+            });
     });

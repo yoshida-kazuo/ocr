@@ -37,28 +37,24 @@ export default function Index({
                                     <Sortable
                                         title={t('Registration datetime')}
                                         column="created_at"
-                                        className=""
                                     />
                                 </th>
                                 <th>
                                     <Sortable
                                         title={t('Type')}
                                         column="type"
-                                        className=""
                                     />
                                 </th>
                                 <th>
                                     <Sortable
                                         title={t('User')}
                                         column="user_id"
-                                        className=""
                                     />
                                 </th>
                                 <th>
                                     <Sortable
                                         title={t('Message')}
                                         column="message"
-                                        className=""
                                     />
                                 </th>
                             </tr>

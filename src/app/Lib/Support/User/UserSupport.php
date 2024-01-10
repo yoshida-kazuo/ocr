@@ -8,6 +8,19 @@ class UserSupport
 {
 
     /**
+     * find function
+     *
+     * @param integer $id
+     *
+     * @return UserModel
+     */
+    public function find(int $id): UserModel
+    {
+        return UserModel::with('role')
+            ->find($id);
+    }
+
+    /**
      * catalog function
      *
      * @param array $conditions
@@ -24,7 +37,7 @@ class UserSupport
         int $onEachSide = 1
     ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
         $conditions = collect($conditions);
-        $users = UserModel::on();
+        $users = UserModel::with('role');
 
         if ($conditions->get('role_id')) {
             $users->where('role_id', $conditions->get('role_id'));

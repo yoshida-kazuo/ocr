@@ -1,37 +1,46 @@
-import React from 'react';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Link, useForm, usePage } from '@inertiajs/react';
-import { Transition } from '@headlessui/react';
+import { useEffect } from 'react';
+import RootLayout from '@/Layouts/RootLayout';
+import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput';
+import Select from '@/Components/Select';
+import InputError from '@/Components/InputError';
+import PrimaryButton from '@/Components/PrimaryButton';
+import { Transition } from '@headlessui/react';
 
-export default function UpdateProfileInformation({
-    mustVerifyEmail,
-    status,
-    className = ''
+export default function Edit({
+    auth,
+    timezone,
+    lang,
+    user,
+    roles,
+    errors
 }) {
     const { t } = useTranslation();
-    const user = usePage().props.auth.user;
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+    const { data, setData, patch, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
+        role_id: user.role_id
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('root.profile.update'));
+        patch(route('root.user.manager.edit', { id: user.id }));
     };
 
     return (
-        <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">{t('Profile Information')}</h2>
-            </header>
+        <RootLayout
+            user={auth.user}
+            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('User information')}</h2>}
+            timezone={timezone}
+            lang={lang}
+        >
+            <Head title={t('User information')} />
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+                <h3 className="text-lg">{t('ID')} {user.id}</h3>
                 <div>
                     <InputLabel htmlFor="name" value={t('Name')} />
 
@@ -64,27 +73,29 @@ export default function UpdateProfileInformation({
                     <InputError className="mt-2" message={errors.email} />
                 </div>
 
-                {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="text-sm mt-2 text-gray-800">
-                            {t('Your email address is unverified.')}
-                            <Link
-                                href={route('verification.send')}
-                                method="post"
-                                as="button"
-                                className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                                {t('Click here to resend the confirmation email.')}
-                            </Link>
-                        </p>
+                <div>
+                    <InputLabel htmlFor="role_id" value={t('Role')} />
 
-                        {status === 'verification-link-sent' && (
-                            <div className="mt-2 font-medium text-sm text-green-600">
-                                {t('A new confirmation link has been sent to your email address.')}
-                            </div>
-                        )}
-                    </div>
-                )}
+                    <Select
+                        id="role_id"
+                        options={roles}
+                        value={data.role_id}
+                        onChange={(e) => setData('role_id', e.target.value)}
+                    />
+
+                    <InputError className="mt-2" message={errors.role_id} />
+                </div>
+
+                <div>
+                    <InputLabel value={t('Last Updated')} />
+
+                    <p className="mt-2 text-sm text-gray-600">{user.updated_at}</p>
+                </div>
+
+                <div>
+                    <InputLabel value={t('Registration datetime')} />
+                    <p className="mt-2 text-sm text-gray-600">{user.created_at}</p>
+                </div>
 
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>{t('Register')}</PrimaryButton>
@@ -100,6 +111,6 @@ export default function UpdateProfileInformation({
                     </Transition>
                 </div>
             </form>
-        </section>
-    );
+        </RootLayout>
+    )
 }

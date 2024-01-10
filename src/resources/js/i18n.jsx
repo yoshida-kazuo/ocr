@@ -59,6 +59,7 @@ i18n.use(initReactI18next)
                     "Last Updated": "更新日時",
                     "Role": "権限",
                     "User management": "ユーザ管理",
+                    "User information": "ユーザ情報",
                 }
             }
         },

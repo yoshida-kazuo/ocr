@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedInteger('role_id')
-                ->default(90)
+                ->default(9)
                 ->after('id')
-                ->comment('権限[super:30,administrator:60,general:90]')
+                ->comment('権限[root:3,admin:6,user:9]')
                 ->index();
             $table->softDeletes();
         });

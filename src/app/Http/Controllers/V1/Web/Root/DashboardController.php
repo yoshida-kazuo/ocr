@@ -15,9 +15,9 @@ class DashboardController extends Controller
      *
      * @param Request $request
      *
-     * @return Response
+     * @return Inertia\Response
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request): \Inertia\Response
     {
         //
 

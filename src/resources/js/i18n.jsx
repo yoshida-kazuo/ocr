@@ -56,6 +56,9 @@ i18n.use(initReactI18next)
                     "Send": "送信",
                     "Please enter the inquiry details.": "お問い合わせ内容を入力して下さい。",
                     "Register Here for New Account": "新規登録はこちら",
+                    "Last Updated": "更新日時",
+                    "Role": "権限",
+                    "User management": "ユーザ管理",
                 }
             }
         },

@@ -119,14 +119,16 @@ class ActivitySupport
      * @param array $conditions
      * @param integer $perPage
      * @param string $catalogName
+     * @param integer $onEachSide
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function catalog(
         array $conditions,
         int $perPage = 15,
-        string $catalogName = 'activity-catalog'
-    ) : \Illuminate\Contracts\Pagination\LengthAwarePaginator {
+        string $catalogName = 'activity-catalog',
+        int $onEachSide = 1
+    ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
         $conditions = collect($conditions);
         $activities = ActivityModel::with('user');
 
@@ -140,7 +142,7 @@ class ActivitySupport
 
         if (! $conditions->get('order')) {
             $conditions->put('order', [
-                'id'    => 'desc',
+                'id' => 'desc',
             ]);
         }
 
@@ -149,10 +151,11 @@ class ActivitySupport
         }
 
         return $activities->paginate(
-            $perPage,
-            ['*'],
-            $catalogName
-        );
+                $perPage,
+                ['*'],
+                $catalogName
+            )
+            ->onEachSide($onEachSide);
     }
 
 }

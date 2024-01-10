@@ -31,7 +31,7 @@ Route::middleware([
             ])
             ->name('admin.profile.destroy');
 
-        Route::get('admin/activity', \App\Http\Controllers\V1\Web\Admin\Activity\IndexController::class)
+        Route::get('activity', \App\Http\Controllers\V1\Web\Admin\Activity\IndexController::class)
             ->name('admin.activity');
 
     });

@@ -6,6 +6,7 @@ Route::middleware([
         'auth',
         'auth.role:user',
         'verified',
+        'account.ban',
     ])
     ->prefix('/')
     ->group(function() {

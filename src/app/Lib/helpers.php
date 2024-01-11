@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
-use App\Lib\Support\Activity;
+use App\Lib\Support\Activity\ActivitySupport;
 
 if (! function_exists('activity')) {
     /**
@@ -16,7 +16,7 @@ if (! function_exists('activity')) {
         ?string $message = null,
         ?string $type = null
     ) {
-        $activity = app(Activity::class);
+        $activity = app(ActivitySupport::class);
 
         if (isset($message)
             && isset($type)
@@ -62,5 +62,58 @@ if (! function_exists('user')) {
         }
 
         return $user;
+    }
+}
+
+if (! function_exists('sortable')) {
+    /**
+     * sortable function
+     *
+     * @param string $title
+     * @param string $column
+     * @return string
+     */
+    function sortable(
+        string $title,
+        string $column
+    ): string {
+        $sort = 'asc';
+        $active = null;
+
+        if (request("order.{$column}")) {
+            $active = strtolower(
+                request("order.{$column}")
+            );
+        }
+
+        if ($active === $sort) {
+            $sort = 'desc';
+        }
+
+        $url = request()
+            ->fullUrlWithQuery([
+                'order' => [
+                    $column => $sort,
+                ]
+            ]);
+
+        $sortClass = null;
+        if ($active) {
+            $sortClass = 'caret down icon';
+
+            if ($sort === 'desc') {
+                $sortClass = 'caret up icon';
+            }
+        }
+
+        $sortable = view()
+            ->make('vendor.sortable.semantic-ui', [
+                'title'     => $title,
+                'url'       => $url,
+                'sortClass' => $sortClass,
+            ])
+            ->render();
+
+        return $sortable;
     }
 }

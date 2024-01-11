@@ -4,7 +4,6 @@ namespace App\Http\Requests\V1\Web;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\Rule;
 
 class AjaxRequest extends FormRequest
 {

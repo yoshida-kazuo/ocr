@@ -107,15 +107,24 @@ export default function Login({
             </form>
 
             {googleAuth && (
-                <>
+                <div className="mt-4">
                     <a
                         href={route('auth.google')}
                     >
                         <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" />
                     </a>
                     <InputError message={errors.google_auth} className="mt-2" />
-                </>
+                </div>
             )}
+
+            <div className="mt-4">
+                <Link
+                    href={route('register')}
+                    className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    {t('Register Here for New Account')}
+                </Link>
+            </div>
         </AuthLayout>
     );
 }

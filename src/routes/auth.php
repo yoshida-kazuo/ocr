@@ -2,18 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\V1\Web\Auth\RegisteredUserController;
-use App\Http\Controllers\V1\Web\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\V1\Web\Auth\PasswordResetLinkController;
-use App\Http\Controllers\V1\Web\Auth\NewPasswordController;
-use App\Http\Controllers\V1\Web\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\V1\Web\Auth\VerifyEmailController;
-use App\Http\Controllers\V1\Web\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\V1\Web\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\V1\Web\Auth\PasswordController;
-use App\Http\Controllers\V1\Web\Auth\Google\AuthController;
-use App\Http\Controllers\V1\Web\Auth\Google\CallbackController;
-
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
@@ -25,47 +13,47 @@ Route::middleware('guest')
     ->group(function () {
 
         Route::get('register', [
-                RegisteredUserController::class,
+                \App\Http\Controllers\V1\Web\Auth\RegisteredUserController::class,
                 'create',
             ])
             ->name('register');
 
         Route::post('register', [
-                RegisteredUserController::class,
+                \App\Http\Controllers\V1\Web\Auth\RegisteredUserController::class,
                 'store',
             ]);
 
         Route::get('login', [
-                AuthenticatedSessionController::class,
+                \App\Http\Controllers\V1\Web\Auth\AuthenticatedSessionController::class,
                 'create',
             ])
             ->name('login');
 
         Route::post('login', [
-                AuthenticatedSessionController::class,
+                \App\Http\Controllers\V1\Web\Auth\AuthenticatedSessionController::class,
                 'store',
             ]);
 
         Route::get('forgot-password', [
-                PasswordResetLinkController::class,
+                \App\Http\Controllers\V1\Web\Auth\PasswordResetLinkController::class,
                 'create',
             ])
             ->name('password.request');
 
         Route::post('forgot-password', [
-                PasswordResetLinkController::class,
+                \App\Http\Controllers\V1\Web\Auth\PasswordResetLinkController::class,
                 'store',
             ])
             ->name('password.email');
 
         Route::get('reset-password/{token}', [
-                NewPasswordController::class,
+                \App\Http\Controllers\V1\Web\Auth\NewPasswordController::class,
                 'create',
             ])
             ->name('password.reset');
 
         Route::post('reset-password', [
-                NewPasswordController::class,
+                \App\Http\Controllers\V1\Web\Auth\NewPasswordController::class,
                 'store',
             ])
             ->name('password.store');
@@ -73,9 +61,9 @@ Route::middleware('guest')
         Route::prefix('auth')
             ->group(function() {
 
-                Route::get('google', AuthController::class)
+                Route::get('google', \App\Http\Controllers\V1\Web\Auth\Google\AuthController::class)
                     ->name('auth.google');
-                Route::get('google-callback', CallbackController::class)
+                Route::get('google-callback', \App\Http\Controllers\V1\Web\Auth\Google\CallbackController::class)
                     ->name('auth.google.callback');
 
             });
@@ -85,10 +73,10 @@ Route::middleware('auth')
     ->prefix('/')
     ->group(function () {
 
-        Route::get('verify-email', EmailVerificationPromptController::class)
+        Route::get('verify-email', \App\Http\Controllers\V1\Web\Auth\EmailVerificationPromptController::class)
             ->name('verification.notice');
 
-        Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        Route::get('verify-email/{id}/{hash}', \App\Http\Controllers\V1\Web\Auth\VerifyEmailController::class)
             ->middleware([
                 'signed',
                 'throttle:6,1',
@@ -96,31 +84,31 @@ Route::middleware('auth')
             ->name('verification.verify');
 
         Route::post('email/verification-notification', [
-                EmailVerificationNotificationController::class,
+                \App\Http\Controllers\V1\Web\Auth\EmailVerificationNotificationController::class,
                 'store',
             ])
             ->middleware('throttle:6,1')
             ->name('verification.send');
 
         Route::get('confirm-password', [
-                ConfirmablePasswordController::class,
+                \App\Http\Controllers\V1\Web\Auth\ConfirmablePasswordController::class,
                 'show',
             ])
             ->name('password.confirm');
 
         Route::post('confirm-password', [
-                ConfirmablePasswordController::class,
+                \App\Http\Controllers\V1\Web\Auth\ConfirmablePasswordController::class,
                 'store',
             ]);
 
         Route::put('password', [
-                PasswordController::class,
+                \App\Http\Controllers\V1\Web\Auth\PasswordController::class,
                 'update',
             ])
             ->name('password.update');
 
         Route::post('logout', [
-                AuthenticatedSessionController::class,
+                \App\Http\Controllers\V1\Web\Auth\AuthenticatedSessionController::class,
                 'destroy',
             ])
             ->name('logout');

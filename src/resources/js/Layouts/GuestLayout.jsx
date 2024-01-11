@@ -1,5 +1,5 @@
-import Navbar from '@/Components/Guest/Navbar';
-import Sidebar from '@/Components/Guest/Sidebar';
+import Navbar from '@/Layouts/Guest/Navbar';
+import Sidebar from '@/Layouts/Guest/Sidebar';
 
 export default function Guest({
     user,

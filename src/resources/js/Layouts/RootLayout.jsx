@@ -1,5 +1,5 @@
-import Navbar from '@/Components/Root/Navbar';
-import Sidebar from '@/Components/Root/Sidebar';
+import Navbar from '@/Layouts/Root/Navbar';
+import Sidebar from '@/Layouts/Root/Sidebar';
 
 export default function User({
     user,
@@ -16,6 +16,8 @@ export default function User({
 
             <main className="drawer-content absolute w-full max-w-full mt-24 transition-transform">
                 <div className="w-auto">
+                    {header}
+
                     <div className="mx-auto sm:px-6 lg:px-8 space-y-6 mb-6">
                         {children}
                     </div>

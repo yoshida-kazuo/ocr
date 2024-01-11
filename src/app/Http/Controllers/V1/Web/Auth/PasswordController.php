@@ -11,12 +11,17 @@ class PasswordController extends Controller
 {
     /**
      * Update the user's password.
+     *
+     * @param UpadatePasswordRequest $request
+     *
+     * @return RedirectResponse
      */
     public function update(UpadatePasswordRequest $request): RedirectResponse
     {
-        $request->user()->update([
-            'password'  => Hash::make($request->password),
-        ]);
+        $request->user()
+            ->update([
+                'password' => Hash::make($request->password),
+            ]);
 
         return back();
     }

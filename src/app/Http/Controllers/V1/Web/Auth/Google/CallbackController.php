@@ -43,13 +43,13 @@ class CallbackController extends Controller
                 $user->refresh();
 
                 activity()
-                    ->info(__(':id : :email : There was a new login with Google authentication.', $activityData));
+                    ->info(__(':id : :email : :name : There was a new login with Google authentication.', $activityData));
             }
         } catch(\Illuminate\Database\UniqueConstraintViolationException $e) {
             activity()
                 ->info(__(':id : :email : Google authentication failed. The email is already registered.', $activityData));
 
-            return to_route('login')
+            return to_route(route: 'login')
                 ->withErrors([
                     'google_auth'   => __('auth.failed'),
                 ]);
@@ -65,9 +65,7 @@ class CallbackController extends Controller
             ->info(__(':id : :email : :name : has logged in with Google authentication.', $activityData));
 
         return redirect()
-            ->intended(
-                route(user()->dashboardRoute())
-            );
+            ->intended(route(user()->dashboardRoute()));
     }
 
 }

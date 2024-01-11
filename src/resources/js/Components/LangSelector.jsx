@@ -9,7 +9,7 @@ export default function LangSelector({
     className = '',
     defaultLang = ''
 }) {
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation();
     const [langs, setLangs] = useState([]);
     const [selectedLang, setSelectedLang] = useState(defaultLang);
 
@@ -24,7 +24,7 @@ export default function LangSelector({
 
                 setLangs(lang);
             })
-            .catch(() => console.error('言語取得に失敗'));
+            .catch(() => console.error(t('Failed to retrieve language.')));
     }, []);
 
     const handleLangChange = event => {
@@ -37,7 +37,7 @@ export default function LangSelector({
                 i18n.changeLanguage(newLang);
             })
             .catch(() => {
-                console.error('言語設定に失敗');
+                console.error(t('Failed to configure language settings.'));
 
                 setSelectedLang(oldLang);
             });

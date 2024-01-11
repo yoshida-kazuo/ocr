@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import Pagination from '@/Components/Pagination';
-import { Head, usePage, Link } from '@inertiajs/react';
+import Sortable from '@/Components/Sortable';
+import { Head, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -32,10 +33,30 @@ export default function Index({
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>{t('Registration datetime')}</th>
-                                <th>{t('Type')}</th>
-                                <th>{t('User')}</th>
-                                <th>{t('Message')}</th>
+                                <th>
+                                    <Sortable
+                                        title={t('Registration datetime')}
+                                        column="created_at"
+                                    />
+                                </th>
+                                <th>
+                                    <Sortable
+                                        title={t('Type')}
+                                        column="type"
+                                    />
+                                </th>
+                                <th>
+                                    <Sortable
+                                        title={t('User')}
+                                        column="user_id"
+                                    />
+                                </th>
+                                <th>
+                                    <Sortable
+                                        title={t('Message')}
+                                        column="message"
+                                    />
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

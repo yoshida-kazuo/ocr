@@ -54,6 +54,7 @@ class ProcessAcitivity implements ShouldQueue
      *
      * @param string $message
      * @param string $type
+     *
      * @return void
      */
     public function __construct(

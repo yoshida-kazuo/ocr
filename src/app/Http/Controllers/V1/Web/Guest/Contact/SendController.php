@@ -32,6 +32,6 @@ class SendController extends Controller
                 'message'   => $request->post('message'),
             ]));
 
-        return to_route('contact');
+        return to_route(route: 'contact');
     }
 }

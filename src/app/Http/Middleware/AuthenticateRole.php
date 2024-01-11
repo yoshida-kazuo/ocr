@@ -10,10 +10,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateRole
 {
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param Request $request
+     * @param Closure $next
+     * @param string $role
+     *
+     * @return Response
      */
     public function handle(
         Request $request,
@@ -22,7 +27,7 @@ class AuthenticateRole
     ): Response {
         if (! auth()
             ->user()
-            ?->authorizeUser($role)
+            ?->isAuthorizeUser($role)
         ) {
             if (! Auth::check()) {
                 return redirect()
@@ -36,4 +41,5 @@ class AuthenticateRole
 
         return $next($request);
     }
+
 }

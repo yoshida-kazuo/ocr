@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import { UserIcon, DesktopComputerIcon, UsersIcon } from "@heroicons/react/solid";
+import { UserIcon, DesktopComputerIcon, EyeIcon, UsersIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -20,6 +20,11 @@ export default function Sidebar({
             "route": "root.user.manager",
             "label": t('User management'),
             "icon": <UsersIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
+        },
+        {
+            "route": "root.activity",
+            "label": t('Activity'),
+            "icon": <EyeIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
         },
         {
             "route": 'root.profile.edit',

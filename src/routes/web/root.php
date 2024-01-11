@@ -30,6 +30,9 @@ Route::middleware([
             ])
             ->name('root.profile.destroy');
 
+        Route::get('activity', \App\Http\Controllers\V1\Web\Root\Activity\IndexController::class)
+            ->name('root.activity');
+
         Route::prefix('user')
             ->group(function() {
                 Route::get('manager', \App\Http\Controllers\V1\Web\Root\User\Manager\IndexController::class)

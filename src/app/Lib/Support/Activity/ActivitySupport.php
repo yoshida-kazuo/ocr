@@ -4,6 +4,7 @@ namespace App\Lib\Support\Activity;
 
 use App\Jobs\ProcessAcitivity;
 use App\Models\Activity as ActivityModel;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class ActivitySupport
 {
@@ -131,6 +132,15 @@ class ActivitySupport
     ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
         $conditions = collect($conditions);
         $activities = ActivityModel::with('user');
+
+        $activities->where(function (Builder $query) {
+            $users = \App\Models\User::select('id')
+                ->whereColumn('users.id', 'activities.user_id')
+                ->where('role_id', '>=', user('role_id'));
+
+            $query->whereNull('user_id')
+                ->orWhereExists($users);
+        });
 
         if ($conditions->get('type')) {
             $activities->where('type', $conditions->get('type'));

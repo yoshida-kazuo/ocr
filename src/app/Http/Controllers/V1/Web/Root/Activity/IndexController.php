@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Web\Admin\Activity;
+namespace App\Http\Controllers\V1\Web\Root\Activity;
 
 use App\Http\Controllers\Controller;
 use App\Lib\Support\Activity\ActivitySupport;
@@ -28,6 +28,7 @@ class IndexController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
+     * @param ActivitySupport $activitySupport
      *
      * @return \Inertia\Response
      */
@@ -41,7 +42,7 @@ class IndexController extends Controller
         );
 
         return Inertia::render(
-            'Admin/Activity/Index', compact(
+            'Root/Activity/Index', compact(
                 'activities'
             )
         );

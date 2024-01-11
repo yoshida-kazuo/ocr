@@ -1,4 +1,4 @@
-import RootLayout from '@/Layouts/RootLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import InputLabel from '@/Components/InputLabel';
@@ -38,25 +38,25 @@ export default function Edit({
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('root.user.manager.update', { id: user.id }));
+        patch(route('admin.user.manager.update', { id: user.id }));
     };
 
     const restoreHandle = (e) => {
         e.preventDefault();
         setData('is_deleted', false);
 
-        patch(route('root.user.manager.update', { id: user.id }));
+        patch(route('admin.user.manager.update', { id: user.id }));
     };
 
     const deleteHandle = (e) => {
         e.preventDefault();
         setData('is_deleted', true);
 
-        destroy(route('root.user.manager.delete', { id: user.id }));
+        destroy(route('admin.user.manager.delete', { id: user.id }));
     };
 
     return (
-        <RootLayout
+        <AdminLayout
             user={auth.user}
             header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('User information')}</h2>}
             timezone={timezone}
@@ -171,6 +171,7 @@ export default function Edit({
                     </Transition>
                 </div>
             </form>
-        </RootLayout>
+        </AdminLayout>
     )
 }
+

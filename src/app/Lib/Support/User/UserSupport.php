@@ -138,6 +138,7 @@ class UserSupport
      * @param integer $perPage
      * @param string $catalogName
      * @param integer $onEachSide
+     * @param array $excludeRoleId
      * @param boolean $withTrashed
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -147,10 +148,20 @@ class UserSupport
         int $perPage = 15,
         string $catalogName = 'user-catalog',
         int $onEachSide = 1,
+        array|bool $excludeRoleId = true,
         bool $withTrashed = false
     ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
         $conditions = collect($conditions);
         $users = UserModel::with('role');
+
+        if (is_bool($excludeRoleId)
+            && $excludeRoleId === true
+        ) {
+            $users->where('role_id', '>=', user('role_id'));
+        } else
+        if (is_array($excludeRoleId)) {
+            $users->whereIn('role_id', $excludeRoleId);
+        }
 
         if ($withTrashed) {
             $users->withTrashed();

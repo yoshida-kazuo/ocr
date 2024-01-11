@@ -19,13 +19,11 @@ Route::middleware([
                 'edit',
             ])
             ->name('admin.profile.edit');
-
         Route::patch('profile', [
                 \App\Http\Controllers\V1\Web\Admin\ProfileController::class,
                 'update',
             ])
             ->name('admin.profile.update');
-
         Route::delete('profile', [
                 \App\Http\Controllers\V1\Web\Admin\ProfileController::class,
                 'destroy',
@@ -34,5 +32,20 @@ Route::middleware([
 
         Route::get('activity', \App\Http\Controllers\V1\Web\Admin\Activity\IndexController::class)
             ->name('admin.activity');
+
+        Route::prefix('user')
+            ->group(function() {
+                Route::get('manager', \App\Http\Controllers\V1\Web\Admin\User\Manager\IndexController::class)
+                    ->name('admin.user.manager');
+                Route::get('manager/{id}', \App\Http\Controllers\V1\Web\Admin\User\Manager\EditController::class)
+                    ->where('id', '[0-9]+')
+                    ->name('admin.user.manager.edit');
+                Route::patch('manager/{id}', \App\Http\Controllers\V1\Web\Admin\User\Manager\UpdateController::class)
+                    ->where('id', '[0-9]+')
+                    ->name('admin.user.manager.update');
+                Route::delete('manager/{id}', \App\Http\Controllers\V1\Web\Admin\User\Manager\DeleteController::class)
+                    ->where('id', '[0-9]+')
+                    ->name('admin.user.manager.delete');
+            });
 
     });

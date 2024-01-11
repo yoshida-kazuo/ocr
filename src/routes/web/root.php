@@ -6,6 +6,7 @@ Route::middleware([
         'auth',
         'auth.role:root',
         'verified',
+        'account.ban',
     ])
     ->prefix('root/')
     ->group(function() {
@@ -36,5 +37,11 @@ Route::middleware([
                 Route::get('manager/{id}', \App\Http\Controllers\V1\Web\Root\User\Manager\EditController::class)
                     ->where('id', '[0-9]+')
                     ->name('root.user.manager.edit');
+                Route::patch('manager/{id}', \App\Http\Controllers\V1\Web\Root\User\Manager\UpdateController::class)
+                    ->where('id', '[0-9]+')
+                    ->name('root.user.manager.update');
+                Route::delete('manager/{id}', \App\Http\Controllers\V1\Web\Root\User\Manager\DeleteController::class)
+                    ->where('id', '[0-9]+')
+                    ->name('root.user.manager.delete');
             });
     });

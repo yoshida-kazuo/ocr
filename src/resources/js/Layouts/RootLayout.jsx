@@ -1,5 +1,5 @@
-import Navbar from '@/Components/Root/Navbar';
-import Sidebar from '@/Components/Root/Sidebar';
+import Navbar from '@/Layouts/Root/Navbar';
+import Sidebar from '@/Layouts/Root/Sidebar';
 
 export default function User({
     user,

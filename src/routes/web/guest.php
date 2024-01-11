@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', \App\Http\Controllers\V1\Web\Guest\TopController::class)
-    ->name('top');
+Route::get('/', \App\Http\Controllers\V1\Web\Guest\HomeController::class)
+    ->name('home');
 
 Route::prefix('/')
     ->group(function () {

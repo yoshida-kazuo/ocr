@@ -99,4 +99,17 @@ trait Timezone
         );
     }
 
+    /**
+     * loginBanAt function
+     *
+     * @return Attribute
+     */
+    protected function loginBanAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => app(LibTimezone::class)
+                ->app($value)
+        );
+    }
+
 }

@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
-export default function Top({
+export default function Home({
     auth,
     lang
 }) {
@@ -12,10 +11,10 @@ export default function Top({
     return (
         <GuestLayout
             user={auth.user}
-            header={t('Top page')}
+            header={t('Home Page')}
             lang={lang}
         >
-            <Head title={t('Top page')} />
+            <Head title={t('Home Page')} />
 
             <div className="">
                 <div className="p-6 text-gray-900">{t('とっぷぺーじ')}</div>

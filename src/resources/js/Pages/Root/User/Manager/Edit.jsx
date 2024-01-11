@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import RootLayout from '@/Layouts/RootLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +7,9 @@ import Select from '@/Components/Select';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Transition } from '@headlessui/react';
+import DangerButton from '@/Components/DangerButton';
+import SecondaryButton from '@/Components/SecondaryButton';
+import Toggle from '@/Components/Toggle';
 
 export default function Edit({
     auth,
@@ -18,16 +20,39 @@ export default function Edit({
     errors
 }) {
     const { t } = useTranslation();
-    const { data, setData, patch, processing, recentlySuccessful } = useForm({
+    const {
+        data,
+        setData,
+        patch,
+        delete: destroy,
+        processing,
+        recentlySuccessful
+    } = useForm({
         name: user.name,
         email: user.email,
-        role_id: user.role_id
+        role_id: user.role_id,
+        is_deleted: user.deleted_at ? true : false,
+        is_login_prohibited: user.login_ban_at ? true : false,
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('root.user.manager.edit', { id: user.id }));
+        patch(route('root.user.manager.update', { id: user.id }));
+    };
+
+    const restoreHandle = (e) => {
+        e.preventDefault();
+        setData('is_deleted', false);
+
+        patch(route('root.user.manager.update', { id: user.id }));
+    };
+
+    const deleteHandle = (e) => {
+        e.preventDefault();
+        setData('is_deleted', true);
+
+        destroy(route('root.user.manager.delete', { id: user.id }));
     };
 
     return (
@@ -40,7 +65,9 @@ export default function Edit({
             <Head title={t('User information')} />
 
             <form onSubmit={submit} className="mt-6 space-y-6">
-                <h3 className="text-lg">{t('ID')} {user.id}</h3>
+                <h3 className="flex items-center text-lg"><span className="flex-shrink-0">{t('ID')} {user.id}</span>{user.deleted_at && (
+                    <span className="flex-shrink-0 ml-2 text-red-800">{t('Removed')}</span>
+                )}</h3>
                 <div>
                     <InputLabel htmlFor="name" value={t('Name')} />
 
@@ -80,10 +107,23 @@ export default function Edit({
                         id="role_id"
                         options={roles}
                         value={data.role_id}
-                        onChange={(e) => setData('role_id', e.target.value)}
+                        onChange={(e) => setData('role_id', e)}
+                        className="select select-bordered w-full max-w-xs"
                     />
 
                     <InputError className="mt-2" message={errors.role_id} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="is_login_prohibited" value={t('Login prohibition status')} />
+
+                    <Toggle
+                        id="is_login_prohibited"
+                        onChange={(e) => setData('is_login_prohibited', e.target.checked)}
+                        defaultChecked={data.is_login_prohibited}
+                    />
+
+                    <InputError className="mt-2" message={errors.is_login_prohibited} />
                 </div>
 
                 <div>
@@ -97,8 +137,28 @@ export default function Edit({
                     <p className="mt-2 text-sm text-gray-600">{user.created_at}</p>
                 </div>
 
+                <div>
+                    <InputLabel value={t('Login prohibition time/date')} />
+                    <p className="mt-2 text-sm text-gray-600">{user.login_ban_at || '-'}</p>
+                </div>
+
+                <div>
+                    <InputLabel value={t('Deleted At')} />
+                    <p className="mt-2 text-sm text-gray-600">{user.deleted_at || '-'}</p>
+                </div>
+
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>{t('Register')}</PrimaryButton>
+
+                    {user.deleted_at ? (
+                        <SecondaryButton className="ml-3" disabled={processing} onClick={restoreHandle}>
+                            {t('Restore Account')}
+                        </SecondaryButton>
+                    ) : (
+                        <DangerButton className="ml-3" disabled={processing} onClick={deleteHandle}>
+                            {t('Delete Account')}
+                        </DangerButton>
+                    )}
 
                     <Transition
                         show={recentlySuccessful}

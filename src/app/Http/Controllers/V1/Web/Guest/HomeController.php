@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class TopController extends Controller
+class HomeController extends Controller
 {
 
     /**
@@ -16,7 +16,7 @@ class TopController extends Controller
     {
         //
 
-        return Inertia::render('Guest/Top');
+        return Inertia::render('Guest/Home');
     }
 
 }

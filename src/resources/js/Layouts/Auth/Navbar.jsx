@@ -21,7 +21,7 @@ export default function Navbar({
             <nav className="mt-0 mb-0 mx-auto w-full sm:w-9/12 bg-white relative">
                 <div className="navbar text-gray-500">
                     <div className="flex">
-                        <Link href={route('top')} className="mx-6 hidden sm:block">
+                        <Link href={route('home')} className="mx-6 hidden sm:block">
                             <ApplicationLogo className="block h-9 w-auto fill-current text-gray-500" />
                         </Link>
                         <label htmlFor="auth-drawer" aria-label="open sidebar" className="btn btn-square btn-ghost sm:hidden">
@@ -29,8 +29,8 @@ export default function Navbar({
                         </label>
 
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <NavLink href={route('top')} active={route().current('top')}>
-                                {t('Top page')}
+                            <NavLink href={route('home')} active={route().current('home')}>
+                                {t('Home Page')}
                             </NavLink>
                         </div>
                     </div>

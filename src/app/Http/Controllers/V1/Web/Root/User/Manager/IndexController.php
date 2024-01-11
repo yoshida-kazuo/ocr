@@ -38,7 +38,8 @@ class IndexController extends Controller
     ): \Inertia\Response {
         $users = $userSupport->catalog(
             conditions: $request->all(),
-            perPage: $this->perPage
+            perPage: $this->perPage,
+            withTrashed: true
         );
 
         return Inertia::render('Root/User/Manager/Index', compact(

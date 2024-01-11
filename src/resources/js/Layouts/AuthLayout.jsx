@@ -1,5 +1,5 @@
-import Navbar from '@/Components/Auth/Navbar';
-import Sidebar from '@/Components/Auth/Sidebar';
+import Navbar from '@/Layouts/Auth/Navbar';
+import Sidebar from '@/Layouts/Auth/Sidebar';
 
 export default function Auth({
     user,

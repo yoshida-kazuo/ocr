@@ -10,8 +10,8 @@ export default function Sidebar({
     const { t } = useTranslation();
     const sideMenus = [
         {
-            "route": "top",
-            "label": t('Top page'),
+            "route": "home",
+            "label": t('Home Page'),
         }
     ];
 
@@ -20,10 +20,10 @@ export default function Sidebar({
     }, [lang]);
 
     return (
-        <aside id="default-sidebar" className="drawer-side z-20 sm:z-0 sm:hidden">
+        <aside id="default-sidebar" className="drawer-side z-20 text-gray-800 sm:z-0 sm:hidden">
             <label htmlFor="auth-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
             <div className="absolute top-0 h-28 w-64 bg-white">
-                <Link href={route('top')} className="sm:hidden justify-center flex flex-col h-28">
+                <Link href={route('home')} className="sm:hidden justify-center flex flex-col h-28">
                     <ApplicationLogo className="block h-16 w-auto fill-current text-gray-500" />
                 </Link>
             </div>

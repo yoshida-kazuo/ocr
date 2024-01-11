@@ -49,7 +49,7 @@ class CallbackController extends Controller
             activity()
                 ->info(__(':id : :email : Google authentication failed. The email is already registered.', $activityData));
 
-            return to_route('login')
+            return to_route(route: 'login')
                 ->withErrors([
                     'google_auth'   => __('auth.failed'),
                 ]);

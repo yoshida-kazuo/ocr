@@ -23,7 +23,10 @@ class EditController extends Controller
         UserSupport $userSupport,
         int $id
     ): \Inertia\Response {
-        $user = $userSupport->find($id);
+        $user = $userSupport->find(
+            id: $id,
+            withTrashed: true
+        );
         $roles = collect($user->roles())
             ->map(fn($key, $value) => ['value' => $value, 'label' => $key])
             ->values()

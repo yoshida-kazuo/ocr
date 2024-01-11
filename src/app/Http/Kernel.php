@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
         'throttle'          => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         // 'verified'          => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'verified'          => \App\Http\Middleware\EnsureEmailIsVerified::class,
+        'account.ban'       => \App\Http\Middleware\AccountBan::class,
     ];
 
     /**
@@ -95,5 +96,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\InteriaRole::class,
         \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         \App\Http\Middleware\HandleInertiaRequests::class,
+        \App\Http\Middleware\AccountBan::class,
     ];
 }

@@ -57,6 +57,12 @@ export default function Index({
                                         column="updated_at"
                                     />
                                 </th>
+                                <th>
+                                    <Sortable
+                                        title={t('Deleted At')}
+                                        column="deleted_at"
+                                    />
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,6 +77,7 @@ export default function Index({
                                 </td>
                                 <td>{user.email}</td>
                                 <td>{user.updated_at}</td>
+                                <td>{user.deleted_at}</td>
                             </tr>
                         ))}
                         </tbody>

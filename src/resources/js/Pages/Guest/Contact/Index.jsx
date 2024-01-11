@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Link, useForm,usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { Head } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';

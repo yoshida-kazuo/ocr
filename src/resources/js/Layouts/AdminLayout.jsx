@@ -1,5 +1,5 @@
-import Navbar from '@/Components/Admin/Navbar';
-import Sidebar from '@/Components/Admin/Sidebar';
+import Navbar from '@/Layouts/Admin/Navbar';
+import Sidebar from '@/Layouts/Admin/Sidebar';
 
 export default function User({
     user,

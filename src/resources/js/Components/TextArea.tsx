@@ -1,8 +1,7 @@
 import React, {
     forwardRef,
     useEffect,
-    useRef,
-    TextareaHTMLAttributes
+    useRef
 } from 'react';
 import { TextAreaProps } from '@/Interfaces/Components';
 

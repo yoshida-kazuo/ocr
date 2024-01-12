@@ -13,8 +13,8 @@ const GuestLayout: React.FC<UserProps> = ({
     return (
         <div className="drawer">
             <input id="guest-drawer" type="checkbox" className="drawer-toggle" />
-            <Navbar lang={lang} timezone={timezone} user={user} header={header} />
-            <Sidebar lang={lang} timezone={timezone} user={user} header={header} />
+            <Navbar lang={lang} timezone={timezone} user={user} />
+            <Sidebar />
 
             <main className="drawer-content absolute w-full max-w-full mt-24 transition-transform">
                 <div className="w-auto">

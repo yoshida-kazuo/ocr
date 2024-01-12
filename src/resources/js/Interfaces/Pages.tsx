@@ -125,6 +125,7 @@ export interface HomeProps {
 export interface ContactIndexProps {
     auth: Auth;
     lang: string;
+    timezone: string;
     errors: {
         name?: string;
         email?: string;

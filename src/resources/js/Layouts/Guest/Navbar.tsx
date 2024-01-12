@@ -6,7 +6,10 @@ import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { NavbarProps } from '@/Interfaces/Layouts';
 
-const Navbar: React.FC<NavbarProps> = ({ user, lang }) => {
+const Navbar: React.FC<NavbarProps> = ({
+    user,
+    lang
+}) => {
     const { t } = useTranslation();
 
     return (

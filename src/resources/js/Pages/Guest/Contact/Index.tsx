@@ -14,6 +14,7 @@ import { ContactIndexProps } from '@/Interfaces/Pages';
 const Index: React.FC<ContactIndexProps> = ({
     auth,
     lang,
+    timezone,
     errors
 }) => {
     const { t } = useTranslation();
@@ -39,6 +40,7 @@ const Index: React.FC<ContactIndexProps> = ({
             user={auth.user}
             header={t('Contact')}
             lang={lang}
+            timezone={timezone}
         >
             <Head title={t('Contact')} />
 

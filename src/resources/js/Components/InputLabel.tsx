@@ -5,7 +5,6 @@ const InputLabel: React.FC<InputLabelProps> = ({
     value,
     className = '',
     children,
-    htmlFor,
     ...props
 }) => {
     return (

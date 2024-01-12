@@ -1,5 +1,6 @@
+import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createInertiaApp, InertiaAppProps } from '@inertiajs/react';
+import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import './bootstrap';
 import '../css/app.scss';
@@ -12,11 +13,19 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
     title: (title: string) => `${title} - ${appName}`,
-    resolve: (name: string) => resolvePageComponent(`./Pages/${name}.tsx`, import.meta.glob('./Pages/**/*.tsx')),
-    setup({ el, App, props }: InertiaAppProps) {
+    resolve: (name: string) => resolvePageComponent(
+        `./Pages/${name}.tsx`,
+        import.meta.glob('./Pages/**/*.tsx')
+    ),
+    setup({ el, App, props }) {
         const root = createRoot(el);
 
         root.render(<App {...props} />);
     },
-    progress: false,
+    progress: {
+        delay: 250,
+        color: '#29d',
+        includeCSS: true,
+        showSpinner: false,
+    },
 });

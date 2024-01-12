@@ -10,7 +10,7 @@ const Pagination: React.FC<PaginationProps> = ({
             {items.links.map((link, index) => (
                 <Link
                     key={index}
-                    href={link.url || undefined}
+                    href={link.url || ''}
                     className={
                         `join-item btn btn-sm${! link.url ? ' btn-disabled' : ''}${link.active ? ' btn-active' : ''}`
                     }

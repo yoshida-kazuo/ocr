@@ -1,5 +1,5 @@
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, usePage, Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
 export default function Dashboard({

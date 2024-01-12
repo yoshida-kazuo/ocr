@@ -36,7 +36,7 @@ export default function Sidebar() {
                                 className={'py-3 ' + (route().current(menu.route) && 'active text-white' || '')}
                             >
                                 {menu.icon}
-                                <span className="">{menu.label}</span>
+                                <span>{menu.label}</span>
                             </Link>
                         </li>
                     ))}

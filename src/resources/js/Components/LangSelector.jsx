@@ -15,8 +15,6 @@ export default function LangSelector({
     const [selectedLang, setSelectedLang] = useState(defaultLang);
 
     useEffect(() => {
-        i18n.changeLanguage(selectedLang);
-
         axios.get(route('lang'))
             .then(response => {
                 const lang = Object.entries(response.data.data)
@@ -28,16 +26,18 @@ export default function LangSelector({
                 setLangs(lang);
             })
             .catch((e) => console.error(t('Failed to retrieve language.')));
-    }, [selectedLang]);
+    }, []);
+
+    useEffect(() => {
+        i18n.changeLanguage(selectedLang);
+    }, [selectedLang, i18n]);
 
     const handleLangChange = event => {
         const oldLang = selectedLang,
             newLang = event.target.value;
 
         axios.put(route('lang-put'), {lang: newLang})
-            .then(() => {
-                setSelectedLang(newLang);
-            })
+            .then(() => setSelectedLang(newLang))
             .catch(() => {
                 console.error(t('Failed to configure language settings.'));
 

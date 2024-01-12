@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
 import AuthLayout from '@/Layouts/AuthLayout';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function ForgotPassword({
     status,
@@ -16,10 +14,6 @@ export default function ForgotPassword({
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     const submit = (e) => {
         e.preventDefault();

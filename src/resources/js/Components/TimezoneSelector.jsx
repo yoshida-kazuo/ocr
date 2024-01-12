@@ -34,7 +34,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
                 window.location.reload();
             })
             .catch(error => {
-                console.error('Failed to set the time zone');
+                console.error(t('Failed to set the time zone'));
 
                 setSelectedTimezone(oldTimezone);
             })

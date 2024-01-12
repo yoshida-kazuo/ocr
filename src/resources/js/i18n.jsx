@@ -70,6 +70,9 @@ i18n.use(initReactI18next)
                     "The deletion flag has been removed.": "削除フラグを解除しました。",
                     "The account has been deleted.": "アカウントが削除されました。",
                     "This account has been banned from logging in.": "このアカウントはログインを禁止されています。",
+                    "Resend Verification Email": "確認メールを再送信",
+                    "A new verification link has been sent to the email address you provided during registration.": "登録時に提供されたメールアドレスに新しい確認リンクが送信されました。",
+                    "Please complete email verification.": "メール認証を完了してください。",
                 }
             }
         },

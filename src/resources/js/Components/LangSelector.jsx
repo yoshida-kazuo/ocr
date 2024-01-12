@@ -2,18 +2,21 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
 import Select from '@/Components/Select';
 import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 export default function LangSelector({
     id = '',
     name = '',
     className = '',
-    defaultLang = ''
+    defaultLang = '',
 }) {
-    const { i18n, t } = useTranslation();
+    const { t } = useTranslation();
     const [langs, setLangs] = useState([]);
     const [selectedLang, setSelectedLang] = useState(defaultLang);
 
     useEffect(() => {
+        i18n.changeLanguage(selectedLang);
+
         axios.get(route('lang'))
             .then(response => {
                 const lang = Object.entries(response.data.data)
@@ -24,17 +27,16 @@ export default function LangSelector({
 
                 setLangs(lang);
             })
-            .catch(() => console.error(t('Failed to retrieve language.')));
-    }, []);
+            .catch((e) => console.error(t('Failed to retrieve language.')));
+    }, [selectedLang]);
 
     const handleLangChange = event => {
         const oldLang = selectedLang,
             newLang = event.target.value;
-        setSelectedLang(newLang);
 
         axios.put(route('lang-put'), {lang: newLang})
             .then(() => {
-                i18n.changeLanguage(newLang);
+                setSelectedLang(newLang);
             })
             .catch(() => {
                 console.error(t('Failed to configure language settings.'));

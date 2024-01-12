@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function Sidebar({
     lang
@@ -14,10 +13,6 @@ export default function Sidebar({
             "label": t('Home Page'),
         }
     ];
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     return (
         <aside id="default-sidebar" className="drawer-side z-20 text-gray-800 sm:z-0 sm:hidden">

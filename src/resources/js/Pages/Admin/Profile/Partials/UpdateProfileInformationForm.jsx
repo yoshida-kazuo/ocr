@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -6,14 +6,11 @@ import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
-    className = '',
-    lang,
-    timezone
+    className = ''
 }) {
     const { t } = useTranslation();
     const user = usePage().props.auth.user;
@@ -21,10 +18,6 @@ export default function UpdateProfileInformation({
         name: user.name,
         email: user.email,
     });
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     const submit = (e) => {
         e.preventDefault();

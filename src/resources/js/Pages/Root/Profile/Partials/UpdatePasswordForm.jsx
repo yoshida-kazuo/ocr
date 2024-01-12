@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -6,20 +6,13 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function UpdatePasswordForm({
-    className = '',
-    lang,
-    timezone
+    className = ''
 }) {
     const { t } = useTranslation();
     const passwordInput = useRef();
     const currentPasswordInput = useRef();
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
         current_password: '',

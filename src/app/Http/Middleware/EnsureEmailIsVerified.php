@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified as VendorEnsureEmailIsVerified;
+use Carbon\Carbon;
+use Inertia\Inertia;
 
 class EnsureEmailIsVerified extends VendorEnsureEmailIsVerified
 {
@@ -42,6 +44,23 @@ class EnsureEmailIsVerified extends VendorEnsureEmailIsVerified
             if ($request->expectsJson()) {
                 abort(403, 'Your email address is not verified.');
             }
+
+            $now = Carbon::now(config('app.timezone_view'));
+            $createdAt = Carbon::make(user('created_at'));
+
+            if ($now->diffInHours($createdAt) >= 24) {
+                return to_route('verification.notice', [
+                    'requests' => 'email-authentication-required'
+                ]);
+            } else {
+                Inertia::share(
+                    'requests',
+                    'complete-email-verification'
+                );
+            }
+
+            unset($now,
+                $createdAt);
         }
 
         return $next($request);

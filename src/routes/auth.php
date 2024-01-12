@@ -17,7 +17,6 @@ Route::middleware('guest')
                 'create',
             ])
             ->name('register');
-
         Route::post('register', [
                 \App\Http\Controllers\V1\Web\Auth\RegisteredUserController::class,
                 'store',
@@ -28,7 +27,6 @@ Route::middleware('guest')
                 'create',
             ])
             ->name('login');
-
         Route::post('login', [
                 \App\Http\Controllers\V1\Web\Auth\AuthenticatedSessionController::class,
                 'store',
@@ -39,7 +37,6 @@ Route::middleware('guest')
                 'create',
             ])
             ->name('password.request');
-
         Route::post('forgot-password', [
                 \App\Http\Controllers\V1\Web\Auth\PasswordResetLinkController::class,
                 'store',
@@ -51,7 +48,6 @@ Route::middleware('guest')
                 'create',
             ])
             ->name('password.reset');
-
         Route::post('reset-password', [
                 \App\Http\Controllers\V1\Web\Auth\NewPasswordController::class,
                 'store',

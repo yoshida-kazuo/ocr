@@ -21,12 +21,10 @@ export default function Register({
     });
 
     useEffect(() => {
-        i18n.changeLanguage(lang);
-
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, [lang]);
+    }, []);
 
     const submit = (e) => {
         e.preventDefault();

@@ -13,19 +13,16 @@ Route::middleware([
 
         Route::get('dashboard', \App\Http\Controllers\V1\Web\User\DashboardController::class)
             ->name('user.dashboard');
-
         Route::get('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'edit',
             ])
             ->name('profile.edit');
-
         Route::patch('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'update',
             ])
             ->name('profile.update');
-
         Route::delete('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'destroy',

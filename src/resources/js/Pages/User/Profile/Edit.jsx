@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
 import UserLayout from '@/Layouts/UserLayout';
 import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function Edit({
     auth,
@@ -15,10 +13,6 @@ export default function Edit({
     timezone
 }) {
     const { t } = useTranslation();
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     return (
         <UserLayout

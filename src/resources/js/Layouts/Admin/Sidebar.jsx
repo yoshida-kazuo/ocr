@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
 export default function Sidebar({
-    lang,
-    timezone
+    lang
 }) {
     const { t } = useTranslation();
     const sideMenus = [

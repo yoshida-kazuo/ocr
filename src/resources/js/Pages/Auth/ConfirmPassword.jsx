@@ -6,7 +6,6 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function ConfirmPassword({
     lang,
@@ -18,12 +17,10 @@ export default function ConfirmPassword({
     });
 
     useEffect(() => {
-        i18n.changeLanguage(lang);
-
         return () => {
             reset('password');
         };
-    }, [lang]);
+    }, []);
 
     const submit = (e) => {
         e.preventDefault();

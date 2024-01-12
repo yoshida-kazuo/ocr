@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -7,12 +7,9 @@ import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function DeleteUserForm({
-    className = '',
-    lang,
-    timezone
+    className = ''
 }) {
     const { t } = useTranslation();
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
@@ -28,10 +25,6 @@ export default function DeleteUserForm({
     } = useForm({
         password: '',
     });
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     const confirmUserDeletion = () => {
         setConfirmingUserDeletion(true);

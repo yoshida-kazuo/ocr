@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import LangSelector from '@/Components/LangSelector';
 import TimezoneSelector from '@/Components/TimezoneSelector';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function Navbar({
     user,
@@ -12,10 +11,6 @@ export default function Navbar({
     timezone
 }) {
     const { t } = useTranslation();
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     return (
         <header className="absolute w-full z-20">

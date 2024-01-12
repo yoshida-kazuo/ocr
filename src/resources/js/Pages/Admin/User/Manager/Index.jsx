@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import Pagination from '@/Components/Pagination';
 import Sortable from '@/Components/Sortable';
 import { Head, Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export default function Index({
     auth,
@@ -13,10 +11,6 @@ export default function Index({
     users
 }) {
     const { t } = useTranslation();
-
-    useEffect(() => {
-        i18n.changeLanguage(lang);
-    }, [lang]);
 
     return (
         <AdminLayout

@@ -1,7 +1,7 @@
 import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import { UserIcon, DesktopComputerIcon, EyeIcon, UsersIcon } from "@heroicons/react/solid";
+import { DesktopComputerIcon, EyeIcon, UsersIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
 
 export default function Sidebar() {
@@ -21,11 +21,6 @@ export default function Sidebar() {
             "route": "root.activity",
             "label": t('Activity'),
             "icon": <EyeIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
-        },
-        {
-            "route": 'root.profile.edit',
-            "label": t('Profile edit'),
-            "icon": <UserIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         },
     ];
 

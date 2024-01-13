@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Web\Root\User\Manager;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeleteRequest extends FormRequest
 {
@@ -27,6 +28,7 @@ class DeleteRequest extends FormRequest
         return [
             'id' => [
                 'required',
+                Rule::prohibitedIf((int) $this->id === user('id')),
                 'exists:App\Models\User',
             ],
             'is_deleted' => [
@@ -44,6 +46,18 @@ class DeleteRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $this->merge($this->route()->parameters);
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'id.prohibited' => __('You cannot choose yourself.'),
+        ];
     }
 
 }

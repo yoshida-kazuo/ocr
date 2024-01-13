@@ -39,6 +39,8 @@ class IndexController extends Controller
         $users = $userSupport->catalog(
             conditions: $request->all(),
             perPage: $this->perPage,
+            aboveCurrentAuth: true,
+            excludeUserIds: [user('id')],
             withTrashed: true
         );
 

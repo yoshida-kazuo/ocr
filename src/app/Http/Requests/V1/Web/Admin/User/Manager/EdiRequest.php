@@ -29,6 +29,7 @@ class EdiRequest extends FormRequest
         return [
             'id' => [
                 'required',
+                Rule::prohibitedIf((int) $this->id === user('id')),
                 Rule::exists(\App\Models\User::class)
                     ->where(function(Builder $query) {
                         return $query->where('role_id', '>=', user('role_id'));
@@ -45,6 +46,18 @@ class EdiRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $this->merge($this->route()->parameters);
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'id.prohibited' => __('You cannot choose yourself.'),
+        ];
     }
 
 }

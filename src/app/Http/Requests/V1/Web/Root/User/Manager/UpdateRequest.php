@@ -28,6 +28,7 @@ class UpdateRequest extends FormRequest
         return [
             'id' => [
                 'required',
+                Rule::prohibitedIf((int) $this->id === user('id')),
                 'exists:App\Models\User',
             ],
             'name' => [
@@ -63,6 +64,18 @@ class UpdateRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $this->merge($this->route()->parameters);
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'id.prohibited' => __('You cannot choose yourself.'),
+        ];
     }
 
 }

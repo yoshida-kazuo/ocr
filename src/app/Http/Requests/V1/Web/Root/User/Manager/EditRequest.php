@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Web\Root\User\Manager;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EditRequest extends FormRequest
 {
@@ -27,6 +28,7 @@ class EditRequest extends FormRequest
         return [
             'id' => [
                 'required',
+                Rule::prohibitedIf((int) $this->id === user('id')),
                 'exists:App\Models\User',
             ],
         ];
@@ -40,6 +42,18 @@ class EditRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $this->merge($this->route()->parameters);
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'id.prohibited' => __('You cannot choose yourself.'),
+        ];
     }
 
 }

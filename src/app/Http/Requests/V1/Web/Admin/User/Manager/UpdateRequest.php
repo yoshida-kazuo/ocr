@@ -28,6 +28,7 @@ class UpdateRequest extends FormRequest
         return [
             'id' => [
                 'required',
+                Rule::prohibitedIf((int) $this->id === user('id')),
                 Rule::exists(\App\Models\User::class)
                     ->where(function(Builder $query) {
                         return $query->where('role_id', '>=', user('role_id'));
@@ -67,4 +68,17 @@ class UpdateRequest extends FormRequest
     {
         $this->merge($this->route()->parameters);
     }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'id.prohibited' => __('You cannot choose yourself.'),
+        ];
+    }
+
 }

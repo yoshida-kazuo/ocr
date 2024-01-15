@@ -46,5 +46,9 @@ Route::middleware([
                 Route::delete('manager/{id}', \App\Http\Controllers\V1\Web\Root\User\Manager\DeleteController::class)
                     ->where('id', '[0-9]+')
                     ->name('root.user.manager.delete');
+                Route::get('manager/create', \App\Http\Controllers\V1\Web\Root\User\Manager\CreateController::class)
+                    ->name('root.user.manager.create');
+                Route::post('manager/store', \App\Http\Controllers\V1\Web\Root\User\Manager\StoreController::class)
+                    ->name('root.user.manager.store');
             });
     });

@@ -21,9 +21,9 @@ export default function Index({
         >
             <Head title={t('Activity')} />
 
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-md">
-                <div className="p-6 text-gray-900">
-                    <table className="mb-12 table table-zebra">
+            <div className="p-4 sm:p-8 bg-white shadow sm:rounded-md">
+                <div className="text-gray-900">
+                    <table className="mb-6 table table-zebra">
                         <thead>
                             <tr>
                                 <th></th>

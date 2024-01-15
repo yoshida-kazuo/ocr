@@ -31,7 +31,7 @@ class UpdateController extends Controller
                 'role_id'   => $request->post('role_id'),
             ],
             isLoginProhibited: (bool) $request->post('is_login_prohibited'),
-            isRestore: (bool) $request->post('is_deleted'),
+            isRestore: (bool) $request->post('is_restore'),
             withTrashed: true
         );
 

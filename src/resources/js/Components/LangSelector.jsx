@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from '@/Components/Select';
 import { useTranslation } from 'react-i18next';

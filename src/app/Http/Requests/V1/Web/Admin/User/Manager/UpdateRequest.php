@@ -48,11 +48,11 @@ class UpdateRequest extends FormRequest
                 'required',
                 'exists:App\Models\Role,id'
             ],
-            'is_deleted' => [
+            'is_login_prohibited' => [
                 'required',
                 'boolean',
             ],
-            'is_login_prohibited' => [
+            'is_restore' => [
                 'required',
                 'boolean',
             ],

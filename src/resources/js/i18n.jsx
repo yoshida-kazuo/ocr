@@ -73,6 +73,7 @@ i18n.use(initReactI18next)
                     "Resend Verification Email": "確認メールを再送信",
                     "A new verification link has been sent to the email address you provided during registration.": "登録時に提供されたメールアドレスに新しい確認リンクが送信されました。",
                     "Please complete email verification.": "メール認証を完了してください。",
+                    "Create User": "ユーザ作成",
                 }
             }
         },

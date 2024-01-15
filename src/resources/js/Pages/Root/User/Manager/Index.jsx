@@ -2,6 +2,7 @@ import RootLayout from '@/Layouts/RootLayout';
 import Pagination from '@/Components/Pagination';
 import Sortable from '@/Components/Sortable';
 import { Head, Link } from '@inertiajs/react';
+import { UserAddIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 
 export default function Index({
@@ -21,9 +22,16 @@ export default function Index({
         >
             <Head title={t('User management')} />
 
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-md">
-                <div className="p-6 text-gray-900">
-                    <table className="mb-12 table table-zebra">
+            <div className="p-4 sm:p-8 bg-white shadow sm:rounded-md">
+                <div className="text-gray-900">
+                    <Link
+                        href={route('root.user.manager.create')}
+                        className="inline-block"
+                    >
+                        <UserAddIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                    </Link>
+
+                    <table className="mb-6 table table-zebra">
                         <thead>
                             <tr>
                                 <th></th>

@@ -34,10 +34,6 @@ class DeleteRequest extends FormRequest
                         return $query->where('role_id', '>=', user('role_id'));
                     }),
             ],
-            'is_deleted' => [
-                'required',
-                'boolean',
-            ],
         ];
     }
 

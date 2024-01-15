@@ -12,6 +12,7 @@ export default function Login({
     status,
     canResetPassword,
     googleAuth,
+    xAuth,
     lang,
     timezone,
     errors
@@ -104,6 +105,19 @@ export default function Login({
                             {t('Log in')}
                         </PrimaryButton>
                     </div>
+
+                    {xAuth && (
+                        <div className="mt-4">
+                            <a
+                                href={route('auth.x')}
+                                className="btn w-full"
+                            >
+                                <img className="h-6 w-6" src="https://ton.twimg.com/app_icons/oauth_application.png" />
+                                {t('Sign in with X')}
+                            </a>
+                            <InputError message={errors.x_auth} className="mt-2" />
+                        </div>
+                    )}
 
                     {googleAuth && (
                         <div className="mt-4">

@@ -26,6 +26,8 @@ class AuthenticatedSessionController extends Controller
             'status'            => session('status'),
             'googleAuth'        => config('services.google.client_id')
                 && config('services.google.client_secret'),
+            'xAuth'             => config('services.x.client_id')
+                && config('services.x.client_secret'),
         ]);
     }
 

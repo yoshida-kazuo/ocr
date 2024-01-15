@@ -61,6 +61,10 @@ Route::middleware('guest')
                     ->name('auth.google');
                 Route::get('google-callback', \App\Http\Controllers\V1\Web\Auth\Google\CallbackController::class)
                     ->name('auth.google.callback');
+                Route::get('x', \App\Http\Controllers\V1\Web\Auth\X\AuthController::class)
+                    ->name('auth.x');
+                Route::get('x-callback', \App\Http\Controllers\V1\Web\Auth\X\CallbackController::class)
+                    ->name('auth.x.callback');
 
             });
     });
@@ -71,38 +75,32 @@ Route::middleware('auth')
 
         Route::get('verify-email', \App\Http\Controllers\V1\Web\Auth\EmailVerificationPromptController::class)
             ->name('verification.notice');
-
         Route::get('verify-email/{id}/{hash}', \App\Http\Controllers\V1\Web\Auth\VerifyEmailController::class)
             ->middleware([
                 'signed',
                 'throttle:6,1',
             ])
             ->name('verification.verify');
-
         Route::post('email/verification-notification', [
                 \App\Http\Controllers\V1\Web\Auth\EmailVerificationNotificationController::class,
                 'store',
             ])
             ->middleware('throttle:6,1')
             ->name('verification.send');
-
         Route::get('confirm-password', [
                 \App\Http\Controllers\V1\Web\Auth\ConfirmablePasswordController::class,
                 'show',
             ])
             ->name('password.confirm');
-
         Route::post('confirm-password', [
                 \App\Http\Controllers\V1\Web\Auth\ConfirmablePasswordController::class,
                 'store',
             ]);
-
         Route::put('password', [
                 \App\Http\Controllers\V1\Web\Auth\PasswordController::class,
                 'update',
             ])
             ->name('password.update');
-
         Route::post('logout', [
                 \App\Http\Controllers\V1\Web\Auth\AuthenticatedSessionController::class,
                 'destroy',

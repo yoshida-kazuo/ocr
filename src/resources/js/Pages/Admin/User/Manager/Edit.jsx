@@ -7,7 +7,7 @@ import TextInput from '@/Components/TextInput';
 import Select from '@/Components/Select';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { Transition } from '@headlessui/react';
+import Toast from '@/Components/Toast';
 import DangerButton from '@/Components/DangerButton';
 import Toggle from '@/Components/Toggle';
 
@@ -180,15 +180,10 @@ export default function Edit({
                                 </DangerButton>
                             )}
 
-                            <Transition
+                            <Toast
                                 show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-gray-600">{t('You have been registered.')}</p>
-                            </Transition>
+                                message={t('You have been registered.')}
+                            />
                         </div>
                     </section>
                 </form>

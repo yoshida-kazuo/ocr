@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { useForm } from '@inertiajs/react';
 import { Head } from '@inertiajs/react';
-import { Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import TextArea from '@/Components/TextArea';
 import PrimaryButton from '@/Components/PrimaryButton';
+import Toast from '@/Components/Toast';
 
 export default function Index({
     auth,
@@ -97,15 +97,10 @@ export default function Index({
                     <div className="flex items-center gap-4">
                         <PrimaryButton disabled={processing}>{t('Send')}</PrimaryButton>
 
-                        <Transition
+                        <Toast
                             show={recentlySuccessful}
-                            enter="transition ease-in-out"
-                            enterFrom="opacity-0"
-                            leave="transition ease-in-out"
-                            leaveTo="opacity-0"
-                        >
-                            <p className="text-sm text-gray-600">{t('I have sent it.')}</p>
-                        </Transition>
+                            message={t('You have been registered.')}
+                        />
                     </div>
                 </form>
             </section>

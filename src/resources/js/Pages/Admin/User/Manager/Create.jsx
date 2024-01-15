@@ -11,7 +11,6 @@ export default function Create({
     auth,
     timezone,
     lang,
-    roles,
     errors
 }) {
     const { t } = useTranslation();
@@ -76,7 +75,6 @@ export default function Create({
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
-                                isFocused
                                 autoComplete="email"
                             />
 

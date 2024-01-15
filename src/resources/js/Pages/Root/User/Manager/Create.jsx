@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import Select from '@/Components/Select';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { Transition } from '@headlessui/react';
+import Toast from '@/Components/Toast';
 
 export default function Create({
     auth,
@@ -135,15 +135,10 @@ export default function Create({
                         <div className="flex items-center gap-4 mt-4">
                             <PrimaryButton disabled={processing}>{t('Register')}</PrimaryButton>
 
-                            <Transition
+                            <Toast
                                 show={recentlySuccessful}
-                                enter="transition ease-in-out"
-                                enterFrom="opacity-0"
-                                leave="transition ease-in-out"
-                                leaveTo="opacity-0"
-                            >
-                                <p className="text-sm text-gray-600">{t('You have been registered.')}</p>
-                            </Transition>
+                                message={t('You have been registered.')}
+                            />
                         </div>
                     </section>
                 </form>

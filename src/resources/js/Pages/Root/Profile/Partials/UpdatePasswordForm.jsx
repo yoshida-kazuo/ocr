@@ -4,8 +4,8 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
-import { Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import Toast from '@/Components/Toast';
 
 export default function UpdatePasswordForm({
     className = ''
@@ -97,15 +97,10 @@ export default function UpdatePasswordForm({
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>{t('Register')}</PrimaryButton>
 
-                    <Transition
+                    <Toast
                         show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600">{t('You have been registered.')}</p>
-                    </Transition>
+                        message={t('You have been registered.')}
+                    />
                 </div>
             </form>
         </section>

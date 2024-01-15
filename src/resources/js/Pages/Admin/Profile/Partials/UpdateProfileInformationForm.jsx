@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { Transition } from '@headlessui/react';
+import Toast from '@/Components/Toast';
 import { useTranslation } from 'react-i18next';
 
 export default function UpdateProfileInformation({
@@ -89,15 +89,10 @@ export default function UpdateProfileInformation({
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>{t('Register')}</PrimaryButton>
 
-                    <Transition
+                    <Toast
                         show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600">{t('You have been registered.')}</p>
-                    </Transition>
+                        message={t('You have been registered.')}
+                    />
                 </div>
             </form>
         </section>

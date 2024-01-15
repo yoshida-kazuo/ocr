@@ -14,7 +14,7 @@ export default function User({
             <Navbar lang={lang} timezone={timezone} user={user} header={header} />
             <Sidebar lang={lang} timezone={timezone} user={user} header={header} />
 
-            <main className="drawer-content absolute w-full max-w-full mt-24 transition-transform">
+            <main className="drawer-content absolute w-full sm:max-w-[calc(100%-16em)] mt-24 sm:left-64 transition-transform">
                 <div className="w-auto">
                     {header}
 

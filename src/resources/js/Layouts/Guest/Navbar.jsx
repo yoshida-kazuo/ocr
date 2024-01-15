@@ -12,8 +12,8 @@ export default function Navbar({
     const { t } = useTranslation();
 
     return (
-        <header className="absolute w-full z-20">
-            <nav className="mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
+        <header className="bg-base-200 fixed top-0 w-full z-20">
+            <nav className="bg-base-200 mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
                 <div className="navbar">
                     <div className="flex">
                         <Link href={route('home')} className="mx-6 hidden sm:block">

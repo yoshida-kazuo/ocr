@@ -11,6 +11,7 @@ export default function Guest({
     return (
         <div className="drawer">
             <input id="guest-drawer" type="checkbox" className="drawer-toggle" />
+
             <Navbar lang={lang} timezone={timezone} user={user} header={header} />
             <Sidebar lang={lang} timezone={timezone} user={user} header={header} />
 

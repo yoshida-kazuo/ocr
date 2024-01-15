@@ -3,7 +3,6 @@
 namespace App\Lib\Support\User;
 
 use App\Models\User as UserModel;
-use Nette\Utils\Callback;
 
 class UserSupport
 {
@@ -26,6 +25,42 @@ class UserSupport
         }
 
         return $users->find($id);
+    }
+
+    /**
+     * store function
+     *
+     * @param array $values
+     * @param boolean $emailVerified
+     *
+     * @return UserModel
+     */
+    public function store(
+        array $values,
+        bool $emailVerified = false
+    ): UserModel {
+        $user = new UserModel;
+
+        foreach ($values as $column => $value) {
+            $user->{$column} = $value;
+        }
+
+        if ($emailVerified === true) {
+            $user->email_verified_at = now();
+        }
+
+        $user->save();
+
+        activity()
+            ->info(__(':userId : :email : :name : Create user information. : :postData : :userData', [
+                'userId'        => $user->id,
+                'name'          => $user->name,
+                'email'         => $user->email,
+                'postData'      => print_r($values, true),
+                'userData'      => print_r($user->toArray(), true),
+            ]));
+
+        return $user;
     }
 
     /**

@@ -31,10 +31,6 @@ class DeleteRequest extends FormRequest
                 Rule::prohibitedIf((int) $this->id === user('id')),
                 'exists:App\Models\User',
             ],
-            'is_deleted' => [
-                'required',
-                'boolean',
-            ],
         ];
     }
 

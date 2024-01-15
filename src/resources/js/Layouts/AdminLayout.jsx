@@ -18,7 +18,7 @@ export default function User({
                 <div className="w-auto">
                     {header}
 
-                    <div className="mx-auto sm:px-6 lg:px-8 space-y-6 mb-6">
+                    <div className="mx-auto mb-6 sm:mr-6">
                         {children}
                     </div>
                 </div>

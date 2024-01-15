@@ -25,11 +25,11 @@ export default function ForgotPassword({
         <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Forgot Password')} />
 
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-4 text-sm">
                 {t('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.')}
             </div>
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+            {status && <div className="mb-4 font-medium text-sm">{status}</div>}
 
             <form onSubmit={submit}>
                 <TextInput

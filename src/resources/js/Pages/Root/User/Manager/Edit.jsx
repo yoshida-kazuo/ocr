@@ -61,19 +61,19 @@ export default function Edit({
     return (
         <RootLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('User information')}</h2>}
+            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('User information')}</h2>}
             timezone={timezone}
             lang={lang}
         >
             <Head title={t('User information')} />
 
-            <div className="p-4 sm:p-8 bg-white shadow sm:rounded-md">
+            <div className="p-4 sm:p-8 shadow sm:rounded-md">
                 <form onSubmit={submit} className="space-y-6">
                     <section className="max-w-xl">
                         <h3 className="flex items-center text-lg">
                             <span className="flex-shrink-0">{t('ID')} {user.id}</span>
                             {user.deleted_at && (
-                                <span className="flex-shrink-0 ml-2 text-red-800">{t('Removed')}</span>
+                                <span className="flex-shrink-0 ml-2">{t('Removed')}</span>
                             )}
                         </h3>
 
@@ -153,22 +153,22 @@ export default function Edit({
                         <div>
                             <InputLabel value={t('Last Updated')} />
 
-                            <p className="mt-2 text-sm text-gray-600">{user.updated_at}</p>
+                            <p className="mt-2 text-sm">{user.updated_at}</p>
                         </div>
 
                         <div>
                             <InputLabel value={t('Registration datetime')} />
-                            <p className="mt-2 text-sm text-gray-600">{user.created_at}</p>
+                            <p className="mt-2 text-sm">{user.created_at}</p>
                         </div>
 
                         <div>
                             <InputLabel value={t('Login prohibition time/date')} />
-                            <p className="mt-2 text-sm text-gray-600">{user.login_ban_at || '-'}</p>
+                            <p className="mt-2 text-sm">{user.login_ban_at || '-'}</p>
                         </div>
 
                         <div>
                             <InputLabel value={t('Deleted At')} />
-                            <p className="mt-2 text-sm text-gray-600">{user.deleted_at || '-'}</p>
+                            <p className="mt-2 text-sm">{user.deleted_at || '-'}</p>
                         </div>
 
                         <div className="flex items-center gap-4 mt-4">

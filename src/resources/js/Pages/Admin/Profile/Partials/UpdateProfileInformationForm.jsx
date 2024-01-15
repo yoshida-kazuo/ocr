@@ -28,7 +28,7 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">{t('Profile Information')}</h2>
+                <h2 className="text-lg font-medium">{t('Profile Information')}</h2>
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
@@ -66,20 +66,20 @@ export default function UpdateProfileInformation({
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
-                        <p className="text-sm mt-2 text-gray-800">
+                        <p className="text-sm mt-2">
                             {t('Your email address is unverified.')}
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="underline text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 {t('Click here to resend the confirmation email.')}
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 font-medium text-sm text-green-600">
+                            <div className="mt-2 font-medium text-sm">
                                 {t('A new confirmation link has been sent to your email address.')}
                             </div>
                         )}

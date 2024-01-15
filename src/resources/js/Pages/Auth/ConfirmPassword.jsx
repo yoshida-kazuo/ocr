@@ -32,7 +32,7 @@ export default function ConfirmPassword({
         <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Confirm Password')} />
 
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-4 text-sm">
                 {t('This is a secure area of the application. Please confirm your password before continuing.')}
             </div>
 

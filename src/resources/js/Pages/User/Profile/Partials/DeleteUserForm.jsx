@@ -50,9 +50,9 @@ export default function DeleteUserForm({
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">{t('Delete Account')}</h2>
+                <h2 className="text-lg font-medium">{t('Delete Account')}</h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm">
                     {t('When the account is deleted, all of its resources and data will be permanently removed.')}
                     {t('Before deleting your account, please download any data or information you want to save.')}
                 </p>
@@ -62,11 +62,11 @@ export default function DeleteUserForm({
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">
+                    <h2 className="text-lg font-medium">
                         {t('Are you sure you want to delete your account?')}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="mt-1 text-sm">
                     {t('When the account is deleted, all of its resources and data will be permanently removed.')}
                     {t('To confirm the permanent deletion of your account, please enter your password.')}
                     </p>

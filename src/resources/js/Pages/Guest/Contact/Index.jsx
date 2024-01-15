@@ -44,7 +44,7 @@ export default function Index({
 
             <section className="mx-auto w-9/12">
                 <header>
-                    <h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('Contact')}</h2>
+                    <h2 className="mb-6 font-semibold text-xl leading-tight">{t('Contact')}</h2>
                 </header>
 
                 <form onSubmit={submit} className="mt -6 space-y-6">

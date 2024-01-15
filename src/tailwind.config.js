@@ -25,7 +25,12 @@ export default {
     daisyui: {
         themes: [
             "light",
+            "dark",
             "wireframe",
+            "fantasy",
+            "dracula",
+            "garden",
+            "business"
         ],
         darkTheme: "white",
         base: true,

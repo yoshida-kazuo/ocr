@@ -43,7 +43,7 @@ export default function UpdatePasswordForm({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">{t('Update Password')}</h2>
+                <h2 className="text-lg font-medium">{t('Update Password')}</h2>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">

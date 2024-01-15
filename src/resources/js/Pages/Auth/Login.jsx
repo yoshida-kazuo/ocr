@@ -39,7 +39,7 @@ export default function Login({
         <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Log in')} />
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+            {status && <div className="mb-4 font-medium text-sm">{status}</div>}
 
             <form onSubmit={submit}>
                 <div>
@@ -83,7 +83,7 @@ export default function Login({
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
                         />
-                        <span className="ml-2 text-sm text-gray-600">{t('Remember me')}</span>
+                        <span className="ml-2 text-sm">{t('Remember me')}</span>
                     </label>
                 </div>
 
@@ -91,7 +91,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            className="underline text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             {t('Forgot your password?')}
                         </Link>
@@ -129,7 +129,7 @@ export default function Login({
             <div className="flex items-center justify-end mt-4">
                 <Link
                     href={route('register')}
-                    className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="underline text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     {t('Register Here for New Account')}
                 </Link>

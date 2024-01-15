@@ -24,20 +24,20 @@ export default function Sidebar() {
     ];
 
     return (
-        <aside id="default-sidebar" className="drawer-side z-20 text-gray-800 sm:z-0">
+        <aside id="default-sidebar" className="drawer-side z-20 sm:z-0">
             <label htmlFor="admin-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-            <div className="absolute top-0 h-28 w-64 bg-white">
+            <div className="absolute bg-base-200 top-0 h-28 w-64">
                 <Link href={route('admin.dashboard')} className="sm:hidden justify-center flex flex-col h-28">
-                    <ApplicationLogo className="block h-16 w-auto fill-current text-gray-500" />
+                    <ApplicationLogo className="block h-16 w-auto fill-current " />
                 </Link>
             </div>
-            <div className="scrollbar relative top-28 w-64 h-screen max-h-[calc(100%-7rem)] pb-4 overflow-y-auto px-3 bg-white">
+            <div className="scrollbar bg-base-200 relative top-28 w-64 h-screen max-h-[calc(100%-7rem)] pb-4 overflow-y-auto px-3">
                 <ul className="menu px-0 py-0">
                     {sideMenus.map((menu, index) => (
                         <li key={index}>
                             <Link
                                 href={route(menu.route)}
-                                className={'py-3 ' + (route().current(menu.route) && 'active text-white' || '')}
+                                className={'py-3 ' + (route().current(menu.route) && 'active' || '')}
                             >
                                 {menu.icon}
                                 <span>{menu.label}</span>

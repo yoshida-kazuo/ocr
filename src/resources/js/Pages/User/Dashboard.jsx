@@ -13,13 +13,13 @@ export default function Dashboard({
     return (
         <UserLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl text-gray-800 leading-tight">{t('Dashboard')}</h2>}
+            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('Dashboard')}</h2>}
             timezone={timezone}
             lang={lang}
         >
             <Head title={t('Dashboard')} />
 
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-md">
+            <div className="overflow-hidden shadow-sm sm:rounded-md">
                 {requests === 'complete-email-verification' && (
                     <div role="alert" className="alert">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -33,7 +33,7 @@ export default function Dashboard({
                     </div>
                 )}
 
-                <div className="p-6 text-gray-900">{t('You\'re logged in!')}</div>
+                <div className="p-6">{t('You\'re logged in!')}</div>
             </div>
         </UserLayout>
     );

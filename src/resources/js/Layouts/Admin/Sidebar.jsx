@@ -32,7 +32,7 @@ export default function Sidebar() {
                         <ApplicationLogo className="block h-16 w-auto fill-current" />
                     </Link>
                 </div>
-                <div className="scrollbar bg-base-200 relative top-28 w-64 h-screen max-h-[calc(100%-7rem)] pb-4 overflow-y-auto px-3">
+                <div className="scrollbar bg-base-200 relative top-28 w-64 h-lvh max-h-[calc(100vh-7rem)] pb-4 overflow-y-auto px-3">
                     <ul className="menu px-0 py-0">
                         {sideMenus.map((menu, index) => (
                             <li key={index}>

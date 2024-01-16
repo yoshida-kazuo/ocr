@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         //
 
-        return Socialite::driver('x')
+        return Socialite::driver('twitter-oauth-2')
             ->redirect();
     }
 

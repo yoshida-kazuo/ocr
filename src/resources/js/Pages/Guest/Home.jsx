@@ -17,7 +17,7 @@ export default function Home({
             <Head title={t('Home Page')} />
 
             <div className="">
-                <div className="p-6">{t('とっぷぺーじ')}</div>
+                <div className="p-6">{t('We are currently preparing.')}</div>
             </div>
         </GuestLayout>
     )

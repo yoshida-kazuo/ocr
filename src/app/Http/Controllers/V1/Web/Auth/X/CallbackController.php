@@ -21,7 +21,7 @@ class CallbackController extends Controller
      */
     public function __invoke(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $xUser = Socialite::driver('x')
+        $xUser = Socialite::driver('twitter-oauth-2')
             ->user();
         $activityData = [
             'id'    => $xUser->id,

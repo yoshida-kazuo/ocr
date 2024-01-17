@@ -3,18 +3,10 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
-export default function Sidebar() {
+export default function Sidebar({
+    menus
+}) {
     const { t } = useTranslation();
-    const sideMenus = [
-        {
-            "route": "home",
-            "label": t('Home Page'),
-        },
-        {
-            "route": "contact",
-            "label": t('Contact'),
-        }
-    ];
 
     return (
         <aside id="default-sidebar" className="drawer-side z-20 sm:z-0 sm:hidden">
@@ -26,14 +18,16 @@ export default function Sidebar() {
             </div>
             <div className="scrollbar bg-base-200 relative top-28 w-64 h-lvh max-h-[calc(100vh-7rem)] pb-4 overflow-y-auto px-3">
                 <ul className="menu bg-base-200 px-0 py-0">
-                    {sideMenus.map((menu, index) => (
+                    {menus.map((menu, index) => (
                         <li key={index}>
                             <Link
                                 href={route(menu.route)}
-                                className={'py-3 ' + (route().current(menu.route) && 'active' || '')}
+                                className={'py-3 ' + (
+                                    route().current(menu.route) && 'active' || '')
+                                }
                             >
                                 {menu.icon}
-                                <span className="">{menu.label}</span>
+                                <span>{t(menu.label)}</span>
                             </Link>
                         </li>
                     ))}

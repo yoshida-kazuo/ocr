@@ -6,7 +6,9 @@ import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 
 export default function Navbar({
-    lang
+    user,
+    lang,
+    menus
 }) {
     const { t } = useTranslation();
 
@@ -22,11 +24,19 @@ export default function Navbar({
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </label>
 
-                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <NavLink href={route('home')} active={route().current('home')}>
-                                {t('Home Page')}
-                            </NavLink>
-                        </div>
+                        {menus && (
+                            <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                {menus.map((menu, index) => (
+                                    <NavLink
+                                        key={index}
+                                        href={route(menu.route)}
+                                        active={route().current(menu.route)}
+                                    >
+                                        {t(menu.label)}
+                                    </NavLink>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex justify-end flex-1 px-2">
@@ -36,6 +46,22 @@ export default function Navbar({
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
                                 </div>
                                 <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                                    {user ? (
+                                        <li>
+                                            <Link
+                                                href={route('logout')}
+                                                method="post"
+                                                as="button"
+                                            >{t('Log out')}</Link>
+                                        </li>
+                                    ) : (
+                                        <li>
+                                            <Link
+                                                href={route('login')}
+                                                as="button"
+                                            >{t('Log in')}</Link>
+                                        </li>
+                                    )}
                                     <li>
                                         <LangSelector
                                             defaultLang={lang}

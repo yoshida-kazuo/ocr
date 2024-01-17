@@ -18,6 +18,7 @@ class Update extends Command
         {email : 対象ユーザのメールアドレスをセットしてください}
         {--P|password= : 新パスワードをセットしてください}
         {--N|name= : 新ユーザ名をセットしてください}
+        {--R|role-id= : 3:root|6:admin|9:user}
         {--restore=no : ソフト削除したユーザを元へ戻す default no}
         ';
 
@@ -84,6 +85,10 @@ class Update extends Command
 
         if ($this->option('password')) {
             $user->password = bcrypt($this->option('password'));
+        }
+
+        if ($this->option('role-id')) {
+            $user->role_id = $this->option('role-id');
         }
 
         if ($status === 0

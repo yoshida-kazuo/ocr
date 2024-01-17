@@ -18,7 +18,7 @@ class Create extends Command
         {email : 追加ユーザのメールアドレスをセットしてください}
         {password : パスワードは8文字以上でセットしてください}
         {--N|name= : 省略した場合emailがセットされます}
-        {--R|role-id= : 省略した場合90がセットされます}
+        {--R|role-id= : [3:root|6:admin|9:user] 省略した場合9がセットされます}
         ';
 
     /**
@@ -72,7 +72,7 @@ class Create extends Command
                 'email'     => $this->argument('email'),
                 'password'  => bcrypt($this->argument('password')),
                 'name'      => $this->option('name') ?: $this->argument('email'),
-                'role_id'   => $this->option('role-id') ?: 90,
+                'role_id'   => $this->option('role-id') ?: 9,
             ]);
         $user->email_verified_at = now();
 

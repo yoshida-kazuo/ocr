@@ -15,13 +15,13 @@ export default function Index({
     return (
         <RootLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('Activity')}</h2>}
+            header={<h2 className="mb-4 font-semibold text-xl leading-tight">{t('Activity')}</h2>}
             timezone={timezone}
             lang={lang}
         >
             <Head title={t('Activity')} />
 
-            <div className="p-4 sm:p-8 shadow sm:rounded-md">
+            <div className="p-4 shadow sm:rounded-md">
                 <div>
                     <table className="mb-6 table table-zebra">
                         <thead>

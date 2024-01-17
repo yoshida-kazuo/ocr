@@ -46,7 +46,7 @@ export default function ResetPassword({
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
                     />
@@ -54,7 +54,7 @@ export default function ResetPassword({
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
@@ -62,7 +62,7 @@ export default function ResetPassword({
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="new-password"
                         isFocused={true}
                         onChange={(e) => setData('password', e.target.value)}
@@ -71,14 +71,14 @@ export default function ResetPassword({
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
 
                     <TextInput
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData('password_confirmation', e.target.value)}
                     />
@@ -87,7 +87,7 @@ export default function ResetPassword({
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ml-4" disabled={processing}>
+                    <PrimaryButton disabled={processing}>
                         {t('Reset Password')}
                     </PrimaryButton>
                 </div>

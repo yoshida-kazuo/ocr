@@ -38,7 +38,7 @@ export default function Auth({
             />
 
             <div className="drawer-content min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
-                <div className="w-full sm:max-w-md mt-24 sm:mt-6 px-6 py-4 shadow-md overflow-hidden sm:rounded-md mb-6">
+                <div className="w-full sm:max-w-md mt-20 sm:mt-6 px-6 py-4 shadow-md overflow-hidden sm:rounded-md mb-6">
                     {children}
                 </div>
             </div>

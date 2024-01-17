@@ -32,12 +32,12 @@ export default function ConfirmPassword({
         <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Confirm Password')} />
 
-            <div className="mb-4 text-sm">
+            <div className="mb-2 text-sm">
                 {t('This is a secure area of the application. Please confirm your password before continuing.')}
             </div>
 
             <form onSubmit={submit}>
-                <div className="mt-4">
+                <div>
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
@@ -45,7 +45,7 @@ export default function ConfirmPassword({
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         isFocused={true}
                         onChange={(e) => setData('password', e.target.value)}
                     />
@@ -54,7 +54,7 @@ export default function ConfirmPassword({
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ml-4" disabled={processing}>
+                    <PrimaryButton disabled={processing}>
                         {t('Confirm')}
                     </PrimaryButton>
                 </div>

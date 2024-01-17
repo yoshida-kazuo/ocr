@@ -10,9 +10,18 @@ export default {
     ],
 
     theme: {
+        fontFamily: {
+            sans: [
+                '"Montserrat", sans-serif'
+            ]
+        },
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: [
+                    '"Montserrat", sans-serif',
+                    'Figtree',
+                    ...defaultTheme.fontFamily.sans
+                ],
             },
         },
     },

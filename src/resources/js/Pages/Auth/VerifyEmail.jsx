@@ -22,18 +22,16 @@ export default function VerifyEmail({
         <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Email Verification')} />
 
-            {requests === 'email-authentication-required' ? (
-                <div className="mb-4 text-sm">
-                    {t('Please complete email verification.')}
-                </div>
-            ) : (
-                <div className="mb-4 text-sm">
-                    {t(`Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.`)}
-                </div>
-            )}
+            <div className="mb-2 text-sm">
+                {requests === 'email-authentication-required' ? (
+                    <span>{t('Please complete email verification.')}</span>
+                ) : (
+                    <span>{t(`Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.`)}</span>
+                )}
+            </div>
 
             {status === 'verification-link-sent' && (
-                <div className="mb-4 font-medium text-sm">
+                <div className="mb-2 font-medium text-sm">
                     {t('A new verification link has been sent to the email address you provided during registration.')}
                 </div>
             )}

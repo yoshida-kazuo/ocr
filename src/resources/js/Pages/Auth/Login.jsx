@@ -51,7 +51,7 @@ export default function Login({
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="username"
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
@@ -61,7 +61,7 @@ export default function Login({
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     <InputLabel htmlFor="password" value={t('Password')} />
 
                     <TextInput
@@ -69,7 +69,7 @@ export default function Login({
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                     />
@@ -88,7 +88,7 @@ export default function Login({
                     </label>
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="flex items-center justify-end mt-2">
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
@@ -99,7 +99,7 @@ export default function Login({
                     )}
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     <div>
                         <PrimaryButton className="w-full" disabled={processing}>
                             {t('Log in')}
@@ -107,7 +107,7 @@ export default function Login({
                     </div>
 
                     {xAuth && (
-                        <div className="mt-4">
+                        <div className="mt-2">
                             <a
                                 href={route('auth.x')}
                                 className="btn w-full"
@@ -120,7 +120,7 @@ export default function Login({
                     )}
 
                     {googleAuth && (
-                        <div className="mt-4">
+                        <div className="mt-2">
                             <a
                                 href={route('auth.google')}
                                 className="btn w-full"
@@ -140,7 +140,7 @@ export default function Login({
                 </div>
             </form>
 
-            <div className="flex items-center justify-end mt-4">
+            <div className="flex items-center justify-end mt-2">
                 <Link
                     href={route('register')}
                     className="underline text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

@@ -61,13 +61,13 @@ export default function Edit({
     return (
         <RootLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('User information')}</h2>}
+            header={<h2 className="mb-4 font-semibold text-xl leading-tight">{t('User information')}</h2>}
             timezone={timezone}
             lang={lang}
         >
             <Head title={t('User information')} />
 
-            <div className="p-4 sm:p-8 shadow sm:rounded-md">
+            <div className="p-4 shadow sm:rounded-md">
                 <form onSubmit={submit} className="space-y-6">
                     <section className="max-w-xl">
                         <h3 className="flex items-center text-lg">

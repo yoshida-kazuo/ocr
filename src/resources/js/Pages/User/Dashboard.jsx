@@ -13,7 +13,7 @@ export default function Dashboard({
     return (
         <UserLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('Dashboard')}</h2>}
+            header={<h2 className="mb-4 font-semibold text-xl leading-tight">{t('Dashboard')}</h2>}
             timezone={timezone}
             lang={lang}
         >

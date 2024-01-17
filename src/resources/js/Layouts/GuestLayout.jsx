@@ -38,9 +38,9 @@ export default function Guest({
                 menus={menus}
             />
 
-            <main className="drawer-content absolute w-full max-w-full mt-24 transition-transform">
+            <main className="drawer-content absolute w-full max-w-full mt-16 transition-transform">
                 <div className="w-auto">
-                    <div className="mx-auto mb-6 sm:mr-6">
+                    <div className="mx-auto mb-6">
                         {children}
                     </div>
                 </div>

@@ -10,7 +10,8 @@ export default function Edit({
     mustVerifyEmail,
     status,
     lang,
-    timezone
+    timezone,
+    isProvider
 }) {
     const { t } = useTranslation();
 
@@ -28,6 +29,7 @@ export default function Edit({
                     mustVerifyEmail={mustVerifyEmail}
                     status={status}
                     className="max-w-xl"
+                    isProvider={isProvider}
                 />
             </div>
 

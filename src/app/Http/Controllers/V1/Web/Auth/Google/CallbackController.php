@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
 use App\Lib\Support\User\UserSupport;
+use Exception;
 use Throwable;
 
 class CallbackController extends Controller
@@ -41,12 +42,26 @@ class CallbackController extends Controller
                 ],
                 values: [
                     'name'              => $providerUser->getName(),
-                    'email'             => $providerUser->getEmail(),
                     'password'          => 'no-login-' . Str::random(255),
                     'email_verified_at' => now(),
                 ]);
 
             if (! $user->id) {
+                if (! $emailDummy = $userSupport
+                    ->createUniqueColumn(
+                        uniqueColumn: 'email',
+                        suffix: '@' . config('app.user_dummy_email_domain')
+                    )
+                ) {
+                    $errorMessage = __(':id : :email : Google authentication failed. Failed to generate a dummy email.', $activityData);
+                    report($errorMessage);
+                    activity()
+                        ->error($errorMessage);
+
+                    throw new Exception;
+                }
+
+                $user->email = $emailDummy;
                 $user->save();
                 $user->refresh();
 

@@ -25,11 +25,6 @@ class CallbackController extends Controller
         Request $request,
         UserSupport $userSupport
     ): \Illuminate\Http\RedirectResponse {
-        dd(
-            $a = encryptString(value: 'データ', key: 'origin key'),
-            decryptString(encryptValue: $a, key: 'origin key')
-        );
-
         $providerUser = Socialite::driver('google')
             ->user();
         $activityData = [

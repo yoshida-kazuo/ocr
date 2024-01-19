@@ -285,14 +285,16 @@ class UserSupport
      * @param integer $length
      *
      * @return string
+     *
+     * @throws \App\Exceptions\AppErrorException
      */
     public function createUniqueColumn(
         string $uniqueColumn = 'email',
         ?string $prefix = null,
         ?string $suffix = null,
         int $length = 16,
-        int $maxAttempts = 10
-    ): ?string {
+        int $maxAttempts = 12
+    ): string {
         $isUnique = false;
 
         for ($attempts = 0; $attempts < $maxAttempts; $attempts++) {
@@ -314,7 +316,11 @@ class UserSupport
             }
         }
 
-        return $isUnique ? $randomString : null;
+        if (! $isUnique) {
+            throw new \App\Exceptions\AppErrorException('Failed to generate unique data.');
+        }
+
+        return $randomString;
     }
 
 }

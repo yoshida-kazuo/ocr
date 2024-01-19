@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\V1\Web\Auth\Google;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use App\Http\Controllers\Controller;
 use App\Lib\Support\User\UserSupport;
-use Exception;
+use App\Lib\Support\User\AuthProviderSupport;
 use Throwable;
 
 class CallbackController extends Controller
@@ -19,12 +20,14 @@ class CallbackController extends Controller
      *
      * @param Request $request
      * @param UserSupport $userSupport
+     * @param AuthProviderSupport $authProviderSupport
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function __invoke(
         Request $request,
-        UserSupport $userSupport
+        UserSupport $userSupport,
+        AuthProviderSupport $authProviderSupport
     ): \Illuminate\Http\RedirectResponse {
         $providerUser = Socialite::driver('google')
             ->user();
@@ -34,59 +37,57 @@ class CallbackController extends Controller
             'email' => $providerUser->getEmail(),
         ];
 
+        DB::beginTransaction();
+
         try {
-            $user = $userSupport->model()::firstOrNew(
+            $authProvider = $authProviderSupport->model()::firstOrNew(
                 attributes: [
-                    'provider'      => 'google',
-                    'provider_id'   => $providerUser->getId(),
-                ],
-                values: [
-                    'name'              => $providerUser->getName(),
-                    'password'          => 'no-login-' . Str::random(255),
-                    'email_verified_at' => now(),
-                ]);
+                    'provider_id'       => 1,
+                    'provider_user_id'  => $providerUser->getId(),
+                ]
+            );
 
-            if (! $user->id) {
-                if (! $emailDummy = $userSupport
-                    ->createUniqueColumn(
-                        uniqueColumn: 'email',
-                        suffix: '@' . config('app.user_dummy_email_domain')
-                    )
-                ) {
-                    $errorMessage = __(':id : :email : Google authentication failed. Failed to generate a dummy email.', $activityData);
-                    report($errorMessage);
-                    activity()
-                        ->error($errorMessage);
-
-                    throw new Exception;
-                }
-
-                $user->email = $emailDummy;
-                $user->save();
+            if (! $authProvider?->user_id) {
+                $user = $userSupport->model()::create(
+                    attributes: [
+                        'name'              => $providerUser->getName(),
+                        'email'             => $userSupport->createUniqueColumn(
+                            uniqueColumn: 'email',
+                            suffix: '@' . config('app.user_dummy_email_domain')
+                        ),
+                        'password'          => 'no-login-' . Str::random(255),
+                        'email_verified_at' => now(),
+                    ]
+                );
+                $user->authProviders()
+                    ->save($authProvider);
                 $user->refresh();
 
                 activity()
                     ->info(__(':id : :email : :name : There was a new login with Google authentication.', $activityData));
+            } else {
+                $user = $authProvider->user;
             }
 
             Auth::login($user);
+
+            DB::commit();
         } catch(\Illuminate\Database\UniqueConstraintViolationException $e) {
             activity()
                 ->info(__(':id : :email : Google authentication failed. The email is already registered.', $activityData));
-
-            return to_route(route: 'login')
-                ->withErrors([
-                    'google_auth'   => __('auth.failed'),
-                ]);
         } catch(Throwable $e) {
             report($e);
             activity()
                 ->error(__(':id : :email : Google authentication failed.', $activityData));
+        } finally {
+            if ($e ?? false) {
+                DB::rollback();
 
-            return to_route(route: 'login')
-                ->withErrors([
-                    'google_auth'   => __('auth.failed'),
-                ]);
+                return to_route(route: 'login')
+                    ->withErrors([
+                        'google_auth'   => __('auth.failed'),
+                    ]);
+            }
         }
 
         activity()

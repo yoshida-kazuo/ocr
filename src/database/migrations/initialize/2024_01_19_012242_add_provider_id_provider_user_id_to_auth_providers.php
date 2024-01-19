@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table(table: 'users', callback: function (Blueprint $table) {
+        Schema::table(table: 'auth_providers', callback: function (Blueprint $table) {
             $table->unique(
                 columns: [
-                    'provider',
                     'provider_id',
+                    'provider_user_id',
                 ],
-                name: 'provider_provider_id_unique'
+                name: 'provider_id_provider_user_id_unique'
             );
         });
     }
@@ -27,8 +27,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table(table: 'users', callback: function (Blueprint $table) {
-            $table->dropUnique(index: 'provider_provider_id_unique');
+        Schema::table(table: 'auth_providers', callback: function (Blueprint $table) {
+            $table->dropUnique(index: 'provider_id_provider_user_id_unique');
         });
     }
 };

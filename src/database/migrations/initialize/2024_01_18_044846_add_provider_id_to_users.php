@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('provider_id', 255)
+        Schema::table(table: 'users', callback: function (Blueprint $table) {
+            $table->string(
+                    column: 'provider_id',
+                    length: 255
+                )
                 ->nullable()
-                ->default(null)
-                ->after('provider')
-                ->comment('外部認証ID');
+                ->default(value: null)
+                ->after(column: 'provider')
+                ->comment(comment: '外部認証ID');
         });
     }
 
@@ -25,8 +28,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('provider_id');
+        Schema::table(table: 'users', callback: function (Blueprint $table) {
+            $table->dropColumn(columns: 'provider_id');
         });
     }
 };

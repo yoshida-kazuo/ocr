@@ -11,14 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('failed_jobs', function (Blueprint $table) {
-            $table->id();
-            $table->string('uuid')->unique();
-            $table->text('connection');
-            $table->text('queue');
-            $table->longText('payload');
-            $table->longText('exception');
-            $table->timestamp('failed_at')->useCurrent();
+        Schema::create(table: 'failed_jobs', callback: function (Blueprint $table) {
+            $table->id()
+                ->comment(comment: 'ID');
+            $table->string(column: 'uuid')
+                ->unique()
+                ->comment(column: 'ユニークID');
+            $table->text(column: 'connection')
+                ->comment(comment: '接続先');
+            $table->text(column: 'queue')
+                ->comment(comment: 'キュー');
+            $table->longText(column: 'payload')
+                ->comment(comment: 'データ');
+            $table->longText(column: 'exception')
+                ->comment(comment: 'エラー');
+            $table->timestamp(column: 'failed_at')
+                ->useCurrent()
+                ->comment(comment: '失敗日時');
         });
     }
 
@@ -27,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists(table: 'failed_jobs');
     }
 };

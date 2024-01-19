@@ -12,14 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table(table: 'users', callback: function (Blueprint $table) {
-            $table->string(
-                    column: 'provider',
-                    length: 255
-                )
-                ->nullable()
-                ->default(value: null)
-                ->after(column: 'role_id')
-                ->comment(comment: '外部認証カラム');
+            $table->dropColumn(columns: 'provider_id');
         });
     }
 
@@ -29,7 +22,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table(table: 'users', callback: function (Blueprint $table) {
-            $table->dropColumn(columns: 'provider');
+            $table->string(
+                    column: 'provider_id',
+                    length: 255
+                )
+                ->nullable()
+                ->default(value: null)
+                ->after(column: 'provider')
+                ->comment(comment: '外部認証ID');
         });
     }
 };

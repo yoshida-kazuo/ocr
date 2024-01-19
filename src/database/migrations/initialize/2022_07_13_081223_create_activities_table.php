@@ -13,22 +13,28 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create(table: 'activities', callback: function (Blueprint $table) {
             $table->id()
-                ->comment('ID');
-            $table->bigInteger('user_id')
+                ->comment(comment: 'ID');
+            $table->unsignedBigInteger(column: 'user_id')
                 ->nullable()
-                ->comment('ユーザID')
+                ->comment(comment: 'ユーザID')
                 ->index();
-            $table->string('type', 16)
-                ->default('info')
-                ->comment('操作タイプ [dev|info|error]')
+            $table->string(
+                    column: 'type',
+                    length: 16
+                )
+                ->default(value: 'info')
+                ->comment(comment: '操作タイプ [dev|info|error]')
                 ->index();
-            $table->string('message', 2003)
-                ->comment('操作');
-            $table->timestamp('created_at')
+            $table->string(
+                    column: 'message',
+                    length: 2003
+                )
+                ->comment(comment: '操作');
+            $table->timestamp(column: 'created_at')
                 ->useCurrent()
-                ->comment('操作日時');
+                ->comment(comment: '操作日時');
         });
     }
 
@@ -39,6 +45,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('activities');
+        Schema::dropIfExists(table: 'activities');
     }
 };

@@ -11,13 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
+        Schema::create(table: 'sessions', callback: function (Blueprint $table) {
+            $table->string(column: 'id')
+                ->primary()
+                ->comment(comment: 'ID');
+            $table->foreignId(column: 'user_id')
+                ->nullable()
+                ->comment(comment: 'ユーザID')
+                ->index();
+            $table->string(
+                    column: 'ip_address',
+                    length: 45
+                )
+                ->nullable();
+            $table->text(column: 'user_agent')
+                ->nullable()
+                ->comment(comment: 'ユーザエージェント');
+            $table->longText(column: 'payload')
+                ->comment(comment: 'データ');
+            $table->integer(column: 'last_activity')
+                ->comment(comment: '最終更新')
+                ->index();
         });
     }
 
@@ -26,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists(table: 'sessions');
     }
 };

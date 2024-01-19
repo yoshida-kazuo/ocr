@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create(table: 'roles', callback: function (Blueprint $table) {
             $table->integer(column: 'id', unsigned: true)
                 ->primary()
                 ->comment(comment: 'ID');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists(table: 'roles');
     }
 };

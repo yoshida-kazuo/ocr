@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('login_ban_at')
+        Schema::table(table: 'users', callback: function (Blueprint $table) {
+            $table->timestamp(column: 'login_ban_at')
                 ->nullable()
-                ->default(null)
-                ->after('remember_token')
-                ->comment('ログイン禁止日時')
+                ->default(value: null)
+                ->after(column: 'remember_token')
+                ->comment(comment: 'ログイン禁止日時')
                 ->index();
         });
     }
@@ -26,8 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('login_ban_at');
+        Schema::table(table: 'users', callback: function (Blueprint $table) {
+            $table->dropColumn(columns: 'login_ban_at');
         });
     }
 };

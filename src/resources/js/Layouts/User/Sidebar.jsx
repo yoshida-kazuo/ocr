@@ -18,12 +18,12 @@ export default function Sidebar() {
         <div className="drawer-side z-20 sm:z-0">
             <label htmlFor="user-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
             <aside id="default-sidebar" className="fixed">
-                <div className="absolute bg-base-200 top-0 h-28 w-64">
+                <div className="absolute bg-base-200 bg-opacity-70 backdrop-blur top-0 h-28 w-64">
                     <Link href={route('user.dashboard')} className="sm:hidden justify-center flex flex-col h-28">
                         <ApplicationLogo className="block h-16 w-auto fill-current" />
                     </Link>
                 </div>
-                <div className="scrollbar bg-base-200 relative top-28 w-64 h-lvh max-h-[calc(100vh-7rem)] pb-4 overflow-y-auto px-3">
+                <div className="scrollbar bg-base-200 bg-opacity-70 backdrop-blur relative top-28 w-64 h-lvh max-h-[calc(100vh-7rem)] pb-4 overflow-y-auto px-3">
                     <ul className="menu px-0 py-0">
                         {sideMenus.map((menu, index) => (
                             <li key={index}>

@@ -39,7 +39,11 @@ export default {
             "fantasy",
             "dracula",
             "garden",
-            "business"
+            "business",
+            "corporate",
+            "bumblebee",
+            "cmyk",
+            "lofi"
         ],
         darkTheme: "white",
         base: true,

@@ -22,14 +22,6 @@ export default function Guest({
     return (
         <div className="drawer">
             <input id="guest-drawer" type="checkbox" className="drawer-toggle" />
-
-            <Navbar
-                lang={lang}
-                timezone={timezone}
-                user={user}
-                header={header}
-                menus={menus}
-            />
             <Sidebar
                 lang={lang}
                 timezone={timezone}
@@ -38,7 +30,14 @@ export default function Guest({
                 menus={menus}
             />
 
-            <main className="drawer-content absolute w-full max-w-full mt-16 transition-transform">
+            <main className="drawer-content absolute w-full max-w-full transition-transform">
+                <Navbar
+                    lang={lang}
+                    timezone={timezone}
+                    user={user}
+                    header={header}
+                    menus={menus}
+                />
                 <div className="w-auto">
                     <div className="mx-auto mb-6">
                         {children}

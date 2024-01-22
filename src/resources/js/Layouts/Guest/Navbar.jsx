@@ -13,7 +13,7 @@ export default function Navbar({
     const { t } = useTranslation();
 
     return (
-        <header className="bg-base-200 fixed top-0 w-full z-20">
+        <header className="bg-base-200 sticky drawer-content top-0 w-full z-20 h-16">
             <nav className="bg-base-200 mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
                 <div className="navbar">
                     <div className="flex">

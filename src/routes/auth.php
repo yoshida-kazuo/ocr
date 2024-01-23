@@ -65,6 +65,10 @@ Route::middleware('guest')
                     ->name('auth.x');
                 Route::get('x-callback', \App\Http\Controllers\V1\Web\Auth\X\CallbackController::class)
                     ->name('auth.x.callback');
+                Route::get('twitch', \App\Http\Controllers\V1\Web\Auth\Twitch\AuthController::class)
+                    ->name('auth.twitch');
+                Route::get('twitch-callback', \App\Http\Controllers\V1\Web\Auth\Twitch\CallbackController::class)
+                    ->name('auth.twitch.callback');
 
             });
     });

@@ -30,6 +30,11 @@ class ProviderSeeder extends Seeder
                     'name'          => 'github',
                     'created_at'    => now(),
                     'updated_at'    => now(),
+                ], [
+                    'id'            => 4,
+                    'name'          => 'twitch',
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
                 ],
             ]);
     }

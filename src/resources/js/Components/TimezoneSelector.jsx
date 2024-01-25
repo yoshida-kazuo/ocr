@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { usePage, router } from '@inertiajs/react';
 import axios from 'axios';
 import Select from '@/Components/Select';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
     const [timezones, setTimezones] = useState([]);
     const [selectedTimezone, setSelectedTimezone] = useState(defaultTimezone);
     const [isLoading, setIsLoading] = useState(false);
+    const { url } = usePage();
 
     useEffect(() => {
         axios.get(route('timezone'))
@@ -31,14 +33,14 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
 
         axios.put(route('timezone-put'), {timezone: event.target.value})
             .then(response => {
-                window.location.reload();
+                router.visit(url);
             })
             .catch(error => {
                 console.error(t('Failed to set the time zone'));
 
                 setSelectedTimezone(oldTimezone);
             })
-            .finallly(() => {
+            .finally(() => {
                 setIsLoading(false);
             });
     };

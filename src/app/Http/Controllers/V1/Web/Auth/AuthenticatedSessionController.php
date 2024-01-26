@@ -28,6 +28,8 @@ class AuthenticatedSessionController extends Controller
                 && config('services.google.client_secret'),
             'xAuth'             => config('services.twitter-oauth-2.client_id')
                 && config('services.twitter-oauth-2.client_secret'),
+            'twitchAuth'        => config('services.twitch.client_id')
+                && config('services.twitch.client_secret'),
         ]);
     }
 

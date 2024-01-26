@@ -8,7 +8,7 @@ Route::middleware([
         'verified',
         'account.ban',
     ])
-    ->prefix('root/')
+    ->prefix(config('route.prefix.url.root'))
     ->group(function() {
 
         Route::get('dashboard', \App\Http\Controllers\V1\Web\Root\DashboardController::class)

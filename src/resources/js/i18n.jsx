@@ -74,6 +74,8 @@ i18n.use(initReactI18next)
                     "A new verification link has been sent to the email address you provided during registration.": "登録時に提供されたメールアドレスに新しい確認リンクが送信されました。",
                     "Please complete email verification.": "メール認証を完了してください。",
                     "Create User": "ユーザ作成",
+                    "Please register your email address.": "メールアドレスを登録してください。",
+                    "The displayed email address is the one that was used during registration. To use the application comfortably, please register a new email address.": "表示されているメールアドレスは登録時に使用されたものです。アプリケーションを快適に利用するには新しいメールアドレスを登録してください。"
                 }
             }
         },

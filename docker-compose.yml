@@ -5,7 +5,7 @@ services:
     hostname: ${APP_HOST_NAME}
     build: ${APP_BUILD_PATH}/web
     volumes:
-      - ${APP_SOURCE_PATH}:/var/www
+      - ${APP_SOURCE_PATH}:${APP_SERVER_PATH}
     ports:
       - "${APP_PORT}:80"
       - "${APP_VITE_PORT}:${APP_VITE_PORT}"

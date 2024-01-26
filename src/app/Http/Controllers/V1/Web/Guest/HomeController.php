@@ -11,6 +11,10 @@ class HomeController extends Controller
 
     /**
      * Handle the incoming request.
+     *
+     * @param Request $request
+     *
+     * @return \Inertia\Response
      */
     public function __invoke(Request $request): \Inertia\Response
     {

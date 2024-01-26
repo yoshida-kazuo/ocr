@@ -27,6 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
+        'provider',
+        'provider_id',
         'name',
         'email',
         'password',
@@ -132,6 +134,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);
+    }
+
+    /**
+     * authProviders function
+     *
+     * @return HasMany
+     */
+    public function authProviders(): HasMany
+    {
+        return $this->hasMany(AuthProvider::class);
     }
 
 }

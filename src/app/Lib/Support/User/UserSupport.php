@@ -2,29 +2,66 @@
 
 namespace App\Lib\Support\User;
 
+use Illuminate\Support\Str;
 use App\Models\User as UserModel;
 
 class UserSupport
 {
 
     /**
+     * model function
+     *
+     * @return UserModel
+     */
+    public function model(): UserModel
+    {
+        return app(UserModel::class);
+    }
+
+    /**
      * find function
      *
      * @param integer $id
+     * @param boolean $withTrashed
      *
-     * @return UserModel
+     * @return mixed
      */
     public function find(
         int $id,
         bool $withTrashed = false
-    ): UserModel {
-        $users = UserModel::with('role');
+    ): mixed {
+        $user = UserModel::with('role');
 
         if ($withTrashed) {
-            $users->withTrashed();
+            $user->withTrashed();
         }
 
-        return $users->find($id);
+        return $user->find($id);
+    }
+
+    /**
+     * findSocial function
+     *
+     * @param string $provider
+     * @param string $providerId
+     * @param boolean $withTrashed
+     *
+     * @return mixed
+     */
+    public function findSocial(
+        string $provider,
+        string $providerId,
+        bool $withTrashed = false
+    ): mixed {
+        $user = UserModel::with('role')
+            ->where('provider', $provider)
+            ->where('provider_id', $providerId);
+
+        if ($withTrashed) {
+            $user->withTrashed();
+        }
+
+        return $user->first();
     }
 
     /**
@@ -237,6 +274,53 @@ class UserSupport
                 $catalogName
             )
             ->onEachSide($onEachSide);
+    }
+
+    /**
+     * createUniqueColumn function
+     *
+     * @param string $uniqueColumn
+     * @param string|null $prefix
+     * @param string|null $suffix
+     * @param integer $length
+     *
+     * @return string
+     *
+     * @throws \App\Exceptions\AppErrorException
+     */
+    public function createUniqueColumn(
+        string $uniqueColumn = 'email',
+        ?string $prefix = null,
+        ?string $suffix = null,
+        int $length = 16,
+        int $maxAttempts = 12
+    ): string {
+        $isUnique = false;
+
+        for ($attempts = 0; $attempts < $maxAttempts; $attempts++) {
+            $randomString = Str::random($length);
+
+            if ($prefix) {
+                $randomString = "{$prefix}{$randomString}";
+            }
+
+            if ($suffix) {
+                $randomString .= $suffix;
+            }
+
+            if (! UserModel::where($uniqueColumn, $randomString)
+                ->exists()
+            ) {
+                $isUnique = true;
+                break;
+            }
+        }
+
+        if (! $isUnique) {
+            throw new \App\Exceptions\AppErrorException('Failed to generate unique data.');
+        }
+
+        return $randomString;
     }
 
 }

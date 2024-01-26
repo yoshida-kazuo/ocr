@@ -16,13 +16,13 @@ export default function Index({
     return (
         <RootLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('User management')}</h2>}
+            header={<h2 className="mb-4 font-semibold text-xl leading-tight">{t('User management')}</h2>}
             timezone={timezone}
             lang={lang}
         >
             <Head title={t('User management')} />
 
-            <div className="p-4 sm:p-8 shadow sm:rounded-md">
+            <div className="p-4 shadow sm:rounded-md">
                 <div>
                     <Link
                         href={route('root.user.manager.create')}

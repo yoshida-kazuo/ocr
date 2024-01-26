@@ -43,11 +43,11 @@ export default function Index({
             <Head title={t('Contact')} />
 
             <section className="mx-auto w-9/12">
-                <header>
-                    <h2 className="mb-6 font-semibold text-xl leading-tight">{t('Contact')}</h2>
+                <header className="mb-4">
+                    <h2 className="font-semibold text-xl leading-tight">{t('Contact')}</h2>
                 </header>
 
-                <form onSubmit={submit} className="mt -6 space-y-6">
+                <form onSubmit={submit}>
                     <div>
                         <InputLabel htmlFor="name" value={t('Name')} />
 
@@ -64,7 +64,7 @@ export default function Index({
                         <InputError className="mt-2" message={errors.name} />
                     </div>
 
-                    <div>
+                    <div className="mt-2">
                         <InputLabel htmlFor="email" value={t('Email')} />
 
                         <TextInput
@@ -80,7 +80,7 @@ export default function Index({
                         <InputError className="mt-2" message={errors.email} />
                     </div>
 
-                    <div>
+                    <div className="mt-2">
                         <InputLabel htmlFor="message" value={t('Please enter the inquiry details.')} />
 
                         <TextArea
@@ -94,7 +94,7 @@ export default function Index({
                         <InputError className="mt-2" message={errors.message} />
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 mt-4">
                         <PrimaryButton disabled={processing}>{t('Send')}</PrimaryButton>
 
                         <Toast

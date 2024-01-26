@@ -8,16 +8,38 @@ export default function Guest({
     lang,
     timezone
 }) {
+    const menus = [
+        {
+            "route": "home",
+            "label": 'Home Page',
+        },
+        {
+            "route": "contact",
+            "label": 'Contact',
+        }
+    ];
+
     return (
         <div className="drawer">
             <input id="guest-drawer" type="checkbox" className="drawer-toggle" />
+            <Sidebar
+                lang={lang}
+                timezone={timezone}
+                user={user}
+                header={header}
+                menus={menus}
+            />
 
-            <Navbar lang={lang} timezone={timezone} user={user} header={header} />
-            <Sidebar lang={lang} timezone={timezone} user={user} header={header} />
-
-            <main className="drawer-content absolute w-full max-w-full mt-24 transition-transform">
+            <main className="drawer-content absolute w-full max-w-full transition-transform">
+                <Navbar
+                    lang={lang}
+                    timezone={timezone}
+                    user={user}
+                    header={header}
+                    menus={menus}
+                />
                 <div className="w-auto">
-                    <div className="mx-auto mb-6 sm:mr-6">
+                    <div className="mx-auto mb-6">
                         {children}
                     </div>
                 </div>

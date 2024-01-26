@@ -5,63 +5,90 @@ namespace App\Http\Controllers\V1\Web\Auth\X;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
+use App\Lib\Support\User\UserSupport;
+use App\Lib\Support\User\AuthProviderSupport;
 use Throwable;
 
 class CallbackController extends Controller
 {
+
     /**
      * Handle the incoming request.
      *
      * @param Request $request
+     * @param UserSupport $userSupport
+     * @param AuthProviderSupport $authProviderSupport
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function __invoke(Request $request): \Illuminate\Http\RedirectResponse
-    {
-        $xUser = Socialite::driver('twitter-oauth-2')
+    public function __invoke(
+        Request $request,
+        UserSupport $userSupport,
+        AuthProviderSupport $authProviderSupport
+    ): \Illuminate\Http\RedirectResponse {
+        $providerUser = Socialite::driver('twitter-oauth-2')
             ->user();
         $activityData = [
-            'id'    => $xUser->id,
-            'name'  => $xUser->getName(),
-            'email' => $xUser->getEmail(),
+            'id'    => $providerUser->getId(),
+            'name'  => $providerUser->getName(),
+            'email' => $providerUser->getEmail(),
         ];
 
+        DB::beginTransaction();
+
         try {
-            $user = User::firstOrCreate(
+            $authProvider = $authProviderSupport->model()::firstOrNew(
                 attributes: [
-                    'email'             => $xUser->getEmail()
-                ],
-                values: [
-                    'name'              => $xUser->getName(),
-                    'password'          => 'no-login-' . Str::random(255),
-                    'email_verified_at' => now(),
+                    'provider_id'       => 2,
+                    'provider_user_id'  => $providerUser->getId(),
                 ]
             );
 
-            if ($user->wasRecentlyCreated) {
+            if (! $authProvider?->user_id) {
+                $user = $userSupport->model()::create(
+                    attributes: [
+                        'name'              => $providerUser->getName(),
+                        'email'             => $userSupport->createUniqueColumn(
+                            uniqueColumn: 'email',
+                            suffix: '@' . config('app.user_dummy_email_domain')
+                        ),
+                        'password'          => 'no-login-' . Str::random(255),
+                        'email_verified_at' => now(),
+                    ]
+                );
+                $user->authProviders()
+                    ->save($authProvider);
                 $user->refresh();
 
                 activity()
                     ->info(__(':id : :email : :name : There was a new login with X authentication.', $activityData));
+            } else {
+                $user = $authProvider->user;
             }
+
+            Auth::login($user);
+
+            DB::commit();
         } catch(\Illuminate\Database\UniqueConstraintViolationException $e) {
             activity()
                 ->info(__(':id : :email : X authentication failed. The email is already registered.', $activityData));
-
-            return to_route(route: 'login')
-                ->withErrors([
-                    'x_auth'   => __('auth.failed'),
-                ]);
         } catch(Throwable $e) {
             report($e);
             activity()
                 ->error(__(':id : :email : X authentication failed.', $activityData));
-        }
+        } finally {
+            if ($e ?? false) {
+                DB::rollback();
 
-        Auth::login($user);
+                return to_route(route: 'login')
+                    ->withErrors([
+                        'google_auth'   => __('auth.failed'),
+                    ]);
+            }
+        }
 
         activity()
             ->info(__(':id : :email : :name : has logged in with X authentication.', $activityData));
@@ -69,4 +96,5 @@ class CallbackController extends Controller
         return redirect()
             ->intended(route(user()->dashboardRoute()));
     }
+
 }

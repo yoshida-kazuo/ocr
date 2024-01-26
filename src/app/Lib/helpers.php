@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Illuminate\Encryption\Encrypter;
 use App\Lib\Support\Activity\ActivitySupport;
 
 if (! function_exists('activity')) {
@@ -65,12 +66,69 @@ if (! function_exists('user')) {
     }
 }
 
+if (! function_exists('encryptString')) {
+    /**
+     * encryptString function
+     *
+     * @param string $value
+     * @param string|null $key
+     * @param string $ciphers
+     *
+     * @return string
+     */
+    function encryptString(
+        string $value,
+        ?string $key = null,
+        string $ciphers = 'aes-256-cbc'
+    ): string {
+        if (! $key) {
+            $key = config('app.key');
+        }
+
+        $crypt = app(Encrypter::class, [
+            $key,
+            $ciphers
+        ]);
+
+        return $crypt->encryptString($value);
+    }
+}
+
+if (! function_exists('decryptString')) {
+    /**
+     * Undocumented function
+     *
+     * @param string $encryptValue
+     * @param string|null $key
+     * @param string $cihpers
+     *
+     * @return string
+     */
+    function decryptString(
+        string $encryptValue,
+        ?string $key = null,
+        string $cihpers = 'aes-256-cbc'
+    ): string {
+        if (! $key) {
+            $key = config('app.key');
+        }
+
+        $crypt = app(Encrypter::class, [
+            $key,
+            $cihpers
+        ]);
+
+        return $crypt->decryptString($encryptValue);
+    }
+}
+
 if (! function_exists('sortable')) {
     /**
      * sortable function
      *
      * @param string $title
      * @param string $column
+     *
      * @return string
      */
     function sortable(

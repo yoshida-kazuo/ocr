@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
-use Inertia\Middleware;
-use Tightenco\Ziggy\Ziggy;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class InteriaRole extends HandleInertiaRequests
 {
@@ -45,16 +45,26 @@ class InteriaRole extends HandleInertiaRequests
      *
      * @see https://inertiajs.com/server-side-setup#root-template
      *
+     * @param Request $request
+     *
      * @return string
      */
     public function rootView(Request $request): string
     {
         $rootView = parent::rootView($request);
         $roleName = collect(user()?->roles())
-            ?->search(user('role_id'));
+            ->get(user('role_id'));
 
         if (is_string($roleName)) {
             $rootView = "{$rootView}-{$roleName}";
+
+            Inertia::share(
+                'isProvider',
+                ! (bool) Str::afterLast(
+                    user('email'),
+                    config('app.user_dummy_email_domain')
+                )
+            );
         }
 
         return $rootView;

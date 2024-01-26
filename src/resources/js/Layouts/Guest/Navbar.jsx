@@ -7,13 +7,14 @@ import { useTranslation } from 'react-i18next';
 
 export default function Navbar({
     user,
-    lang
+    lang,
+    menus
 }) {
     const { t } = useTranslation();
 
     return (
-        <header className="bg-base-200 fixed top-0 w-full z-20">
-            <nav className="bg-base-200 mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
+        <header className="bg-base-200 sticky drawer-content top-0 w-full z-10 h-16 bg-opacity-70 backdrop-blur">
+            <nav className="mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
                 <div className="navbar">
                     <div className="flex">
                         <Link href={route('home')} className="mx-6 hidden sm:block">
@@ -23,14 +24,19 @@ export default function Navbar({
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </label>
 
-                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <NavLink href={route('home')} active={route().current('home')}>
-                                {t('Home Page')}
-                            </NavLink>
-                            <NavLink href={route('contact')} active={route().current('contact')}>
-                                {t('Contact')}
-                            </NavLink>
-                        </div>
+                        {menus && (
+                            <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                {menus.map((menu, index) => (
+                                    <NavLink
+                                        key={index}
+                                        href={route(menu.route)}
+                                        active={route().current(menu.route)}
+                                    >
+                                        {t(menu.label)}
+                                    </NavLink>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex justify-end flex-1 px-2">

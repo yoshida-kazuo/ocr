@@ -38,13 +38,13 @@ export default function Create({
     return (
         <RootLayout
             user={auth.user}
-            header={<h2 className="mb-6 font-semibold text-xl leading-tight">{t('Create User')}</h2>}
+            header={<h2 className="mb-4 font-semibold text-xl leading-tight">{t('Create User')}</h2>}
             timezone={timezone}
             lang={lang}
         >
             <Head title={t('Create User')} />
 
-            <div className="p-4 sm:p-8 shadow sm:rounded-md">
+            <div className="p-4 shadow sm:rounded-md">
                 <form onSubmit={submit} className="space-y-6">
                     <section className="max-w-xl">
                         <header>

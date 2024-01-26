@@ -55,7 +55,8 @@ COPY etc/php/igbinary.ini /usr/local/etc/php/conf.d/igbinary.ini
 WORKDIR /tmp
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n && \
-        bash n 18.17.1
+        bash n 20.11.0
+RUN npm install npm@latest -g
 RUN rm -rf /tmp/*
 
 RUN chgrp www-data /var/www

@@ -13,6 +13,7 @@ export default function Login({
     canResetPassword,
     googleAuth,
     xAuth,
+    twitchAuth,
     lang,
     timezone,
     errors
@@ -51,7 +52,7 @@ export default function Login({
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="username"
                         isFocused={true}
                         onChange={(e) => setData('email', e.target.value)}
@@ -61,7 +62,7 @@ export default function Login({
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     <InputLabel htmlFor="password" value={t('Password')} />
 
                     <TextInput
@@ -69,7 +70,7 @@ export default function Login({
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                     />
@@ -88,7 +89,7 @@ export default function Login({
                     </label>
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="flex items-center justify-end mt-2">
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
@@ -99,7 +100,7 @@ export default function Login({
                     )}
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     <div>
                         <PrimaryButton className="w-full" disabled={processing}>
                             {t('Log in')}
@@ -107,7 +108,7 @@ export default function Login({
                     </div>
 
                     {xAuth && (
-                        <div className="mt-4">
+                        <div className="mt-2">
                             <a
                                 href={route('auth.x')}
                                 className="btn w-full"
@@ -120,7 +121,7 @@ export default function Login({
                     )}
 
                     {googleAuth && (
-                        <div className="mt-4">
+                        <div className="mt-2">
                             <a
                                 href={route('auth.google')}
                                 className="btn w-full"
@@ -137,10 +138,25 @@ export default function Login({
                             <InputError message={errors.google_auth} className="mt-2" />
                         </div>
                     )}
+
+                    {twitchAuth && (
+                        <div className="mt-2">
+                            <a
+                                href={route('auth.twitch')}
+                                className="btn w-full"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M3.857 0 1 2.857v10.286h3.429V16l2.857-2.857H9.57L14.714 8V0H3.857zm9.714 7.429-2.285 2.285H9l-2 2v-2H4.429V1.143h9.142v6.286z"/>
+                                    <path d="M11.857 3.143h-1.143V6.57h1.143V3.143zm-3.143 0H7.571V6.57h1.143V3.143z"/>
+                                </svg>
+                                {t('Sign in with Twitch')}
+                            </a>
+                        </div>
+                    )}
                 </div>
             </form>
 
-            <div className="flex items-center justify-end mt-4">
+            <div className="flex items-center justify-end mt-2">
                 <Link
                     href={route('register')}
                     className="underline text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import qs from 'qs';
 import { SortAscendingIcon, SortDescendingIcon } from "@heroicons/react/solid";
 
@@ -9,14 +9,15 @@ export default function Sortable({
     className='',
     ...props
 }) {
-    const pathname = window.location.pathname;
+    const location = usePage().props.ziggy;
     const [url, setUrl] = useState();
     const [icon, setIcon] = useState();
     const iconClassName="flex-shrink-0 w-5 h-5 transition duration-75 inline-block";
+    const { url: currentUrl } = usePage();
 
     useEffect(() => {
         const query = qs.parse(
-            window.location.search, {
+            new URL(`${location.url}${currentUrl}`).search, {
                 ignoreQueryPrefix: true
             }
         );
@@ -37,8 +38,8 @@ export default function Sortable({
             };
         }
 
-        setUrl(`${pathname}?${qs.stringify(query)}`);
-    }, [column, pathname, iconClassName]);
+        setUrl(`${location.path}?${qs.stringify(query)}`);
+    }, [column, location, currentUrl, iconClassName]);
 
     return (
         <Link

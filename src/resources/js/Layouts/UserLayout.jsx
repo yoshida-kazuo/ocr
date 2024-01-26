@@ -11,15 +11,24 @@ export default function User({
     return (
         <div className="drawer sm:drawer-open">
             <input id="user-drawer" type="checkbox" className="drawer-toggle" />
+            <Sidebar
+                lang={lang}
+                timezone={timezone}
+                user={user}
+                header={header}
+            />
 
-            <Navbar lang={lang} timezone={timezone} user={user} header={header} />
-            <Sidebar lang={lang} timezone={timezone} user={user} header={header} />
-
-            <main className="drawer-content absolute w-full sm:max-w-[calc(100%-16em)] mt-24 sm:left-64 transition-transform">
-                <div className="w-auto">
+            <main className="drawer-content absolute w-full sm:max-w-[calc(100%-16em)] sm:left-64 transition-transform">
+                <Navbar
+                    lang={lang}
+                    timezone={timezone}
+                    user={user}
+                    header={header}
+                />
+                <div className="w-auto p-4">
                     {header}
 
-                    <div className="mx-auto mb-6 sm:mr-6">
+                    <div className="mx-auto mb-6">
                         {children}
                     </div>
                 </div>

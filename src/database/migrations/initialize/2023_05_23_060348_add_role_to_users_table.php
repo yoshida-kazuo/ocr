@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('role_id')
-                ->default(9)
-                ->after('id')
-                ->comment('権限[root:3,admin:6,user:9]')
+        Schema::table(table: 'users', callback: function (Blueprint $table) {
+            $table->unsignedInteger(column: 'role_id')
+                ->default(value: 9)
+                ->after(column: 'id')
+                ->comment(comment: '権限[root:3,admin:6,user:9]')
                 ->index();
             $table->softDeletes();
         });
@@ -26,9 +26,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role_id');
-            $table->dropColumn('deleted_at');
+        Schema::table(table: 'users', callback: function (Blueprint $table) {
+            $table->dropColumn(
+                columns: [
+                    'role_id',
+                    'deleted_at',
+                ]
+            );
         });
     }
 };

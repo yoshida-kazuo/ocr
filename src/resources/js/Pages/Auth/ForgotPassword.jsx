@@ -25,11 +25,11 @@ export default function ForgotPassword({
         <AuthLayout timezone={timezone} lang={lang}>
             <Head title={t('Forgot Password')} />
 
-            <div className="mb-4 text-sm">
+            <div className="mb-2 text-sm">
                 {t('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.')}
             </div>
 
-            {status && <div className="mb-4 font-medium text-sm">{status}</div>}
+            {status && <div className="mb-2 font-medium text-sm">{status}</div>}
 
             <form onSubmit={submit}>
                 <TextInput
@@ -37,7 +37,7 @@ export default function ForgotPassword({
                     type="email"
                     name="email"
                     value={data.email}
-                    className="mt-1 block w-full"
+                    className="block w-full"
                     isFocused={true}
                     onChange={(e) => setData('email', e.target.value)}
                 />
@@ -45,7 +45,7 @@ export default function ForgotPassword({
                 <InputError message={errors.email} className="mt-2" />
 
                 <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ml-4" disabled={processing}>
+                    <PrimaryButton disabled={processing}>
                         {t('Email Password Reset Link')}
                     </PrimaryButton>
                 </div>

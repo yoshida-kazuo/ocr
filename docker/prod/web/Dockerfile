@@ -85,9 +85,4 @@ RUN useradd -s /bin/false -u ${APP_USER_ID} -g ${APP_GROUP_ID} -M ${APP_USER}
 ENV APACHE_RUN_USER ${APP_USER}
 ENV APACHE_RUN_GROUP ${APP_GROUP}
 
-RUN rm -rf vendor
-RUN rm -rf node_moduels
-RUN composer install
-RUN npm run build
-
 CMD ["/usr/bin/supervisord", "-n"]

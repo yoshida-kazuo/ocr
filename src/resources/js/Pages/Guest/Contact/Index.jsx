@@ -13,6 +13,7 @@ import Toast from '@/Components/Toast';
 export default function Index({
     auth,
     lang,
+    timezone,
     errors
 }) {
     const { t } = useTranslation();
@@ -39,6 +40,7 @@ export default function Index({
             user={auth.user}
             header={t('Contact')}
             lang={lang}
+            timezone={timezone}
         >
             <Head title={t('Contact')} />
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import LangSelector from '@/Components/LangSelector';
+import TimezoneSelector from '@/Components/TimezoneSelector';
 import NavLink from '@/Components/NavLink';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 export default function Navbar({
     user,
     lang,
+    timezone,
     menus
 }) {
     const { t } = useTranslation();
@@ -65,6 +67,11 @@ export default function Navbar({
                                     <li>
                                         <LangSelector
                                             defaultLang={lang}
+                                        />
+                                    </li>
+                                    <li>
+                                        <TimezoneSelector
+                                            defaultTimezone={timezone}
                                         />
                                     </li>
                                 </ul>

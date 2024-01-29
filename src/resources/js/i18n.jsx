@@ -75,7 +75,9 @@ i18n.use(initReactI18next)
                     "Please complete email verification.": "メール認証を完了してください。",
                     "Create User": "ユーザ作成",
                     "Please register your email address.": "メールアドレスを登録してください。",
-                    "The displayed email address is the one that was used during registration. To use the application comfortably, please register a new email address.": "表示されているメールアドレスは登録時に使用されたものです。アプリケーションを快適に利用するには新しいメールアドレスを登録してください。"
+                    "The displayed email address is the one that was used during registration. To use the application comfortably, please register a new email address.": "表示されているメールアドレスは登録時に使用されたものです。アプリケーションを快適に利用するには新しいメールアドレスを登録してください。",
+                    "You do not have execution permission.": "実行権限がありません。",
+                    "An error has occurred. Please try reloading.": "エラーが発生しています。再読み込みを実施してみてください。"
                 }
             }
         },

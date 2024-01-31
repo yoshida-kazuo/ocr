@@ -5,7 +5,6 @@ namespace App\Http\Controllers\V1\Api\User\Post;
 use App\Lib\Support\User\PostSupport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Api\User\Post\StoreRequest;
-use App\Http\Resources\V1\Api\PostCollection;
 use App\Http\Resources\PostResource;
 
 class StoreController extends Controller

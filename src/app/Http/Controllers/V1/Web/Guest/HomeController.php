@@ -37,14 +37,17 @@ class HomeController extends Controller
         PostSupport $postSupport
     ): \Inertia\Response {
         $posts = $postSupport->catalog(
-            conditions: $request->all(),
+            conditions: [
+                //
+            ],
             perPage: $this->perPage,
             isPublished: true,
             allPublisheUserId: user('id')
         );
 
         return Inertia::render(
-            'Guest/Home', compact(
+            component: 'Guest/Home',
+            props: compact(
                 'posts'
             )
         );

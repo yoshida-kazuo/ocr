@@ -24,6 +24,7 @@ class StoreController extends Controller
         $postSupport->store([
             'user_id'       => user('id'),
             'body'          => $request->post('body'),
+            'topic_type'    => $request->post('topic_type'),
             'is_published'  => $request->post('is_published'),
         ]);
 

@@ -44,7 +44,7 @@ export default function Index({
         >
             <Head title={t('Contact')} />
 
-            <section className="mx-auto w-9/12">
+            <section className="p-4 mx-auto w-full sm:w-[calc(33rem*2)]">
                 <header className="mb-4">
                     <h2 className="font-semibold text-xl leading-tight">{t('Contact')}</h2>
                 </header>

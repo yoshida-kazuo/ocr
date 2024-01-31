@@ -6,8 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up(): void
     {
@@ -17,14 +20,26 @@ return new class extends Migration
             $table->unsignedBigInteger(column: 'post_id')
                 ->nullable()
                 ->default(value: null)
-                ->comment(comment: '返信先ID');
+                ->comment(comment: '返信先ID')
+                ->index();
             $table->unsignedBigInteger(column: 'user_id')
-                ->comment(comment: 'ユーザID');
+                ->comment(comment: 'ユーザID')
+                ->index();
+            $table->string(
+                    column: 'topic_type',
+                    length: 64
+                )
+                ->comment(comment: 'トピックタイプ')
+                ->index();
             $table->string(
                     column: 'body',
-                    length: 3000
+                    length: 12000
                 )
                 ->comment(comment: '投稿内容');
+            $table->unsignedTinyInteger(column: 'is_published')
+                ->default(value: 0)
+                ->comment(comment: '公開フラグ[0:非公開,1:公開]')
+                ->index();
             $table->timestamps();
             $table->softDeletes(column: 'deleted_at')
                 ->nullable()
@@ -35,9 +50,12 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
     public function down(): void
     {
         Schema::dropIfExists(table: 'posts');
     }
+
 };

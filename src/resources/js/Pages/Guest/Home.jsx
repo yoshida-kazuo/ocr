@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
+import TextInput from '@/Components/TextInput';
 import TextArea from '@/Components/TextArea';
 import Toggle from '@/Components/Toggle';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -29,22 +30,22 @@ export default function Home({
     const { data, setData, post, put, delete: destroy, reset, processing, recentlySuccessful } = useForm({
         id: '',
         body: '',
-        is_published: '',
+        topic_type: '',
+        is_published: false,
     });
 
     const submit = (ev) => {
         ev.preventDefault();
 
         post(route('member.post.store'), {
-            onSuccess: resource => modalWriter.current.close()
+            onSuccess: resource => closeModal()
         });
     };
     const editSubmit = (ev) => {
         ev.preventDefault();
-        console.log(data);
 
         put(route('member.post.update'), {
-            onSuccess: resource => modalWriter.current.close()
+            onSuccess: resource => closeModal()
         })
     };
     const deleteSubmit = (ev) => {
@@ -56,30 +57,35 @@ export default function Home({
     };
 
     const newPostModal = () => {
-        reset();
-        setData('is_published', false);
+        setData({
+            id: '',
+            body: '',
+            topic_type: '',
+            is_published: false
+        });
         setMode('new');
         modalWriter.current.showModal();
     };
-    const editPostModal = ({ id, body, is_published }) => {
-        reset();
+    const editPostModal = ({ id, body, topic_type, is_published }) => {
         setData({
             id: id,
             body: body,
+            topic_type: topic_type,
             is_published: is_published
         });
         setMode('edit');
         modalWriter.current.showModal();
     };
     const deletePostModal = ({ id }) => {
-        reset();
         setData({
             id: id
         });
         setConfirmingPostDeletion(true);
     };
+
     const closeModal = () => {
         setConfirmingPostDeletion(false);
+        modalWriter.current.close();
 
         reset();
     };
@@ -93,52 +99,54 @@ export default function Home({
         >
             <Head title={t('Home Page')} />
 
-            <div className="sm:p-4">
-                <div className="w-full">
-                    <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[calc(24rem*3)] mx-auto">
-                        {auth.user && (
-                            <div className="w-full mb-4">
-                                <div className="m-auto w-32 z-10">
-                                    <PrimaryButton
-                                        onClick={newPostModal}
-                                    >{t('Open the post window')}</PrimaryButton>
-                                </div>
-                            </div>
-                        )}
-
-                        {posts.data?.map(post => (
-                            <div key={post.id} className="card sm:w-[23rem] bg-base-100 m-2 shadow-sm">
-                                <div className="card-body">
-                                    <Markdown
-                                        className="markdown text-wrap break-words"
-                                        remarkPlugins={[remarkGfm]}
-                                    >{post.body}</Markdown>
-                                    <p className="text-sm inline-block text-wrap break-words">
-                                        <span className="mr-2">{post.created_at}</span>
-                                        <span>{post.user.name}</span>
-                                    </p>
-
-                                    {post.user_id === auth.user?.id && (
-                                        <div className="flex justify-end">
-                                            <span className="mr-2">
-                                                {post.is_published ? (
-                                                    <EyeIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
-                                                ) : (
-                                                    <EyeOffIcon className="text-base-300 flex-shrink-0 w-5 h-5 transition duration-75" />
-                                                )}
-                                            </span>
-                                            <button className="mr-2" onClick={(e) => editPostModal(post)}>
-                                                <PencilAltIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
-                                            </button>
-                                            <button onClick={(e) => deletePostModal(post)}>
-                                                <XCircleIcon className="flex-shrink-0 w-5 h-5 transition duration-75 text-error" />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+            <div className="w-full">
+                {auth.user && (
+                    <div className="w-full my-4 sticky top-16 z-10">
+                        <div className="m-auto w-32">
+                            <PrimaryButton
+                                onClick={newPostModal}
+                            >{t('Open the post window')}</PrimaryButton>
+                        </div>
                     </div>
+                )}
+
+                <div className="sm:flex sm:flex-wrap sm:items-start w-[calc(33rem*2)] sm:min-w-[calc(33rem*2)] mx-auto">
+                    {posts.data.length ? posts.data?.map(post => (
+                        <div key={post.id} className="card sm:w-[32rem] bg-base-100 m-2 shadow-sm">
+                            <div className="card-body p-6">
+                                <Markdown
+                                    className="markdown text-wrap break-words"
+                                    remarkPlugins={[remarkGfm]}
+                                >{post.body}</Markdown>
+                                <p className="flex justify-end text-sm text-wrap break-words">
+                                    <span className="mr-2">{post.user.name}</span>
+                                    <span>{post.created_at}</span>
+                                </p>
+
+                                {post.user_id === auth.user?.id && (
+                                    <div className="flex justify-end">
+                                        <span className="mr-2">
+                                            {post.is_published ? (
+                                                <EyeIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                            ) : (
+                                                <EyeOffIcon className="text-base-300 flex-shrink-0 w-5 h-5 transition duration-75" />
+                                            )}
+                                        </span>
+                                        <button className="mr-2" onClick={(e) => editPostModal(post)}>
+                                            <PencilAltIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                        </button>
+                                        <button onClick={(e) => deletePostModal(post)}>
+                                            <XCircleIcon className="flex-shrink-0 w-5 h-5 transition duration-75 text-error" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )) : (
+                        <div className="text-lg w-full text-center">
+                            {t('There are no posts.')}
+                        </div>
+                    )}
                 </div>
 
                 <dialog ref={modalWriter} className="modal modal-bottom sm:modal-middle">
@@ -156,11 +164,24 @@ export default function Home({
                         </div>
 
                         <div>
+                            <InputLabel htmlFor="topic_type" value={t('Tpick Type')} />
+
+                            <TextInput
+                                id="topic_type"
+                                className="w-auto"
+                                value={data.topic_type}
+                                onChange={(e) => setData('topic_type', e.target.value)}
+                            />
+
+                            <InputError className="mt-2" message={errors.topic_type} />
+                        </div>
+
+                        <div>
                             <InputLabel htmlFor="is_published" value={t('Switch Display')} />
 
                             <Toggle
                                 id="is_published"
-                                defaultChecked={data.is_published}
+                                checked={data.is_published}
                                 onChange={(e) => setData('is_published', e.target.checked ? true : false)}
                             />
 

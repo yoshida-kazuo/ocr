@@ -33,6 +33,7 @@ export default {
 
     daisyui: {
         themes: [
+            "dark",
             {
                 lofi: {
                     ...require("daisyui/src/theming/themes")["lofi"],

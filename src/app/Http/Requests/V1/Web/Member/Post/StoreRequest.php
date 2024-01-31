@@ -29,6 +29,10 @@ class StoreRequest extends FormRequest
                 'required',
                 'max:1000',
             ],
+            'topic_type' => [
+                'required',
+                'max:64',
+            ],
             'is_published' => [
                 'required',
                 'boolean',

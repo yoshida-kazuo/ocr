@@ -25,6 +25,7 @@ class UpdateController extends Controller
             id: $request->post('id'),
             values: [
                 'body'          => $request->post('body'),
+                'topic_type'    => $request->post('topic_type'),
                 'is_published'  => $request->post('is_published'),
             ]
         );

@@ -182,6 +182,10 @@ class PostSupport
             });
         }
 
+        if ($conditions->get('topic_type')) {
+            $posts->where('topic_type', $conditions->get('topic_type'));
+        }
+
         if (! $conditions->get('order')) {
             $conditions->put('order', [
                 'id' => 'desc',

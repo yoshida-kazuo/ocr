@@ -21,7 +21,6 @@ class StoreController extends Controller
         StoreRequest $request,
         PostSupport $postSupport
     ): \Illuminate\Http\RedirectResponse {
-        dd((bool) $request->post('is_published'));
         $postSupport->store([
             'user_id'       => user('id'),
             'body'          => $request->post('body'),

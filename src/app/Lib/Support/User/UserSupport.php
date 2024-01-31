@@ -40,31 +40,6 @@ class UserSupport
     }
 
     /**
-     * findSocial function
-     *
-     * @param string $provider
-     * @param string $providerId
-     * @param boolean $withTrashed
-     *
-     * @return mixed
-     */
-    public function findSocial(
-        string $provider,
-        string $providerId,
-        bool $withTrashed = false
-    ): mixed {
-        $user = UserModel::with('role')
-            ->where('provider', $provider)
-            ->where('provider_id', $providerId);
-
-        if ($withTrashed) {
-            $user->withTrashed();
-        }
-
-        return $user->first();
-    }
-
-    /**
      * store function
      *
      * @param array $values

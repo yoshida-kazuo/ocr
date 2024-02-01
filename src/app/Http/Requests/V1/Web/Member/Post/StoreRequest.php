@@ -27,7 +27,7 @@ class StoreRequest extends FormRequest
         return [
             'body' => [
                 'required',
-                'max:1000',
+                'max:12000',
             ],
             'topic_type' => [
                 'required',

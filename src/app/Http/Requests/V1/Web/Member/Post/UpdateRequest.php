@@ -36,7 +36,7 @@ class UpdateRequest extends FormRequest
             ],
             'body' => [
                 'required',
-                'max:1000',
+                'max:12000',
             ],
             'topic_type' => [
                 'required',

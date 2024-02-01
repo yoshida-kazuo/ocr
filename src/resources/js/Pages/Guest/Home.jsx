@@ -110,9 +110,9 @@ export default function Home({
                     </div>
                 )}
 
-                <div className="sm:flex sm:flex-wrap sm:items-start w-[calc(33rem*2)] sm:min-w-[calc(33rem*2)] mx-auto">
+                <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[calc(48rem)] sm:min-w-[calc(48rem)] mx-auto">
                     {posts.data.length ? posts.data?.map(post => (
-                        <div key={post.id} className="card sm:w-[32rem] bg-base-100 m-2 shadow-sm">
+                        <div key={post.id} className="card sm:w-[calc(48rem)] bg-base-100 m-2 shadow-sm">
                             <div className="card-body p-6">
                                 <Markdown
                                     className="markdown text-wrap break-words"

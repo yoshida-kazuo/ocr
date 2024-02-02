@@ -23,6 +23,8 @@ services:
     ports:
       - "${APP_PORT}:80"
       - "${APP_VITE_PORT}:${APP_VITE_PORT}"
+    environment:
+      - APP_SERVER_PATH=${APP_SERVER_PATH}
     restart: always
 
 networks:

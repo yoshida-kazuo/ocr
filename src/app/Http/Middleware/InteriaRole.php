@@ -56,15 +56,7 @@ class InteriaRole extends HandleInertiaRequests
             ->get(user('role_id'));
 
         if (is_string($roleName)) {
-            $rootView = "{$rootView}-{$roleName}";
-
-            Inertia::share(
-                'isProvider',
-                ! (bool) Str::afterLast(
-                    user('email'),
-                    config('app.user_dummy_email_domain')
-                )
-            );
+            // $rootView = "{$rootView}-{$roleName}";
         }
 
         return $rootView;

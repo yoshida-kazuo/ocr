@@ -66,7 +66,12 @@ export default function Home({
         setMode('new');
         modalWriter.current.showModal();
     };
-    const editPostModal = ({ id, body, topic_type, is_published }) => {
+    const editPostModal = ({
+        id,
+        body,
+        topic_type,
+        is_published
+    }) => {
         setData({
             id: id,
             body: body,
@@ -110,9 +115,9 @@ export default function Home({
                     </div>
                 )}
 
-                <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[calc(48rem)] sm:min-w-[calc(48rem)] mx-auto">
+                <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[48rem] sm:min-w-[48rem] mx-auto">
                     {posts.data.length ? posts.data?.map(post => (
-                        <div key={post.id} className="card sm:w-[calc(48rem)] bg-base-100 m-2 shadow-sm">
+                        <div key={post.id} className="card sm:w-[48rem] bg-base-100 m-2 shadow-md">
                             <div className="card-body p-6">
                                 <Markdown
                                     className="markdown text-wrap break-words"
@@ -150,7 +155,7 @@ export default function Home({
                 </div>
 
                 <dialog ref={modalWriter} className="modal modal-bottom sm:modal-middle">
-                    <div className="modal-box">
+                    <div className="modal-box sm:w-[66rem] sm:max-w-[66rem]">
                         <h3 className="font-bold text-lg">{t('Post')}</h3>
                         <div className="mt-2">
                             <TextArea

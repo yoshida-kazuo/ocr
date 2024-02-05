@@ -3,8 +3,6 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class InteriaRole extends HandleInertiaRequests
 {

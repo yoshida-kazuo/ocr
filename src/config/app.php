@@ -202,4 +202,12 @@ return [
 
     'user_dummy_email_domain' => env('APP_USER_DUMMY_EMAIL_DOMAIN', 'example.jp'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | A flag indicating whether registration is allowed
+    |--------------------------------------------------------------------------
+    */
+
+    'enable_registration' => env('APP_ENABLE_REGISTRATION', false),
+
 ];

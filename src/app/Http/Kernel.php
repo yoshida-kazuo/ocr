@@ -68,9 +68,9 @@ class Kernel extends HttpKernel
         'precognitive'      => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         'signed'            => \App\Http\Middleware\ValidateSignature::class,
         'throttle'          => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        // 'verified'          => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'verified'          => \App\Http\Middleware\EnsureEmailIsVerified::class,
         'account.ban'       => \App\Http\Middleware\AccountBan::class,
+        'app.manager'       => \App\Http\Middleware\ApplicationManager::class,
     ];
 
     /**
@@ -92,6 +92,7 @@ class Kernel extends HttpKernel
         \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
         \Illuminate\Contracts\Session\Middleware\AuthenticatesSessions::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \App\Http\Middleware\ApplicationManager::class,
         \Illuminate\Auth\Middleware\Authorize::class,
         \App\Http\Middleware\InteriaRole::class,
         \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,

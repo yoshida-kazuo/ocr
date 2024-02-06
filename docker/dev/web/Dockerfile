@@ -57,7 +57,6 @@ RUN docker-php-ext-install redis
 RUN docker-php-ext-install xdebug
 RUN docker-php-ext-install mcrypt
 RUN docker-php-ext-install imagick
-RUN docker-php-ext-install igbinary
 RUN docker-php-ext-install opcache
 
 RUN a2enmod rewrite

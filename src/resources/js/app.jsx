@@ -9,6 +9,18 @@ import.meta.glob([
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker
+            .register('/service-worker.js')
+            .then(function(registration) {
+                //
+            }, function(err) {
+                //
+            });
+    });
+}
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(

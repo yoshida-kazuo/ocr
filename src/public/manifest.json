@@ -1,8 +1,8 @@
 {
-    "name": "dollcom",
-    "short_name": "dollcom",
-    "theme_color": "#2196f3",
-    "background_color": "#2196f3",
+    "name": "VRILSYS",
+    "short_name": "VRILSYS",
+    "theme_color": "#fff",
+    "background_color": "#fff",
     "display": "standalone",
     "orientation": "portrait",
     "scope": "https://dev.vrilsys.com",
@@ -33,5 +33,5 @@
             "sizes": "512x512",
             "type": "image/png"
         }
-      ]
+    ]
 }

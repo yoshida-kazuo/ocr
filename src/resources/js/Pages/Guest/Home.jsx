@@ -115,9 +115,9 @@ export default function Home({
                     </div>
                 )}
 
-                <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[48rem] sm:min-w-[48rem] mx-auto">
+                <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[45rem] sm:min-w-[45rem] mx-auto">
                     {posts.data.length ? posts.data?.map(post => (
-                        <div key={post.id} className="card sm:w-[48rem] bg-base-100 m-2 shadow-md">
+                        <div key={post.id} className="card sm:w-[45rem] bg-base-100 m-2 shadow-md">
                             <div className="card-body p-6">
                                 <Markdown
                                     className="markdown text-wrap break-words"
@@ -155,7 +155,7 @@ export default function Home({
                 </div>
 
                 <dialog ref={modalWriter} className="modal modal-bottom sm:modal-middle">
-                    <div className="modal-box sm:w-[66rem] sm:max-w-[66rem]">
+                    <div className="modal-box sm:w-[45rem] sm:max-w-[45rem]">
                         <h3 className="font-bold text-lg">{t('Post')}</h3>
                         <div className="mt-2">
                             <TextArea

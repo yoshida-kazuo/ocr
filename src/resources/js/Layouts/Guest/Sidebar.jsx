@@ -9,7 +9,7 @@ export default function Sidebar({
     const { t } = useTranslation();
 
     return (
-        <div className="drawer-side z-20 sm:z-0">
+        <div className="drawer-side z-30 sm:z-0">
             <label htmlFor="guest-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
             <aside id="default-sidebar" className="fixed">
                 <div className="absolute bg-base-200 bg-opacity-70 backdrop-blur top-0 h-28 w-64">

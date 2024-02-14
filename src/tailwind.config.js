@@ -33,17 +33,19 @@ export default {
 
     daisyui: {
         themes: [
-            "light",
             "dark",
-            "wireframe",
-            "fantasy",
-            "dracula",
-            "garden",
-            "business",
-            "corporate",
-            "bumblebee",
-            "cmyk",
-            "lofi"
+            {
+                lofi: {
+                    ...require("daisyui/src/theming/themes")["lofi"],
+                    "info": "#bae6fd",
+                    "success": "#bbf7d0",
+                    "warning": "#fef9c3",
+                    "--rounded-box": ".3rem",
+                    "--rounded-btn": ".3rem",
+                    "--rounded-badge": ".3rem",
+                    "--tab-radius": ".3rem"
+                }
+            }
         ],
         darkTheme: "white",
         base: true,

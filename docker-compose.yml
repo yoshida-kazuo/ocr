@@ -3,12 +3,32 @@ version: '3.9'
 services:
   web:
     hostname: ${APP_HOST_NAME}
-    build: ${APP_BUILD_PATH}/web
+    build:
+      context: ${APP_BUILD_PATH}
+      args:
+        APP_BUILD_ENV: ${APP_BUILD_ENV}
+        APP_BUILD_IMAGE: ${APP_BUILD_IMAGE}
+        APP_GROUP: ${APP_GROUP}
+        APP_GROUP_ID: ${APP_GROUP_ID}
+        APP_USER: ${APP_USER}
+        APP_USER_ID: ${APP_USER_ID}
+        APP_NODE_VERSION: ${APP_NODE_VERSION}
+        APP_SERVER_PATH: ${APP_SERVER_PATH}
+        APP_SERVER_DOCUMENT_PATH: ${APP_SERVER_DOCUMENT_PATH}
+        APP_PHP_MEMORY: ${APP_PHP_MEMORY}
+        APP_XDEBUG_CLIENT_HOST: ${APP_XDEBUG_CLIENT_HOST}
+        APP_XDEBUG_CLIENT_PORT: ${APP_XDEBUG_CLIENT_PORT}
     volumes:
       - ${APP_SOURCE_PATH}:${APP_SERVER_PATH}
     ports:
       - "${APP_PORT}:80"
       - "${APP_VITE_PORT}:${APP_VITE_PORT}"
+    environment:
+      - APP_SERVER_PATH=${APP_SERVER_PATH}
+    networks:
+      default:
+        ipv4_address: ${APP_IP_ADDRESS}
+    restart: always
 
 networks:
   default:

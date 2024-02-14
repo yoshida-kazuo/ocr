@@ -1,7 +1,7 @@
 export default function SecondaryButton({
     type = 'button',
     className = '',
-    disabled,
+    disabled = false,
     children,
     ...props
 }) {
@@ -10,13 +10,10 @@ export default function SecondaryButton({
             {...props}
             type={type}
             className={
-                `btn btn-secondary ${
-                    disabled && 'btn-disabled'
-                } ` + className
+                `btn btn-secondary ${disabled ? 'btn-disabled' : ''}`
+                + ` ${className}`
             }
             disabled={disabled}
-        >
-            {children}
-        </button>
+        >{children}</button>
     );
 }

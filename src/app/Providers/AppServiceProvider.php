@@ -65,5 +65,22 @@ class AppServiceProvider extends ServiceProvider
             $timezone,
             $lang
         );
+
+        if (config('app.enable_maintenance') === true) {
+            $ips = [
+                $this->app->request->ip(),
+                $this->app->request->headers->get('x-real-ip'),
+                $this->app->request->headers->get('x-forwarded-for'),
+                null,
+            ];
+            $diffIps = array_diff(
+                $ips,
+                explode(',', config('app.maintenance_ipaddress'))
+            );
+
+            if ($diffIps === $ips) {
+                abort(503, __("We're currently undergoing maintenance. Please try accessing again after a while."));
+            }
+        }
     }
 }

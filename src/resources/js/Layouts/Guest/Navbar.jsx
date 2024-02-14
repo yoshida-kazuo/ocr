@@ -1,6 +1,7 @@
 import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import LangSelector from '@/Components/LangSelector';
+import TimezoneSelector from '@/Components/TimezoneSelector';
 import NavLink from '@/Components/NavLink';
 import { Link } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
@@ -8,13 +9,14 @@ import { useTranslation } from 'react-i18next';
 export default function Navbar({
     user,
     lang,
+    timezone,
     menus
 }) {
     const { t } = useTranslation();
 
     return (
-        <header className="bg-base-200 sticky drawer-content top-0 w-full z-10 h-16 bg-opacity-70 backdrop-blur">
-            <nav className="mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
+        <header className="bg-base-200 sticky drawer-content top-0 w-full z-20 h-16 bg-opacity-70 backdrop-blur">
+            <nav className="mt-0 mb-0 mx-auto w-full sm:w-[66rem] relative">
                 <div className="navbar">
                     <div className="flex">
                         <Link href={route('home')} className="mx-6 hidden sm:block">
@@ -65,6 +67,11 @@ export default function Navbar({
                                     <li>
                                         <LangSelector
                                             defaultLang={lang}
+                                        />
+                                    </li>
+                                    <li>
+                                        <TimezoneSelector
+                                            defaultTimezone={timezone}
                                         />
                                     </li>
                                 </ul>

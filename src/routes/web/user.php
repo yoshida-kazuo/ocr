@@ -13,6 +13,7 @@ Route::middleware([
 
         Route::get('dashboard', \App\Http\Controllers\V1\Web\User\DashboardController::class)
             ->name('user.dashboard');
+
         Route::get('profile', [
                 \App\Http\Controllers\V1\Web\User\ProfileController::class,
                 'edit',

@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('guest')
+Route::middleware([
+        'guest',
+        'app.manager',
+    ])
     ->prefix('/')
     ->group(function () {
 

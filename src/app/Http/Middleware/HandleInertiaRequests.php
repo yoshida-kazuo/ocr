@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Middleware;
+use Inertia\Inertia;
 use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -30,6 +32,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        //
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
@@ -43,6 +47,11 @@ class HandleInertiaRequests extends Middleware
             },
             'timezone'  => config('app.timezone_view'),
             'lang'      => config('app.locale'),
+            'isProvider'=>
+                ! (bool) Str::afterLast(
+                    user('email'),
+                    config('app.user_dummy_email_domain')
+                )
         ]);
     }
 }

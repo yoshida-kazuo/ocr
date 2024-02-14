@@ -151,6 +151,7 @@ export default function Login({
                                 </svg>
                                 {t('Sign in with Twitch')}
                             </a>
+                            <InputError message={errors.twitch_auth} className="mt-2" />
                         </div>
                     )}
                 </div>
@@ -164,6 +165,7 @@ export default function Login({
                     {t('Register Here for New Account')}
                 </Link>
             </div>
+            <InputError message={errors.registration} className="mt-2" />
         </AuthLayout>
     );
 }

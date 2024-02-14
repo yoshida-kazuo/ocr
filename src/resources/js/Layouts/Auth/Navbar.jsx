@@ -13,8 +13,8 @@ export default function Navbar({
     const { t } = useTranslation();
 
     return (
-        <header className="bg-base-200 sticky drawer-content top-0 w-full z-10 h-16 bg-opacity-70 backdrop-blur">
-            <nav className="mt-0 mb-0 mx-auto w-full sm:w-9/12 relative">
+        <header className="bg-base-200 sticky drawer-content top-0 w-full z-20 h-16 bg-opacity-70 backdrop-blur">
+            <nav className="mt-0 mb-0 mx-auto w-full sm:w-[66rem] relative">
                 <div className="navbar">
                     <div className="flex">
                         <Link href={route('home')} className="mx-6 hidden sm:block">

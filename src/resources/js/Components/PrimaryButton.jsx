@@ -1,6 +1,6 @@
 export default function PrimaryButton({
     className = '',
-    disabled,
+    disabled = false,
     children,
     ...props
 }) {
@@ -8,13 +8,10 @@ export default function PrimaryButton({
         <button
             {...props}
             className={
-                `btn btn-primary ${
-                    disabled && 'btn-disabled'
-                } ` + className
+                `btn btn-primary ${disabled ? 'btn-disabled' : ''}`
+                + ` ${className}`
             }
             disabled={disabled}
-        >
-            {children}
-        </button>
+        >{children}</button>
     );
 }

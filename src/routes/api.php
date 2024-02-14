@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,11 +20,20 @@ Route::prefix('/')
 
     });
 
-Route::middleware([
+Route::prefix('v1')
+    ->middleware([
         'auth:sanctum',
     ])
     ->group(function() {
 
-        //
+        Route::prefix('user')
+            ->group(function() {
+
+                Route::post('post', \App\Http\Controllers\V1\Api\User\Post\StoreController::class)
+                    ->name('api.user.post.store');
+                Route::get('post', \App\Http\Controllers\V1\Api\User\Post\IndexController::class)
+                    ->name('api.user.post');
+
+            });
 
     });

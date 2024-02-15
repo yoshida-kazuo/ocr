@@ -12,7 +12,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker
-            .register('/service-worker.js')
+            .register('/static/sw.js')
             .then(function(registration) {
                 //
             }, function(err) {

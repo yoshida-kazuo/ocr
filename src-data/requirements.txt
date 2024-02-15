@@ -1,0 +1,5 @@
+fire
+opencv-python
+opencv-contrib-python
+openai-whisper
+TTS

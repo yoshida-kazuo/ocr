@@ -20,6 +20,7 @@ services:
         APP_XDEBUG_CLIENT_PORT: ${APP_XDEBUG_CLIENT_PORT}
     volumes:
       - ${APP_SOURCE_PATH}:${APP_SERVER_PATH}
+      - ./src-data:/opt/data/src
     ports:
       - "${APP_PORT}:80"
       - "${APP_VITE_PORT}:${APP_VITE_PORT}"
@@ -32,5 +33,5 @@ services:
 
 networks:
   default:
-    external:
-      name: ${APP_NETWORK}
+    name: ${APP_NETWORK}
+    external: true

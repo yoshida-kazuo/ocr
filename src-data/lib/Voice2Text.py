@@ -13,9 +13,9 @@ class Voice2Text:
 
         whidper_model = whisper.load_model(model)
         result = whidper_model.transcribe(file,
-                                  language=lang,
-                                  fp16=False,
-                                  task=task,
-                                  word_timestamps=True)
+                                          language=lang,
+                                          fp16=False,
+                                          task=task,
+                                          word_timestamps=True)
 
         print(result['text'])

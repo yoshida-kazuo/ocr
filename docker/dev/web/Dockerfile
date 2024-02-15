@@ -93,6 +93,7 @@ WORKDIR /opt/data
 RUN sed -i '/Components:/ s/$/ contrib/' /etc/apt/sources.list.d/debian.sources
 RUN apt update && \
         apt install -y \
+                jq \
                 open-jtalk \
                 open-jtalk-mecab-naist-jdic \
                 hts-voice-nitech-jp-atr503-m001 \

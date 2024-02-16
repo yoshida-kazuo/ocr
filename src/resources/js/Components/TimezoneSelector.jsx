@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { usePage, router } from '@inertiajs/react';
 import axios from 'axios';
 import Select from '@/Components/Select';
 import { useTranslation } from 'react-i18next';
 
-const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) => {
+const TimezoneSelector = React.memo(({
+    id='',
+    name='',
+    className='',
+    defaultTimezone='',
+}) => {
     const { t } = useTranslation();
     const [timezones, setTimezones] = useState([]);
     const [selectedTimezone, setSelectedTimezone] = useState(defaultTimezone);
@@ -25,13 +30,13 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
             .catch(error => console.error(t('Failed to retrieve a list of time zones.')));
     }, []);
 
-    const handleTimezoneChange = (event) => {
+    const handleTimezoneChange = useCallback((event) => {
         setIsLoading(true);
 
         const oldTimezone = selectedTimezone;
         setSelectedTimezone(event.target.value);
 
-        axios.put(route('timezone-put'), {timezone: event.target.value})
+        axios.put(route('timezone-put'), { timezone: event.target.value })
             .then(response => {
                 router.visit(url);
             })
@@ -43,7 +48,7 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
             .finally(() => {
                 setIsLoading(false);
             });
-    };
+    }, [selectedTimezone, setSelectedTimezone, setIsLoading, router, url, t]);
 
     return (
         <Select
@@ -56,6 +61,6 @@ const TimezoneSelector = ({id='', name='', className='', defaultTimezone=''}) =>
             disabled={isLoading}
         />
     );
-};
+});
 
 export default TimezoneSelector;

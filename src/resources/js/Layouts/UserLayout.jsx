@@ -18,7 +18,7 @@ export default function User({
                 header={header}
             />
 
-            <main className="drawer-content absolute w-full sm:max-w-[calc(100%-16em)] sm:left-64 transition-transform">
+            <main className="drawer-content absolute w-full sm:max-w-[calc(100%-16em)] sm:left-64 transition-transform overflow-hidden">
                 <Navbar
                     lang={lang}
                     timezone={timezone}

@@ -36,7 +36,9 @@ RUN apt update && \
                 ffmpeg \
                 libsm6 \
                 libxext6 \
-                gettext-base
+                gettext-base \
+                pdftk \
+                cron
 
 RUN mkdir -p /usr/src/php/ext
 WORKDIR /usr/src/php/ext
@@ -60,7 +62,7 @@ RUN pecl bundle xdebug && \
         docker-php-ext-install opcache
 
 RUN a2enmod rewrite && \
-        find /etc -type f -path "*\/ImageMagick-*" -name "policy.xml" | xargs sed -i.orig -e 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read" pattern="PDF"/g'
+        find /etc -type f -path "*\/ImageMagick-*" -name "policy.xml" | xargs sed -i.orig -e 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/g'
 
 WORKDIR /tmp
 COPY etc/apache/httpd-vhosts.conf /tmp/000-default.conf.template
@@ -86,6 +88,11 @@ RUN groupadd -g ${APP_GROUP_ID} ${APP_GROUP} && \
 ENV APACHE_RUN_USER ${APP_USER}
 ENV APACHE_RUN_GROUP ${APP_GROUP}
 
+WORKDIR /etc/cron.d
+RUN echo "* * * * * cd ${APP_SERVER_PATH} && /usr/local/bin/php -d memory_limit=-1 artisan schedule:run" > laravel && \
+        chmod 0644 ./laravel && \
+        crontab -u ${APP_USER} laravel
+
 
 
 RUN rm -rf /opt/data/.venv
@@ -97,7 +104,10 @@ RUN apt update && \
                 open-jtalk \
                 open-jtalk-mecab-naist-jdic \
                 hts-voice-nitech-jp-atr503-m001 \
-                espeak && \
+                espeak \
+                gnupg \
+                apt-transport-https \
+                lsb-release && \
         apt clean && \
         rm -rf /var/lib/apt/lists/*
 ENV USE_NNPACK 0
@@ -114,8 +124,12 @@ RUN pip install https://github.com/VOICEVOX/voicevox_core/releases/download/0.14
         TTS \
         opencv-python \
         opencv-contrib-python
-
-
+RUN echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" \
+                | tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
+RUN curl -s https://notesalexp.org/debian/alexp_key.asc | apt-key add - && \
+        apt update && \
+        apt install -y tesseract-ocr \
+                libtesseract-dev
 
 WORKDIR ${APP_SERVER_PATH}
 

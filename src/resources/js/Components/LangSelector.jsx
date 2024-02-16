@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Select from '@/Components/Select';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 
-export default function LangSelector({
+const LangSelector = React.memo(({
     id = '',
     name = '',
     className = '',
     defaultLang = '',
-}) {
+}) => {
     const { t } = useTranslation();
     const [langs, setLangs] = useState([]);
     const [selectedLang, setSelectedLang] = useState(defaultLang);
@@ -32,7 +32,7 @@ export default function LangSelector({
         i18n.changeLanguage(selectedLang);
     }, [selectedLang, i18n]);
 
-    const handleLangChange = event => {
+    const handleLangChange = useCallback((event) => {
         const oldLang = selectedLang,
             newLang = event.target.value;
 
@@ -43,7 +43,7 @@ export default function LangSelector({
 
                 setSelectedLang(oldLang);
             });
-    };
+    }, [setSelectedLang, t]);
 
     return (
         <Select
@@ -55,4 +55,6 @@ export default function LangSelector({
             className={className}
         />
     );
-}
+});
+
+export default LangSelector;

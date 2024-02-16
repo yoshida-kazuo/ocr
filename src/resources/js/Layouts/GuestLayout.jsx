@@ -30,7 +30,7 @@ export default function Guest({
                 menus={menus}
             />
 
-            <main className="drawer-content absolute w-full max-w-full transition-transform">
+            <main className="drawer-content absolute w-full max-w-full transition-transform overflow-hidden">
                 <Navbar
                     lang={lang}
                     timezone={timezone}

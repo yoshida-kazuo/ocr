@@ -34,6 +34,16 @@ Route::prefix('v1')
                 Route::get('post', \App\Http\Controllers\V1\Api\User\Post\IndexController::class)
                     ->name('api.user.post');
 
+                Route::prefix('ocr')
+                    ->group(function() {
+
+                        Route::post('analyze', \App\Http\Controllers\V1\Api\User\Ocr\Analyze\StoreController::class)
+                            ->name('api.user.ocr.analyze.store');
+                        Route::get('analyze/{documentId}', \App\Http\Controllers\V1\Api\User\Ocr\Analyze\IndexController::class)
+                            ->name('api.user.ocr.analyze');
+
+                    });
+
             });
 
     });

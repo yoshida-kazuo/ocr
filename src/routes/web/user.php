@@ -30,4 +30,21 @@ Route::middleware([
             ])
             ->name('profile.destroy');
 
+        Route::prefix('ocr')
+            ->group(function() {
+
+                Route::get('example', \App\Http\Controllers\V1\Web\User\Ocr\ExampleController::class)
+                    ->name('user.ocr.example');
+
+                Route::get('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\IndexController::class)
+                    ->name('user.ocr.monitoring-setup');
+                Route::post('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\StoreController::class)
+                    ->name('user.ocr.monitoring-setup.store');
+                Route::put('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\UpdateController::class)
+                    ->name('user.ocr.monitoring-setup.update');
+                Route::delete('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\DestroyController::class)
+                    ->name('user.ocr.monitoring-setup.delete');
+
+            });
+
     });

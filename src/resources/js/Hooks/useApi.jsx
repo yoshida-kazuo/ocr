@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { router } from '@inertiajs/react'
 
-const useApi = () => {
+const useApi = React.memo(() => {
     const { t } = useTranslation();
     const [errors, setErrors] = useState({});
 
-    const api = (url, { method, data = {}, params =  {}}) => {
+    const api = useCallback((url, { method, data = {}, params =  {}}) => {
         setErrors({});
 
         return axios({
@@ -32,17 +32,22 @@ const useApi = () => {
 
             throw error;
         });
-    };
+    }, [setErrors]);
 
-    const post = (url, data = {}) => {
+    const post = useCallback((url, data = {}) => {
         return api(url, { method: 'post', ...data });
-    };
+    }, []);
 
-    const get = (url, params = {}) => {
+    const get = useCallback((url, params = {}) => {
         return api(url, { method: 'get', ...params });
-    };
+    }, []);
 
-    return { api, post, get, errors };
-};
+    return {
+        api,
+        post,
+        get,
+        errors
+    };
+});
 
 export default useApi;

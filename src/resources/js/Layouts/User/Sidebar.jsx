@@ -1,7 +1,7 @@
 import React from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import { UserIcon, DesktopComputerIcon } from "@heroicons/react/solid";
+import { DesktopComputerIcon } from "@heroicons/react/solid";
 import { useTranslation } from 'react-i18next';
 
 export default function Sidebar() {
@@ -12,6 +12,16 @@ export default function Sidebar() {
             "label": t('Dashboard'),
             "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         },
+        {
+            "route": "user.ocr.example",
+            "label": t('OCR Analyze Check'),
+            "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
+        },
+        {
+            "route": "user.ocr.monitoring-setup",
+            "label": t('Monitoring Setup'),
+            "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
+        }
     ];
 
     return (

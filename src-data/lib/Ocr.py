@@ -1,9 +1,13 @@
 import os
-import pathlib import Path
+import shutil
+from pathlib import Path
 import cv2 as cv
 import numpy as np
 import json
 import subprocess
+from PIL import Image
+import easyocr
+from multiprocessing import Process
 
 class Ocr:
 
@@ -118,17 +122,6 @@ class Ocr:
 
         self._output_file = value
 
-    @property
-    def output_json_file(self) -> str:
-        return self._output_json_file
-
-    @output_json_file.setter
-    def output_json_file(self, value):
-        if not isinstance(value, str):
-            raise ValueError('output_json_file must be a str')
-
-        self._output_json_file = value
-
     def __init__(self) -> None:
         self.paper_layout = {
             'a4_p': [
@@ -151,20 +144,13 @@ class Ocr:
 
         cv.imwrite(file_path, image)
 
-    def cells(self,
+    def image_correction(self,
               file_path: str=None,
               output_dir: str=None,
-              output_file: str='output.jpg',
-              output_json_file: str='output.json',
+              output_file: str='output.png',
               dpi: int=None) -> None:
         """
-        罫線から座標を取得する\n
-        * サイズ補正（dpiに基づく）
-        * 傾き補正
-        * 歪み補正
-        * 罫線取得
-        * OCR解析\n
-        For example, docker-compose exec --user=1000 web python3 /var/www/storage/app/bin/opencv/main.py image cells --file_path=/var/www/storage/app/bin/opencv/ocr-11--.jpg --dpi=288 --output_file=001.jpg --output_json_file=001.json --output_dir=/var/www/storage/app/bin/opencv
+        画像補正
         """
 
         if isinstance(file_path, str):
@@ -176,18 +162,10 @@ class Ocr:
 
         if isinstance(output_file, str):
             self.output_file = output_file
-        if isinstance(output_json_file, str):
-            self.output_json_file = output_json_file
         if not isinstance(dpi, int):
             dpi = self.dpi
 
         output_file_path = f"{self.output_dir}/{self.output_file}"
-        output_json_file_path = f"{self.output_dir}/{self.output_json_file}"
-
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir, exist_ok=True)
-        if not os.path.exists(output_json_file):
-            Path(output_json_file_path).touch()
 
         self.image = cv.imread(self.file_path)
         h, w = self.image.shape[:2]
@@ -199,72 +177,12 @@ class Ocr:
         p_w, _ = self.a4shape(layout=self.layout, dpi=dpi)
         ratio = p_w / w
         if ratio != 1:
-            self.image = cv.resize(self.image, (int(w * ratio), int(h * ratio)))
+            self.image = cv.resize(self.image, dsize=None, fx=ratio, fy=ratio)
         del p_w, ratio
 
         self.image = self.auto_rotate(self.image)
         self.image = self.trapezoid_correction(self.image)
         self.write(output_file_path, self.image)
-
-        tessdata = []
-        # tessdata: list= self.ocr(file_path=output_file_path,
-        #                     lang='jpn_seishin+jpn',
-        #                     dpi=288)
-
-        img = cv.cvtColor(self.image, cv.COLOR_BGR2GRAY)
-        _, img_bin = cv.threshold(img, 215, 255, cv.THRESH_BINARY)
-        img =~ img_bin
-        del img_bin
-
-        tmp_img_h = np.ones((1, self.line_min_width), np.uint8)
-        tmp_img_v = np.ones((self.line_min_width, 1), np.uint8)
-        img_h = cv.morphologyEx(img, cv.MORPH_OPEN, tmp_img_h)
-        img_v = cv.morphologyEx(img, cv.MORPH_OPEN, tmp_img_v)
-        img = img_h | img_v
-        del tmp_img_h, tmp_img_v, img_h, img_v
-
-        if isinstance(self.line_width, int):
-            params = np.ones((self.line_width, self.line_width), np.uint8)
-            img = cv.dilate(img, params, iterations=1)
-
-        _, _, stats, _ = cv.connectedComponentsWithStats(~img,
-                                                         connectivity=8,
-                                                         ltype=cv.CV_32S)
-        area_thresh = 3333
-        lines = []
-        for idx, (x, y, w, h, area) in enumerate(stats[2:], start=2):
-            if (area < area_thresh):
-                continue
-            x = int(x)
-            y = int(y)
-            w = int(w)
-            h = int(h)
-
-            lines.append([
-                x, y,
-                x+w, y,
-                x+w, y+h,
-                x, y+h
-            ])
-
-            crop_file_path = f'{output_dir}/langs/{idx}.png'
-            txt_file_path = f'{output_dir}/langs/{idx}.gt.txt'
-            crop_image = self.image[y:y+h, x:x+w]
-            self.write(crop_file_path, crop_image)
-            del crop_image
-
-            ocr = self.ocr(crop_file_path, 'jpn_seishin', 288)
-            ocr_text = ''.join([r['t'] for r in ocr])
-            with open(txt_file_path, 'w') as file:
-                file.write(ocr_text)
-
-        del stats, img
-
-        with open(output_json_file_path, 'w') as json_file:
-            json_file.write(json.dumps({
-                'lines': lines,
-                'words': tessdata
-                }))
 
     def _sorted_contours(self,
                          image: object) -> list:
@@ -304,17 +222,15 @@ class Ocr:
         for _, idx in enumerate(sorted_indices):
             contour = contours[idx]
             rect = cv.minAreaRect(contour)
-            box = cv.boxPoints(rect)
             w = rect[1][0]
             h = rect[1][1]
             a = rect[2]
 
-            if w < 1000 or a == 90 or a == 0 or a < 0.09:
+            if w < 1000 or abs(a) == 90 or a == 0 \
+                    or (not (-78 < a < -102) and not (-12 < a < 12) and not (78 < a < 102) and not (168 < a < 192)):
                 continue
 
-            if w > h:
-                a -= 90
-
+            a -= round(a / 90, 1) * 90
             r_h, r_w = image.shape[:2]
             m = cv.getRotationMatrix2D((r_h / 2, r_w / 2), a, 1)
             image = cv.warpAffine(image, m, (r_w, r_h), borderValue=(255,255,255))
@@ -339,7 +255,7 @@ class Ocr:
             h = rect[1][1]
             a = rect[2]
 
-            if w < 1000 or a == 90:
+            if w < 1000 or abs(a) == 90 or a == 0:
                 continue
 
             h, w = image.shape[:2]
@@ -356,10 +272,10 @@ class Ocr:
 
     def ocr(self,
             file_path: str,
-            lang: str='jpn',
+            lang: str='jpn_custom',
             dpi: int=300,
-            tessdata_dir: str='../../ocr/tesseract/langs',
-            user_words_dir: str='../../ocr/tesseract/words.txt') -> list:
+            tessdata_dir: str='/opt/data/src/ocr/tesseract/langs',
+            user_words_dir: str='/opt/data/src/ocr/tesseract/words.txt') -> list:
         tessconf = ' '.join([
             file_path,
             'stdout',
@@ -377,24 +293,334 @@ class Ocr:
             '{"x":.[6]?[0],"y":.[7]?[0],"w":.[8]?[0],"h":.[9]?[0],"cnf":.[10]?[0],"txt":.[11]?[0]})\''
         ])
         result = subprocess.run(f'tesseract {tessconf} | {tsv2json}', shell=True, capture_output=True, text=True)
-        tessdata = []
+        tessdata = {
+            'status': 'succeeded',
+            'analyzeResult': {
+                'pages': [
+                    {
+                        'unit': 'pixel',
+                        'lines': [],
+                        'words': [],
+                    }
+                ]
+            }
+        }
         for data in json.loads(result.stdout):
             x = int(data['x'])
             y = int(data['y'])
             w = int(data['w'])
             h = int(data['h'])
 
-            tessdata.append({
+            tessdata['analyzeResult']['pages'][0]['words'].append({
                 'polygon': [
                     x, y,
                     x+w, y,
                     x+w, y+h,
                     x, y+h
                 ],
-                'c': float(data['cnf']),
-                't': data['txt']
+                'confidence': float(data['cnf']),
+                'content': data['txt']
             })
         del tessconf, tsv2json, result
 
-        return tessdata
+        return json.dumps(tessdata, ensure_ascii=False)
 
+    def text_detection(self,
+                        image_path: str):
+        image = cv.imread(image_path)
+        gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+
+        mser = cv.MSER_create()
+        regions, _ = mser.detectRegions(gray)
+
+        bounding_boxes = [cv.boundingRect(region) for region in regions]
+        merged_rectangles = self.merge_adjacent_rectangles(bounding_boxes)
+
+        json_rectangles = []
+        for rect in merged_rectangles:
+            x, y, w, h = rect
+            if (w > h and h < 12) or (h > w and w < 12):
+                continue
+
+            cv.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            overlay = image.copy()
+            cv.fillPoly(overlay, [np.array([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])], (0, 0, 255, 128))
+            cv.addWeighted(overlay, 0.5, image, 0.5, 0, image)
+
+            json_rectangles.append({
+                'x': x,
+                'y': y,
+                'width': w,
+                'height': h
+            })
+
+        output_path = os.path.splitext(image_path)[0] + "_text_detected.jpg"
+        cv.imwrite(output_path, image)
+
+        return json.dumps(json_rectangles)
+
+    def is_bbox_overlapped(self,
+                           bbox1,
+                           bbox2,
+                           threshold=33):
+        x1, y1, w1, h1 = bbox1
+        x2, y2, w2, h2 = bbox2
+
+        w1 += threshold
+        x1 -= threshold
+        w2 += threshold
+        x2 -= threshold
+
+        return (x1 < x2 + w2 and x2 < x1 + w1) and (y1 < y2 + h2 and y2 < y1 + h1)
+
+    def merge_adjacent_rectangles(self,
+                                  rectangles):
+        merged_rectangles = []
+
+        for i, rect in enumerate(rectangles):
+            is_merged = False
+
+            for merged_rect in merged_rectangles:
+                if self.is_bbox_overlapped(rect, merged_rect):
+                    x = min(rect[0], merged_rect[0])
+                    y = min(rect[1], merged_rect[1])
+                    w = max(rect[0] + rect[2], merged_rect[0] + merged_rect[2]) - x
+                    h = max(rect[1] + rect[3], merged_rect[1] + merged_rect[3]) - y
+                    merged_rectangles[merged_rectangles.index(merged_rect)] = (x, y, w, h)
+                    is_merged = True
+                    break
+
+            if not is_merged:
+                merged_rectangles.append(rect)
+
+        if len(merged_rectangles) < len(rectangles):
+            return self.merge_adjacent_rectangles(merged_rectangles)
+        else:
+            return merged_rectangles
+
+    def line_detection(self,
+                       image_path: str):
+        image = cv.imread(image_path)
+        img_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+
+        _, img_bin = cv.threshold(img_gray, 215, 255, cv.THRESH_BINARY)
+        img = ~img_bin
+        del img_bin
+
+        tmp_img_h = np.ones((1, self.line_min_width), np.uint8)
+        tmp_img_v = np.ones((self.line_min_width, 1), np.uint8)
+        img_h = cv.morphologyEx(img, cv.MORPH_OPEN, tmp_img_h)
+        img_v = cv.morphologyEx(img, cv.MORPH_OPEN, tmp_img_v)
+        img = img_h | img_v
+        del tmp_img_h, tmp_img_v, img_h, img_v
+
+        if isinstance(self.line_width, int):
+            params = np.ones((self.line_width, self.line_width), np.uint8)
+            img = cv.dilate(img, params, iterations=1)
+
+        _, _, stats, _ = cv.connectedComponentsWithStats(~img, connectivity=8, ltype=cv.CV_32S)
+        area_min_thresh = 3333 * (self.dpi / 300)
+        area_max_thresh = 99999 * (self.dpi / 300)
+        lines = []
+
+        for idx, (x, y, w, h, area) in enumerate(stats[2:], start=2):
+            if (area < area_min_thresh or area > area_max_thresh):
+                continue
+            x = int(x)
+            y = int(y)
+            w = int(w)
+            h = int(h)
+
+            cv.rectangle(image, (x, y), (x+w, y+h), (0, 0, 255), 2)
+            lines.append({
+                'x': x,
+                'y': y,
+                'width': w,
+                'height': h
+            })
+
+        output_path = os.path.splitext(image_path)[0] + "_area_detected.jpg"
+        cv.imwrite(output_path, image)
+
+        return json.dumps(lines)
+
+    def analyze(self,
+                image_path: str):
+        file_name = os.path.basename(image_path)
+        file_name_without_extension, file_extension = os.path.splitext(file_name)
+        input_folder = os.path.dirname(image_path)
+        analyze_file_path = os.path.join(input_folder, file_name_without_extension + "_analyze" + file_extension)
+        shutil.copyfile(image_path, analyze_file_path)
+
+        processes = []
+        try:
+            for filename in os.listdir(input_folder):
+                if filename.startswith("cropped_area_"):
+                    file_path = os.path.join(input_folder, filename)
+                    process = Process(target=os.remove,
+                                      args=(file_path,))
+                    process.start()
+                    processes.append(process)
+            for process in processes:
+                process.join()
+        except Exception as e:
+            print("Error while deleting cropped_area files:", e)
+
+        image_analyze = cv.imread(analyze_file_path)
+
+        linearea_json = self.line_detection(analyze_file_path)
+        linearea = json.loads(linearea_json)
+
+        processes = []
+        for idx, area in enumerate(linearea):
+            x, y, w, h = area['x'], area['y'], area['width'], area['height']
+            cv.rectangle(image_analyze, (x, y), (x+w, y+h), (255, 255, 255), -1)
+            cropped_image_path = os.path.join(input_folder, f"cropped_area_line-{x}-{y}-{w}-{h}.png")
+            process = Process(target=self.crop_text_area,
+                              args=(analyze_file_path, cropped_image_path, x, y, w, h,))
+            process.start()
+            processes.append(process)
+        for process in processes:
+            process.join()
+
+        cv.imwrite(analyze_file_path, image_analyze)
+
+        textarea_json = self.text_detection(analyze_file_path)
+        textarea = json.loads(textarea_json)
+
+        processes = []
+        for idx, area in enumerate(textarea):
+            x, y, w, h = area['x'], area['y'], area['width'], area['height']
+            cv.rectangle(image_analyze, (x, y), (x+w, y+h), (255, 255, 255), -1)
+            cropped_image_path = os.path.join(input_folder, f"cropped_area_text-{x}-{y}-{w}-{h}.png")
+            process = Process(target=self.crop_text_area,
+                              args=(analyze_file_path, cropped_image_path, x, y, w, h,))
+            process.start()
+            processes.append(process)
+        for process in processes:
+            process.join()
+
+        cv.imwrite(analyze_file_path, image_analyze)
+
+        ocr_results = []
+        try:
+            for filename in os.listdir(input_folder):
+                if filename.startswith("cropped_area_"):
+                    file_path = os.path.join(input_folder, filename)
+
+                    # output_list = self.run_easyocr(file_path)
+                    output_list = self.run_tesseract(file_path)
+
+                    if output_list:
+                        image_info = filename.split("_")[-1].split(".")[0].split("-")[-4:]
+                        x_offset, y_offset, _, _ = map(int, image_info)
+                        for output in output_list:
+                            x = int(output['x']) + x_offset
+                            y = int(output['y']) + y_offset
+                            output['x'] = x
+                            output['y'] = y
+
+                        ocr_results.append(output_list)
+        except Exception as e:
+            print("Error while analyze cropped_area files:", e)
+
+        output_json_path = os.path.join(input_folder, "analyze.json")
+        with open(output_json_path, 'w') as f:
+            json.dump(ocr_results,
+                      f,
+                      ensure_ascii=False)
+
+        return json.dumps(ocr_results,
+                          ensure_ascii=False)
+
+    def crop_text_area(self,
+                       image_path: str,
+                       output_path: str,
+                       x: int,
+                       y: int,
+                       w: int,
+                       h: int):
+        image = cv.imread(image_path)
+        cropped_area = image[y:y+h, x:x+w]
+
+        cv.imwrite(output_path, cropped_area)
+
+    def process_ocr_result(self,
+                           output_text: str):
+        result = subprocess.run(
+            f'echo "{output_text}" | jq -rRs \'split("\n")[1:-1]|map([split("\t")[]|split(",")]|select(.[10]?[0] != "-1")|{{"x":.[6]?[0],"y":.[7]?[0],"w":.[8]?[0],"h":.[9]?[0],"cnf":.[10]?[0],"txt":.[11]?[0]}})\'',
+            capture_output=True,
+            text=True,
+            shell=True
+        )
+
+        return result.stdout.strip()
+
+    def run_tesseract(self,
+                      image_path: str,
+                      lang: str='jpn_custom+jpn+eng',
+                      dpi: int=300,
+                      tessdata_dir: str='/opt/data/src/ocr/tesseract/langs',
+                      user_words_dir: str='/opt/data/src/ocr/tesseract/words.txt'):
+        result = subprocess.run([
+            'tesseract',
+            image_path,
+            'stdout',
+            '-l', lang,
+            '--psm', '11',
+            '-c', 'tessedit_create_tsv=1',
+            '--tessdata-dir', tessdata_dir,
+            '--user-words', user_words_dir,
+            '--dpi', str(dpi),
+            'quiet'
+        ], capture_output=True, text=True)
+
+        tsv = result.stdout.strip()
+        tsv2json = self.process_ocr_result(tsv)
+
+        return json.loads(tsv2json)
+
+    def run_easyocr(self,
+                    image_path: str) -> str:
+        reader = easyocr.Reader(['ja', 'en'],
+                                gpu=False)
+        results = reader.readtext(image_path,
+                                 detail=True,
+                                 decoder='greedy',
+                                 beamWidth=5,
+                                 batch_size=1,
+                                 workers=0,
+                                 blocklist='|',
+                                 paragraph=False,
+                                 min_size=1,   # (int, default = 10) - Filter text box smaller than minimum value in pixel
+                                 rotation_info=None,
+                                 contrast_ths=0.1, # (float, default = 0.5) - target contrast level for low contrast text box
+                                 adjust_contrast=0.7,
+
+                                 text_threshold=0.7,
+                                 low_text=0.4,
+                                 link_threshold=0.4,
+                                 canvas_size=2560,
+                                 mag_ratio=1,
+
+                                 slope_ths=0.1,
+                                 ycenter_ths=0.5,
+                                 height_ths=0.5,
+                                 width_ths=0.7, # (float, default = 0.5) - Maximum horizontal distance to merge boxes.
+                                 add_margin=0.1, # (float, default = 0.1) - Extend bounding boxes in all direction by certain value. This is important for language with complex script (E.g. Thai).
+                                 x_ths=1.0,
+                                 y_ths=0.5)
+
+        json_list = []
+        for result in results:
+            bounding_box, text, confidence = result
+            x_min = min(point[0] for point in bounding_box)
+            y_min = min(point[1] for point in bounding_box)
+            x_max = max(point[0] for point in bounding_box)
+            y_max = max(point[1] for point in bounding_box)
+            width = x_max - x_min
+            height = y_max - y_min
+            formatted_result = {"x": x_min, "y": y_min, "w": width, "h": height, "txt": text, "cnf": confidence}
+            json_list.append(formatted_result)
+
+        return json_list

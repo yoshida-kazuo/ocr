@@ -2,6 +2,8 @@
 
 namespace App\Services\Ocr\Tesseract\V2;
 
+use App\Services\Ocr\Tesseract\V2\JsonParser;
+use App\Services\Ocr\Utility;
 use App\Services\Ocr\OcrInterface;
 use Illuminate\Support\Facades\Storage;
 use Exception;
@@ -11,8 +13,10 @@ use Exception;
  *
  * ...
  */
-class Ocr
+class Ocr implements OcrInterface
 {
+    use JsonParser,
+        Utility;
 
     /**
      * endpoint
@@ -42,7 +46,7 @@ class Ocr
      */
     public function __construct()
     {
-        $this->model = 'jpn_seishin';
+        $this->model = 'jpn_custom';
     }
 
     /**
@@ -98,27 +102,25 @@ class Ocr
 
         try {
             $baseDirectory = dirname($filepath);
-            $imageFilepath = "{$baseDirectory}/pdf";
-            exec("pdfimages -png {$filepath} {$imageFilepath}", $pdfimage, $resultCode);
+            $imageFilepath = "{$baseDirectory}/pdf.png";
 
-            if ($resultCode !== 0) {
+            $this->pdf2image(
+                $filepath,
+                $imageFilepath,
+                'A4',
+                $dpi
+            );
+            if (! file_exists($imageFilepath)) {
                 throw new Exception(__(':filepath : Failed to extract images from PDF.', [
                     'filepath'  => $filepath,
                 ]));
             }
 
-            $files = glob($imageFilepath . '-*.png');
-            $file = reset($files);
-            unset($files,
-                $imageFilepath,
-                $pdfimage,
-                $resultCode);
-
-            exec("python /opt/data/src/main.py ocr analyze --image_path={$file}", $pythonResult, $resultCode);
+            exec("python /opt/data/src/main.py ocr analyze --image_path={$imageFilepath} --engine=tesseract --lang=jpn_custom", $pythonResult, $resultCode);
             if ($resultCode !== 0) {
                 throw new Exception(__(':filepath : :file : OCR failed.', [
                     'filepath'  => $filepath,
-                    'file'      => $file,
+                    'file'      => $imageFilepath,
                 ]));
             }
 
@@ -127,18 +129,26 @@ class Ocr
                 $resultData = [
                     'status'    => 'succeeded',
                     'analyzeResult' => [
-                        'pages' => [],
+                        'pages' => [
+                            [
+                                'unit'  => 'pixel',
+                                'lines' => [],
+                                'words' => [],
+                            ],
+                        ],
                     ],
                 ];
 
-                foreach (json_decode($jsonText, true) as $array) {
-                    foreach ($array as $area) {
+                $jsonTextDecode = json_decode($jsonText, true) ?: [];
+
+                foreach ($jsonTextDecode as $areas) {
+                    foreach ($areas as $area) {
                         $x = (int) $area['x'];
                         $y = (int) $area['y'];
                         $w = (int) $area['w'];
                         $h = (int) $area['h'];
 
-                        $resultData['analyzeResult']['pages'][] = [
+                        $resultData['analyzeResult']['pages'][0]['words'][] = [
                             'polygon' => [
                                 $x, $y,
                                 $x+$w, $y,
@@ -153,9 +163,10 @@ class Ocr
             }
             $jsonText = json_encode($resultData);
 
-            unset($file,
+            unset($imageFilepath,
                 $pythonResult,
                 $resultCode,
+                $jsonTextDecode,
                 $resultData);
 
             $jsonFile = 'tesseract.json';

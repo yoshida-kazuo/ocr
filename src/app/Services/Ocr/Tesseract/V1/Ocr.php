@@ -2,6 +2,8 @@
 
 namespace App\Services\Ocr\Tesseract\V1;
 
+use App\Services\Ocr\Tesseract\V1\JsonParser;
+use App\Services\Ocr\Utility;
 use App\Services\Ocr\OcrInterface;
 use Illuminate\Support\Facades\Storage;
 use Exception;
@@ -11,8 +13,10 @@ use Exception;
  *
  * ...
  */
-class Ocr
+class Ocr implements OcrInterface
 {
+    use JsonParser,
+        Utility;
 
     /**
      * endpoint
@@ -42,7 +46,7 @@ class Ocr
      */
     public function __construct()
     {
-        $this->model = 'jpn_seishin';
+        $this->model = 'jpn_custom';
     }
 
     /**
@@ -98,28 +102,26 @@ class Ocr
 
         try {
             $baseDirectory = dirname($filepath);
-            $imageFilepath = "{$baseDirectory}/pdf";
-            exec("pdfimages -png {$filepath} {$imageFilepath}", $pdfimage, $resultCode);
+            $imageFilepath = "{$baseDirectory}/pdf.png";
 
-            if ($resultCode !== 0) {
+            $this->pdf2image(
+                $filepath,
+                $imageFilepath,
+                'A4',
+                $dpi
+            );
+
+            if (! file_exists($imageFilepath)) {
                 throw new Exception(__(':filepath : Failed to extract images from PDF.', [
                     'filepath'  => $filepath,
                 ]));
             }
 
-            $files = glob($imageFilepath . '-*.png');
-            $file = reset($files);
-            unset($files,
-                $imageFilepath,
-                $pdfimage,
-                $resultCode);
-
-            exec("python /opt/data/src/main.py ocr ocr --file_path={$file} --lang=\"jpn_custom+jpn\"", $pythonResult, $resultCode);
-
+            exec("python /opt/data/src/main.py ocr ocr --file_path={$imageFilepath} --lang=jpn_custom", $pythonResult, $resultCode);
             if ($resultCode !== 0) {
                 throw new Exception(__(':filepath : :file : OCR failed.', [
                     'filepath'  => $filepath,
-                    'file'      => $file,
+                    'file'      => $imageFilepath,
                 ]));
             }
 

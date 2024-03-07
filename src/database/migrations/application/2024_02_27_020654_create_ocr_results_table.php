@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('document_id', 255)
                 ->comment('ドキュメント識別子')
                 ->unique();
+            $table->string('document_name', 255)
+                ->nullable()
+                ->comment('ドキュメント名');
             $table->string('service', 64)
                 ->comment('解析サービス');
             $table->string('storage', 36)

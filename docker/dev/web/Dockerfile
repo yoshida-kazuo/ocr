@@ -30,7 +30,6 @@ RUN apt update && \
                 libmagickwand-dev \
                 supervisor \
                 poppler-utils \
-                fonts-takao \
                 python3-venv \
                 python3-pip \
                 ffmpeg \
@@ -38,7 +37,21 @@ RUN apt update && \
                 libxext6 \
                 gettext-base \
                 pdftk \
-                cron
+                cron \
+                jq \
+                gnupg \
+                apt-transport-https \
+                lsb-release && \
+        apt install -y fonts-arphic-ukai \
+                fonts-arphic-uming \
+                fonts-ipafont-mincho \
+                fonts-ipafont-gothic \
+                fonts-unfonts-core \
+                fonts-liberation \
+                fonts-dejavu \
+                fonts-texgyre \
+                fonts-noto-cjk-extra \
+                fonts-takao
 
 RUN mkdir -p /usr/src/php/ext
 WORKDIR /usr/src/php/ext
@@ -62,7 +75,9 @@ RUN pecl bundle xdebug && \
         docker-php-ext-install opcache
 
 RUN a2enmod rewrite && \
-        find /etc -type f -path "*\/ImageMagick-*" -name "policy.xml" | xargs sed -i.orig -e 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/g'
+        find /etc -type f -path "*/ImageMagick-*" -name "policy.xml" -exec sed -i.orig 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/g' {} + && \
+        find /etc -type f -path "*/ImageMagick-*" -name "policy.xml" -exec sed -i.orig 's/<policy domain="resource" name="memory" value="256MiB"\/>/<policy domain="resource" name="memory" value="1GiB"\/>/g' {} + && \
+        find /etc -type f -path "*/ImageMagick-*" -name "policy.xml" -exec sed -i.orig 's/<policy domain="resource" name="map" value="512MiB"\/>/<policy domain="resource" name="map" value="2GiB"\/>/g' {} +
 
 WORKDIR /tmp
 COPY etc/apache/httpd-vhosts.conf /tmp/000-default.conf.template
@@ -100,14 +115,10 @@ WORKDIR /opt/data
 RUN sed -i '/Components:/ s/$/ contrib/' /etc/apt/sources.list.d/debian.sources
 RUN apt update && \
         apt install -y \
-                jq \
                 open-jtalk \
                 open-jtalk-mecab-naist-jdic \
                 hts-voice-nitech-jp-atr503-m001 \
-                espeak \
-                gnupg \
-                apt-transport-https \
-                lsb-release && \
+                espeak && \
         apt clean && \
         rm -rf /var/lib/apt/lists/*
 ENV USE_NNPACK 0
@@ -123,13 +134,20 @@ RUN pip install https://github.com/VOICEVOX/voicevox_core/releases/download/0.14
         openai-whisper \
         TTS \
         opencv-python \
-        opencv-contrib-python
+        opencv-contrib-python \
+        easyocr \
+        PyMuPDF
 RUN echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" \
                 | tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
 RUN curl -s https://notesalexp.org/debian/alexp_key.asc | apt-key add - && \
         apt update && \
         apt install -y tesseract-ocr \
                 libtesseract-dev
+RUN mkdir /opt/data/cache
+ENV HF_HOME /opt/data/cache
+RUN usermod -d /opt/data ${APP_USER}
+RUN mkdir /opt/data/.EasyOCR
+RUN chown ${APP_USER} /opt/data /opt/data/cache /opt/data/.EasyOCR
 
 WORKDIR ${APP_SERVER_PATH}
 

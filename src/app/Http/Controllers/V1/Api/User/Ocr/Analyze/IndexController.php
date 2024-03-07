@@ -26,7 +26,10 @@ class IndexController extends Controller
         $status = 'running';
 
         $ocrPageResult = null;
-        $ocrResult = $ocrResultSupport->findDocumentById($documentId);
+        $ocrResult = $ocrResultSupport->findDocumentById(
+            documentId: $documentId,
+            userId: user('id')
+        );
         if ($ocrResult->ocrPagesResult->count() > 0) {
             $ocrPageResult = $ocrResult->ocrPagesResult
                 ->get(0);

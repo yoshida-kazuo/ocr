@@ -18,6 +18,8 @@ class StoreController extends Controller
      * 解析テスト
      *
      * @param Request $request
+     * @param ProcessOcr $processOcr
+     * @param OcrResultSupport $ocrResultSupport
      *
      * @return array
      */
@@ -25,48 +27,44 @@ class StoreController extends Controller
         Request $request,
         ProcessOcr $processOcr,
         OcrResultSupport $ocrResultSupport
-    ) {
+    ): array {
         $status = 'ng';
         $ocrResult = null;
         $errors = null;
 
         try {
             $pdf = $request->post('pdf');
+            $pageNumber = $request->post('pageNumber');
             $service = config('ocr.service');
             $ocrDisk = Storage::disk(config('ocr.storageDriver'));
+
             $documentId = uuid();
             $workDir = config('ocr.workDir') . "/{$documentId}";
 
-            $canvas = base64_decode(
-                explode(',', $request->post('canvas'))[1]
+            $pdfData = base64_decode(
+                explode(',', $pdf)[1]
             );
+            unset($pdf);
 
             if (! $ocrDisk->exists($workDir)) {
                 $ocrDisk->makeDirectory($workDir);
             }
 
-            $buffFilepath = "{$workDir}/buff.png";
-            $ocrDisk->put($buffFilepath, $canvas);
-            unset($canvas);
-
-            $filepath = "{$workDir}/ocr.pdf";
-            $image = new Imagick($ocrDisk->path($buffFilepath));
-            $image->setImageFormat('pdf');
-            $image->writeImage($ocrDisk->path($filepath));
-            $image->destroy();
-            $ocrDisk->delete($buffFilepath);
+            $pdfFilepath = "{$workDir}/ocr.pdf";
+            $ocrDisk->put($pdfFilepath, $pdfData);
 
             if ($ocrResult = $ocrResultSupport->store([
                 'user_id'       => user('id'),
                 'document_id'   => $documentId,
                 'service'       => $service,
-                'page_number'   => $request->post('pageNumber'),
+                'page_number'   => $pageNumber,
             ])) {
                 $processOcr::dispatch([
-                    'filepath'      => $ocrDisk->path($filepath),
+                    'filepath'      => $ocrDisk->path($pdfFilepath),
                     '--service'     => $service,
                     '--document-id' => $documentId,
                     '--user-id'     => user('id'),
+                    '--pages'       => $pageNumber,
                 ]);
             }
 

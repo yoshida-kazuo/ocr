@@ -38,7 +38,7 @@ const AnalyzeResult = ({
         if (analyze) {
             fetchDataWithInterval();
 
-            setTimeout(stopFetchingData, 180000);
+            setTimeout(stopFetchingData, 10 * 60 * 1000);
         }
 
         return () => {

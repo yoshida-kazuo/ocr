@@ -6,8 +6,9 @@ import numpy as np
 import json
 import subprocess
 from PIL import Image
-import easyocr
 from multiprocessing import Process
+import fitz
+import easyocr
 
 class Ocr:
 
@@ -136,21 +137,22 @@ class Ocr:
         self.dpi = 300
         self.line_min_width = 30
 
-    def write(self,
-              file_path: str,
-              image: object=None) -> None:
-        if image is None:
-            image = self.image
-
-        cv.imwrite(file_path, image)
-
     def image_correction(self,
               file_path: str=None,
               output_dir: str=None,
               output_file: str='output.png',
               dpi: int=None) -> None:
         """
-        画像補正
+        画像補正を行うメソッド
+
+        Args:
+            file_path (str, optional): 入力画像ファイルのパス。デフォルトはNone。
+            output_dir (str, optional): 出力ディレクトリのパス。デフォルトはNone。
+            output_file (str, optional): 出力ファイル名。デフォルトは'output.png'。
+            dpi (int, optional): 出力画像の解像度。デフォルトはNone。
+
+        Returns:
+            None
         """
 
         if isinstance(file_path, str):
@@ -174,18 +176,28 @@ class Ocr:
         if w > h:
             self.layout = 'landscape'
 
-        p_w, _ = self.a4shape(layout=self.layout, dpi=dpi)
+        p_w, _ = self._a4shape(layout=self.layout, dpi=dpi)
         ratio = p_w / w
         if ratio != 1:
             self.image = cv.resize(self.image, dsize=None, fx=ratio, fy=ratio)
         del p_w, ratio
 
-        self.image = self.auto_rotate(self.image)
-        self.image = self.trapezoid_correction(self.image)
-        self.write(output_file_path, self.image)
+        self.image = self._auto_rotate(self.image)
+        self.image = self._trapezoid_correction(self.image)
+        cv.imwrite(output_file_path, self.image)
 
     def _sorted_contours(self,
                          image: object) -> list:
+        """
+        画像の輪郭をソートして返すメソッド
+
+        Args:
+            image (object): 入力画像データ
+
+        Returns:
+            list: ソートされた輪郭のリスト
+        """
+
         image_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
         _, b = cv.threshold(image_gray, 50, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
         contours, _ = cv.findContours(b, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
@@ -197,26 +209,58 @@ class Ocr:
                    reverse=True)
         ]
 
-    def a4shape(self,
+    def _a4shape(self,
                 layout: str='portrait',
                 dpi: int=None) -> list:
+        """
+        A4用紙のサイズを取得するメソッド
+
+        Args:
+            layout (str, optional): ページのレイアウト。'portrait' または 'landscape'。デフォルトは'portrait'。
+            dpi (int, optional): 解像度（DPI）。デフォルトはNone。
+
+        Returns:
+            list: A4用紙の幅と高さのリスト
+        """
+
         if not isinstance(dpi, int):
             dpi = self.dpi
 
         paper_layout = self.paper_layout[f"a4_{layout[0]}"]
 
-        return [self.mm2pixcel(mm, dpi) for mm in paper_layout]
+        return [self._mm2pixel(mm, dpi) for mm in paper_layout]
 
-    def mm2pixcel(self,
+    def _mm2pixel(self,
                   mm: int,
                   dpi: int=None) -> int:
+        """
+        ミリメートルをピクセルに変換するメソッド
+
+        Args:
+            mm (int): ミリメートル単位の長さ
+            dpi (int, optional): 解像度（DPI）。デフォルトはNone。
+
+        Returns:
+            int: ピクセル単位の長さ
+        """
+
         if not isinstance(dpi, int):
             dpi = self.dpi
 
         return int(dpi * mm / 25.4)
 
-    def auto_rotate(self,
+    def _auto_rotate(self,
                     image: object) -> object:
+        """
+        画像を自動的に回転させるメソッド
+
+        Args:
+            image (object): 入力画像データ
+
+        Returns:
+            object: 回転後の画像データ
+        """
+
         contours, sorted_indices = self._sorted_contours(image)
 
         for _, idx in enumerate(sorted_indices):
@@ -242,8 +286,18 @@ class Ocr:
 
         return image
 
-    def trapezoid_correction(self,
+    def _trapezoid_correction(self,
                              image: object) -> object:
+        """
+        台形補正を行うメソッド
+
+        Args:
+            image (object): 入力画像データ
+
+        Returns:
+            object: 補正後の画像データ
+        """
+
         contours, sorted_indices = self._sorted_contours(image)
 
         for _, idx in enumerate(sorted_indices):
@@ -274,17 +328,34 @@ class Ocr:
             file_path: str,
             lang: str='jpn_custom',
             dpi: int=300,
+            config_path: str='/opt/data/src/ocr/tesseract/jpn_custom.conf',
             tessdata_dir: str='/opt/data/src/ocr/tesseract/langs',
-            user_words_dir: str='/opt/data/src/ocr/tesseract/words.txt') -> list:
+            user_words_path: str='/opt/data/src/ocr/tesseract/words.txt') -> list:
+        """
+        OCR（Optical Character Recognition）を実行するメソッド
+
+        Args:
+            file_path (str): OCRを実行する画像ファイルのパス
+            lang (str, optional): 使用する言語。デフォルトは'jpn_custom'。
+            dpi (int, optional): 解像度（DPI）。デフォルトは300。
+            config_path (str, optional): Tesseractの設定ファイルのパス。デフォルトは'/opt/data/src/ocr/tesseract/jpn_custom.conf'。
+            tessdata_dir (str, optional): Tesseractの言語データのディレクトリパス。デフォルトは'/opt/data/src/ocr/tesseract/langs'。
+            user_words_path (str, optional): ユーザー定義単語ファイルのパス。デフォルトは'/opt/data/src/ocr/tesseract/words.txt'。
+
+        Returns:
+            list: OCR結果のリスト
+        """
+
         tessconf = ' '.join([
             file_path,
             'stdout',
-            f'-l {lang}',
-            '--psm 11',
-            '-c tessedit_create_tsv=1',
-            f'--tessdata-dir {tessdata_dir}',
-            f'--user-words {user_words_dir}',
-            f'--dpi {dpi}'
+            '-l', lang,
+            '--psm', '11',
+            '-c', 'tessedit_create_tsv=1',
+            '--tessdata-dir', tessdata_dir,
+            '--user-words', user_words_path,
+            '--dpi', str(dpi),
+            config_path
         ])
         tsv2json = ' '.join([
             'jq -rRs \'split("\n")[1:-1]|',
@@ -327,6 +398,16 @@ class Ocr:
 
     def text_detection(self,
                         image_path: str):
+        """
+        画像内のテキスト領域を検出するメソッド
+
+        Args:
+            image_path (str): 画像ファイルのパス
+
+        Returns:
+            str: 検出されたテキスト領域の情報を含むJSON形式の文字列
+        """
+
         image = cv.imread(image_path)
         gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
@@ -334,7 +415,7 @@ class Ocr:
         regions, _ = mser.detectRegions(gray)
 
         bounding_boxes = [cv.boundingRect(region) for region in regions]
-        merged_rectangles = self.merge_adjacent_rectangles(bounding_boxes)
+        merged_rectangles = self._merge_adjacent_rectangles(bounding_boxes)
 
         json_rectangles = []
         for rect in merged_rectangles:
@@ -359,10 +440,22 @@ class Ocr:
 
         return json.dumps(json_rectangles)
 
-    def is_bbox_overlapped(self,
+    def _is_bbox_overlapped(self,
                            bbox1,
                            bbox2,
                            threshold=33):
+        """
+        2つのバウンディングボックスが重なっているかどうかを判定するメソッド
+
+        Args:
+            bbox1: バウンディングボックス1
+            bbox2: バウンディングボックス2
+            threshold (int, optional): 重なりの閾値。デフォルトは33。
+
+        Returns:
+            bool: バウンディングボックスが重なっている場合はTrue、それ以外の場合はFalse
+        """
+
         x1, y1, w1, h1 = bbox1
         x2, y2, w2, h2 = bbox2
 
@@ -373,15 +466,25 @@ class Ocr:
 
         return (x1 < x2 + w2 and x2 < x1 + w1) and (y1 < y2 + h2 and y2 < y1 + h1)
 
-    def merge_adjacent_rectangles(self,
+    def _merge_adjacent_rectangles(self,
                                   rectangles):
+        """
+        隣接する矩形を結合するメソッド
+
+        Args:
+            rectangles (list): 矩形のリスト
+
+        Returns:
+            list: 結合された矩形のリスト
+        """
+
         merged_rectangles = []
 
         for i, rect in enumerate(rectangles):
             is_merged = False
 
             for merged_rect in merged_rectangles:
-                if self.is_bbox_overlapped(rect, merged_rect):
+                if self._is_bbox_overlapped(rect, merged_rect):
                     x = min(rect[0], merged_rect[0])
                     y = min(rect[1], merged_rect[1])
                     w = max(rect[0] + rect[2], merged_rect[0] + merged_rect[2]) - x
@@ -394,12 +497,22 @@ class Ocr:
                 merged_rectangles.append(rect)
 
         if len(merged_rectangles) < len(rectangles):
-            return self.merge_adjacent_rectangles(merged_rectangles)
+            return self._merge_adjacent_rectangles(merged_rectangles)
         else:
             return merged_rectangles
 
     def line_detection(self,
                        image_path: str):
+        """
+        画像内の直線領域を検出するメソッド
+
+        Args:
+            image_path (str): 画像ファイルのパス
+
+        Returns:
+            str: 検出された直線領域の情報を含むJSON形式の文字列
+        """
+
         image = cv.imread(image_path)
         img_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
@@ -445,12 +558,35 @@ class Ocr:
         return json.dumps(lines)
 
     def analyze(self,
-                image_path: str):
+                image_path: str,
+                engine: str="tesseract",
+                lang: str="jpn_custom"):
+        """
+        画像を解析してテキストを抽出するメソッド
+
+        Args:
+            image_path (str): 画像ファイルのパス
+            engine (str): 解析に使用するエンジン デフォルトは"tesseract"。
+            lang (str, optional): 使用する言語。デフォルトは"jpn_custom"。
+
+        Returns:
+            str: 解析結果のJSON形式の文字列
+        """
+
+        if engine == "easyocr":
+            self.easyocrReader = easyocr.Reader(['ja', 'en'],
+                                                model_storage_directory="/opt/data/src/ocr/easyocr",
+                                                user_network_directory="/opt/data/src/ocr/easyocr",
+                                                download_enabled=False,
+                                                gpu=False)
+
         file_name = os.path.basename(image_path)
         file_name_without_extension, file_extension = os.path.splitext(file_name)
         input_folder = os.path.dirname(image_path)
         analyze_file_path = os.path.join(input_folder, file_name_without_extension + "_analyze" + file_extension)
         shutil.copyfile(image_path, analyze_file_path)
+        image_analyze = cv.imread(analyze_file_path)
+        text_crop_padding_size = 24
 
         processes = []
         try:
@@ -466,8 +602,6 @@ class Ocr:
         except Exception as e:
             print("Error while deleting cropped_area files:", e)
 
-        image_analyze = cv.imread(analyze_file_path)
-
         linearea_json = self.line_detection(analyze_file_path)
         linearea = json.loads(linearea_json)
 
@@ -477,7 +611,13 @@ class Ocr:
             cv.rectangle(image_analyze, (x, y), (x+w, y+h), (255, 255, 255), -1)
             cropped_image_path = os.path.join(input_folder, f"cropped_area_line-{x}-{y}-{w}-{h}.png")
             process = Process(target=self.crop_text_area,
-                              args=(analyze_file_path, cropped_image_path, x, y, w, h,))
+                              args=(analyze_file_path,
+                                    cropped_image_path,
+                                    x,
+                                    y,
+                                    w,
+                                    h,
+                                    text_crop_padding_size,))
             process.start()
             processes.append(process)
         for process in processes:
@@ -494,7 +634,13 @@ class Ocr:
             cv.rectangle(image_analyze, (x, y), (x+w, y+h), (255, 255, 255), -1)
             cropped_image_path = os.path.join(input_folder, f"cropped_area_text-{x}-{y}-{w}-{h}.png")
             process = Process(target=self.crop_text_area,
-                              args=(analyze_file_path, cropped_image_path, x, y, w, h,))
+                              args=(analyze_file_path,
+                                    cropped_image_path,
+                                    x,
+                                    y,
+                                    w,
+                                    h,
+                                    text_crop_padding_size,))
             process.start()
             processes.append(process)
         for process in processes:
@@ -507,13 +653,18 @@ class Ocr:
             for filename in os.listdir(input_folder):
                 if filename.startswith("cropped_area_"):
                     file_path = os.path.join(input_folder, filename)
-
-                    # output_list = self.run_easyocr(file_path)
-                    output_list = self.run_tesseract(file_path)
+                    output_list = self.process_engine(engine=engine)(image_path=file_path,
+                                                                     lang=lang)
 
                     if output_list:
                         image_info = filename.split("_")[-1].split(".")[0].split("-")[-4:]
-                        x_offset, y_offset, _, _ = map(int, image_info)
+                        x_offset, y_offset, width, height = map(int, image_info)
+
+                        width += 2 * text_crop_padding_size
+                        height += 2 * text_crop_padding_size
+                        x_offset -= text_crop_padding_size
+                        y_offset -= text_crop_padding_size
+
                         for output in output_list:
                             x = int(output['x']) + x_offset
                             y = int(output['y']) + y_offset
@@ -522,6 +673,7 @@ class Ocr:
 
                         ocr_results.append(output_list)
         except Exception as e:
+            # pass
             print("Error while analyze cropped_area files:", e)
 
         output_json_path = os.path.join(input_folder, "analyze.json")
@@ -539,14 +691,94 @@ class Ocr:
                        x: int,
                        y: int,
                        w: int,
-                       h: int):
+                       h: int,
+                       padding: int=0):
+        """
+        画像からテキスト領域を切り抜くメソッド
+
+        Args:
+            image_path (str): 元画像ファイルのパス
+            output_path (str): 切り抜いた画像を保存するファイルのパス
+            x (int): 切り抜く領域の左上のX座標
+            y (int): 切り抜く領域の左上のY座標
+            w (int): 切り抜く領域の幅
+            h (int): 切り抜く領域の高さ
+            padding (int, optional): テキスト領域の周囲に追加する余白のサイズ。デフォルトは0。
+        """
+
         image = cv.imread(image_path)
         cropped_area = image[y:y+h, x:x+w]
 
+        background_color = self._get_background_color(cropped_area)
+        border_color = (int(background_color[0]), int(background_color[1]), int(background_color[2]))
+
+        cropped_area = cv.copyMakeBorder(cropped_area,
+                                         padding,
+                                         padding,
+                                         padding,
+                                         padding,
+                                         cv.BORDER_CONSTANT,
+                                         value=border_color)
+
         cv.imwrite(output_path, cropped_area)
 
-    def process_ocr_result(self,
+    def _get_background_color(self,
+                             image,
+                             margin_percentage: int=10):
+        """
+        画像の背景色を取得するメソッド
+
+        Args:
+            image: 画像
+            margin_percentage (int, optional): 画像の上下端から背景色を取得するためのマージンの割合。デフォルトは10。
+
+        Returns:
+            tuple: 背景色を表す(R, G, B)のタプル
+        """
+
+        height, width = image.shape[:2]
+        top_margin = int(height * margin_percentage / 100)
+        bottom_margin = int(height * margin_percentage / 100)
+
+        top_region = image[:top_margin, :]
+        bottom_region = image[-bottom_margin:, :]
+        combined_region = np.vstack((top_region, bottom_region))
+        background_color = self._get_most_frequent_color(combined_region)
+
+        return background_color
+
+    def _get_most_frequent_color(self,
+                                image):
+        """
+        画像中の最頻値の色を取得するメソッド
+
+        Args:
+            image: 画像
+
+        Returns:
+            tuple: 最頻値の色を表す(R, G, B)のタプル
+        """
+
+        flattened_image = image.reshape(-1, 3)
+        unique_colors, counts = np.unique(flattened_image,
+                                          axis=0,
+                                          return_counts=True)
+        most_frequent_color = unique_colors[np.argmax(counts)]
+
+        return most_frequent_color
+
+    def _process_ocr_result(self,
                            output_text: str):
+        """
+        OCR結果を処理するメソッド
+
+        Args:
+            output_text (str): OCRの結果を表す文字列
+
+        Returns:
+            str: 処理されたOCR結果を表す文字列
+        """
+
         result = subprocess.run(
             f'echo "{output_text}" | jq -rRs \'split("\n")[1:-1]|map([split("\t")[]|split(",")]|select(.[10]?[0] != "-1")|{{"x":.[6]?[0],"y":.[7]?[0],"w":.[8]?[0],"h":.[9]?[0],"cnf":.[10]?[0],"txt":.[11]?[0]}})\'',
             capture_output=True,
@@ -558,58 +790,84 @@ class Ocr:
 
     def run_tesseract(self,
                       image_path: str,
-                      lang: str='jpn_custom+jpn+eng',
+                      lang: str='jpn_custom',
                       dpi: int=300,
+                      config_path: str='/opt/data/src/ocr/tesseract/jpn_custom.conf',
                       tessdata_dir: str='/opt/data/src/ocr/tesseract/langs',
-                      user_words_dir: str='/opt/data/src/ocr/tesseract/words.txt'):
+                      user_words_path: str='/opt/data/src/ocr/tesseract/words.txt'):
+        """
+        Tesseract OCRを実行してテキストを抽出するメソッド
+
+        Args:
+            image_path (str): 画像ファイルのパス
+            lang (str, optional): 使用する言語。デフォルトは"jpn_custom"。
+            dpi (int, optional): 画像の解像度。デフォルトは300。
+            config_path (str, optional): Tesseractの設定ファイルのパス。デフォルトは'/opt/data/src/ocr/tesseract/jpn_custom.conf'。
+            tessdata_dir (str, optional): Tesseractの言語データが格納されているディレクトリのパス。デフォルトは'/opt/data/src/ocr/tesseract/langs'。
+            user_words_path (str, optional): ユーザー定義の単語リストファイルのパス。デフォルトは'/opt/data/src/ocr/tesseract/words.txt'。
+
+        Returns:
+            list: 抽出されたテキストの情報を含むリスト
+        """
+
         result = subprocess.run([
             'tesseract',
             image_path,
             'stdout',
             '-l', lang,
-            '--psm', '11',
+            '--psm', '6',
             '-c', 'tessedit_create_tsv=1',
             '--tessdata-dir', tessdata_dir,
-            '--user-words', user_words_dir,
+            '--user-words', user_words_path,
             '--dpi', str(dpi),
-            'quiet'
+            config_path
         ], capture_output=True, text=True)
 
         tsv = result.stdout.strip()
-        tsv2json = self.process_ocr_result(tsv)
+        tsv2json = self._process_ocr_result(tsv)
 
         return json.loads(tsv2json)
 
     def run_easyocr(self,
-                    image_path: str) -> str:
-        reader = easyocr.Reader(['ja', 'en'],
-                                gpu=False)
-        results = reader.readtext(image_path,
-                                 detail=True,
-                                 decoder='greedy',
-                                 beamWidth=5,
-                                 batch_size=1,
-                                 workers=0,
-                                 blocklist='|',
-                                 paragraph=False,
-                                 min_size=1,   # (int, default = 10) - Filter text box smaller than minimum value in pixel
-                                 rotation_info=None,
-                                 contrast_ths=0.1, # (float, default = 0.5) - target contrast level for low contrast text box
-                                 adjust_contrast=0.7,
+                    image_path: str,
+                    lang: str='ja, en') -> str:
+        """
+        EasyOCRを使用してOCRを実行するメソッド
 
-                                 text_threshold=0.7,
-                                 low_text=0.4,
-                                 link_threshold=0.4,
-                                 canvas_size=2560,
-                                 mag_ratio=1,
+        Args:
+            image_path (str): 画像ファイルのパス
+            lang (str): 使用する言語を指定
 
-                                 slope_ths=0.1,
-                                 ycenter_ths=0.5,
-                                 height_ths=0.5,
-                                 width_ths=0.7, # (float, default = 0.5) - Maximum horizontal distance to merge boxes.
-                                 add_margin=0.1, # (float, default = 0.1) - Extend bounding boxes in all direction by certain value. This is important for language with complex script (E.g. Thai).
-                                 x_ths=1.0,
-                                 y_ths=0.5)
+        Returns:
+            str: OCRの結果を含むJSON形式の文字列
+        """
+
+        results = self.easyocrReader.readtext(image_path,
+                                              detail=True,
+                                              decoder='greedy',
+                                              beamWidth=5,
+                                              batch_size=1,
+                                              workers=0,
+                                              blocklist='|',
+                                              paragraph=False,
+                                              min_size=1,   # (int, default = 10) - Filter text box smaller than minimum value in pixel
+                                              rotation_info=None,
+                                              contrast_ths=0.1, # (float, default = 0.5) - target contrast level for low contrast text box
+                                              adjust_contrast=0.5, # (float, default 0.7)
+
+                                              text_threshold=0.7,
+                                              low_text=0.4,
+                                              link_threshold=0.4,
+                                              canvas_size=3508, # (int, default 2560)
+                                              mag_ratio=1.5, # (float, default 1)
+
+                                              slope_ths=0.1,
+                                              ycenter_ths=0.5,
+                                              height_ths=0.5,
+                                              width_ths=0.7, # (float, default = 0.5) - Maximum horizontal distance to merge boxes.
+                                              add_margin=0.1, # (float, default = 0.1) - Extend bounding boxes in all direction by certain value. This is important for language with complex script (E.g. Thai).
+                                              x_ths=1.0,
+                                              y_ths=0.5)
 
         json_list = []
         for result in results:
@@ -620,7 +878,35 @@ class Ocr:
             y_max = max(point[1] for point in bounding_box)
             width = x_max - x_min
             height = y_max - y_min
-            formatted_result = {"x": x_min, "y": y_min, "w": width, "h": height, "txt": text, "cnf": confidence}
+            formatted_result = {"x": float(x_min), "y": float(y_min), "w": float(width), "h": float(height), "txt": text, "cnf": float(confidence)}
             json_list.append(formatted_result)
 
         return json_list
+
+    def process_engine(self,
+                       engine: str):
+        switcher = {
+            "tesseract": self.run_tesseract,
+            "easyocr": self.run_easyocr,
+        }
+        selected_function = switcher.get(engine, lambda: "Invalid engine")
+
+        return selected_function
+
+    def extract_text_and_coordinates(self,
+                                     pdf_filepath: str):
+        """
+        PDFから埋込テキストを抽出するメソッド
+
+        Args:
+            pdf_filepath (str): PDFファイルのパス
+
+        Returns:
+            str: PDFから抽出したJSON形式の文字列
+        """
+
+        doc = fitz.open(pdf_filepath)
+
+        for page in doc:
+            text = page.get_text('json')
+            return text

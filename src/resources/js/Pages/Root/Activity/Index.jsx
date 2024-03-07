@@ -22,7 +22,7 @@ export default function Index({
             <Head title={t('Activity')} />
 
             <div className="p-4 shadow sm:rounded-md">
-                <div>
+                <div className="overflow-x-auto mb-9">
                     <table className="mb-6 table table-zebra">
                         <thead>
                             <tr>
@@ -65,9 +65,9 @@ export default function Index({
                         ))}
                         </tbody>
                     </table>
-
-                    <Pagination items={activities} />
                 </div>
+
+                <Pagination items={activities} />
             </div>
         </RootLayout>
     );

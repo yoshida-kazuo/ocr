@@ -71,7 +71,6 @@ export default function Example({
                         selections: selectionsData,
                         pdf: pdfData,
                         pageNumber: currentPage,
-                        canvas: canvasData.current.toDataURL(),
                     })
                     .then(response => {
                         if (response.data.content) {
@@ -99,7 +98,7 @@ export default function Example({
     const analyzeResult = useCallback((data) => {
         const extracted_text = JSON.parse(data.content.extracted_text);
         const pages = extracted_text.analyzeResult.pages[0];
-        console.log(pages);
+
         let unit = 1;
         if (pages.unit === 'inch') {
             unit = 72;
@@ -261,7 +260,9 @@ export default function Example({
                         }}
                         className="flex justify-center items-center w-full h-full left-0 top-0 absolute bg-white opacity-70 z-[100]"
                     >
-                        <span className="loading loading-infinity loading-lg z-[100] scale-[15]"></span>
+                        <span
+                            className="loading loading-ring loading-lg z-[100] scale-[15]"
+                        />
                     </div>
                 )}
             </div>

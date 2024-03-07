@@ -30,6 +30,11 @@ services:
       default:
         ipv4_address: ${APP_IP_ADDRESS}
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4GB
+          cpus: "4"
 
 networks:
   default:

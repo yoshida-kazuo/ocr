@@ -24,9 +24,12 @@ class OcrResultSupport
      *
      * @return OcrResult|null
      */
-    public function findDocumentById(string $documentId): OcrResult|null
-    {
+    public function findDocumentById(
+        string $documentId,
+        int $userId
+    ): OcrResult|null {
         return OcrResult::where('document_id', $documentId)
+            ->where('user_id', $userId)
             ->first();
     }
 

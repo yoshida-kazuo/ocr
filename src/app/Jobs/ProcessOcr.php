@@ -32,7 +32,7 @@ class ProcessOcr implements ShouldQueue
      *
      * @var integer
      */
-    public $timeout = 1200;
+    public $timeout = 540;
 
     /**
      * Mark the given job as failed if it should fail on timeouts.

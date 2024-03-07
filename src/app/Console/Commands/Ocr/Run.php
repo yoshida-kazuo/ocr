@@ -36,6 +36,9 @@ class Run extends Command
     /**
      * Execute the console command.
      *
+     * @param OcrResultSupport $ocrResultSupport
+     * @param OcrPagesResultSupport $ocrPagesResultSupport
+     *
      * @return integer
      */
     public function handle(
@@ -46,6 +49,8 @@ class Run extends Command
 
         $result = 0;
         $handleId = uuid();
+        $prioritizeEmbeddedFonts = config('ocr.prioritize_embedded_fonts');
+
         $this->info(__(':handleId : We have initiated OCR.', [
             'handleId' => $handleId,
         ]));
@@ -121,20 +126,6 @@ class Run extends Command
                     key: config("ocr.{$ocrService}.key")
                 );
 
-            // Get total number of pages in a PDF
-            $pdfinfo = [];
-            exec("pdfinfo {$filepath} | awk '/^Pages:/ {print $2}'", $pdfinfo, $resultCode);
-
-            if (! $pageCount = $pdfinfo[0] ?: 0) {
-                throw new Exception(__(":handleId : :filepath : We were unable to retrieve the total number of pages from the PDF.", [
-                    'handleId'  => $handleId,
-                    'filepath'  => $filepath,
-                ]));
-            }
-
-            unset($pdfinfo,
-                $resultCode);
-
             // PDF splitting
             $analyzeFilepath = "{$workDir}/%d.pdf";
             exec("pdftk {$filepath} burst output {$analyzeFilepath}", $pdftk, $resultCode);
@@ -190,32 +181,14 @@ class Run extends Command
 
             // Process PDF page by page
             foreach ($analyzeFiles as $analyzeFile) {
+                // Text and coordinate data extracted from the PDF.
+                $analyzeResult = null;
+
                 // Get page number
                 $pageNumber = (int) pathinfo(
                     basename($analyzeFile),
                     PATHINFO_FILENAME
                 );
-
-                // Retrieve PDF information
-                exec("identify -format \"%W,%H\n\" {$analyzeFile}", $identify, $resultCode);
-
-                if ($resultCode !== 0) {
-                    throw new Exception(__(':handleId : :analyzeFile : Failed to retrieve size from PDF.', [
-                        'handleId'      => $handleId,
-                        'analyzeFile'   => $analyzeFile,
-                    ]));
-                }
-
-                [ $width, $height ] = explode(',', $identify[0]);
-                $orientation = 'portrait';
-                if ((int) $width > (int) $height) {
-                    $orientation = 'landscpae';
-                }
-
-                unset($identify,
-                    $resultCode,
-                    $width,
-                    $height);
 
                 // Check if the target page contains embedded text
                 $pdftotext = [];
@@ -228,7 +201,9 @@ class Run extends Command
                 }
 
                 // If the page contains only images
-                if (is_array($pdftotext) && array_filter($pdftotext) === []) {
+                if (is_array($pdftotext)
+                    && array_filter($pdftotext) === []
+                ) {
                     $this->info(__(':handleId : :analyzeFile : Image adjustment executed.', [
                         'handleId'      => $handleId,
                         'analyzeFile'   => $analyzeFile,
@@ -236,7 +211,7 @@ class Run extends Command
 
                     // Convert the target page to an image
                     $imageAnalyzeFile = dirname($analyzeFile) . "/analyze.png";
-                    exec("convert -density {$dpi} {$analyzeFile} -quality 100 {$imageAnalyzeFile}", $convert, $resultCode);
+                    $pdfinfo = $ocr->pdf2image($analyzeFile, $imageAnalyzeFile);
 
                     if ($resultCode !== 0) {
                         throw new Exception(__(':handleId : :analyzeFile : Failed to convert PDF to image.', [
@@ -246,9 +221,8 @@ class Run extends Command
                     }
 
                     // Check if the extracted page image needs to be inverted
-                    [ $width, $height ] = getimagesize($imageAnalyzeFile);
-                    if (($width > $height && $orientation === 'portrait')
-                        || ($height > $width && $orientation === 'landscape')
+                    if (($pdfinfo->get('width') > $pdfinfo->get('height') && $pdfinfo->get('orientation') === 'portrait')
+                        || ($pdfinfo->get('height') > $pdfinfo->get('width') && $pdfinfo->get('orientation') === 'landscape')
                     ) {
                         exec("convert {$imageAnalyzeFile} -rotate -90 {$imageAnalyzeFile}", $convert, $resultCode);
                         if ($resultCode !== 0) {
@@ -261,9 +235,7 @@ class Run extends Command
                     }
                     unset($convert,
                         $resultCode,
-                        $files,
-                        $width,
-                        $height);
+                        $files);
 
                     // Resize to 300dpi and perform trapezoid correction and rotation correction.
                     if ($this->option('image-correction')) {
@@ -287,27 +259,62 @@ class Run extends Command
                     unset($convert,
                         $resultCode,
                         $imageAnalyzeFile);
-                }
-                unset($pdftotext,
-                    $orientation);
-
-                // Perform OCR
-                if (! $operationLocation = $ocr->analyze(
-                    filepath: $analyzeFile,
-                    pages: '1'
-                )) {
-                    throw new Exception(__(':handleId : Failed to send data.', [
-                        'handleId'  => $handleId,
+                } else
+                if ($prioritizeEmbeddedFonts === 'yes') {
+                    $this->info(__(':handleId : :analyzeFile : Extracting embedded text and coordinates.', [
+                        'handleId'      => $handleId,
+                        'analyzeFile'   => $analyzeFile,
                     ]));
-                } else {
-                    // Retrieve analysis results
-                    $analyzeResult = $ocr->analyzeResult($operationLocation);
+
+                    exec("python /opt/data/src/main.py ocr extract_text_and_coordinates --pdf_filepath={$analyzeFile}", $pythonResult, $resultCode);
+                    if ($resultCode !== 0) {
+                        throw new Exception(__(':handleId : :file : Failed to retrieve text and coordinates from the PDF.', [
+                            'handleId'  => $handleId,
+                            'file'      => $analyzeFile,
+                        ]));
+                    }
+
+                    $pdftotext = json_decode(
+                        implode('', $pythonResult),
+                        true
+                    );
+
+                    if (method_exists($ocr, 'parsePdftotext')) {
+                        $pdftotext = $ocr->parsePdftotext(
+                            pdftotext: $pdftotext,
+                            dpi: $dpi
+                        );
+                    }
+
+                    $analyzeResult = json_encode($pdftotext);
+                }
+
+                if (! isset($analyzeResult)) {
+                    // Perform OCR
+                    if (! $operationLocation = $ocr->analyze(
+                        filepath: $analyzeFile,
+                        pages: '1'
+                    )) {
+                        throw new Exception(__(':handleId : Failed to send data.', [
+                            'handleId'  => $handleId,
+                        ]));
+                    } else {
+                        // Retrieve analysis results
+                        $analyzeResult = $ocr->analyzeResult($operationLocation);
+                    }
+                }
+
+                $fullText = null;
+                if (method_exists($ocr, 'extractWords')) {
+                    $fullText = $ocr->extractWords($analyzeResult);
                 }
 
                 if (! $ocrPagesResultSupport->store([
                     'ocr_result_id'     => $ocrResult->id,
+                    'user_id'           => $ocrResult->user_id,
                     'page_number'       => $pageNumber,
                     'extracted_text'    => $analyzeResult,
+                    'full_text'         => $fullText,
                 ])) {
                     throw new Exception(__(':handleId : :ocrResultId : :pageNumber : :analyzeResult : Failed to register in the database.', [
                         'handleId'      => $handleId,
@@ -319,10 +326,16 @@ class Run extends Command
 
                 unlink($analyzeFile);
                 unset($operationLocation,
-                    $analyzeResult);
+                    $analyzeResult,
+                    $pdftotext);
             }
         } catch(Exception $e) {
-            $this->error($e->getMessage());
+            $this->error(__(':file : :message : :line : :code', [
+                'message'   => $e->getMessage(),
+                'line'      => $e->getLine(),
+                'code'      => $e->getCode(),
+                'file'      => $e->getFile(),
+            ]));
 
             $result = 1;
         }

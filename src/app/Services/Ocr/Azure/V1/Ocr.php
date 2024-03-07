@@ -2,6 +2,8 @@
 
 namespace App\Services\Ocr\Azure\V1;
 
+use App\Services\Ocr\Azure\V1\JsonParser;
+use App\Services\Ocr\Utility;
 use App\Services\Ocr\OcrInterface;
 use Illuminate\Support\Facades\Http;
 use Exception;
@@ -28,6 +30,8 @@ use Exception;
  */
 readonly class Ocr implements OcrInterface
 {
+    use JsonParser,
+        Utility;
 
     /**
      * endpoint

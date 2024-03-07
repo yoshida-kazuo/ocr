@@ -23,7 +23,7 @@ export default function Index({
             <Head title={t('User management')} />
 
             <div className="p-4 shadow sm:rounded-md">
-                <div>
+                <div className="overflow-x-auto mb-9">
                     <Link
                         href={route('admin.user.manager.create')}
                         className="inline-block"
@@ -84,9 +84,9 @@ export default function Index({
                         ))}
                         </tbody>
                     </table>
-
-                    <Pagination items={users} />
                 </div>
+
+                <Pagination items={users} />
             </div>
         </AdminLayout>
     );

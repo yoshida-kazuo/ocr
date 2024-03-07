@@ -17,12 +17,19 @@ return new class extends Migration
             $table->unsignedBigInteger('ocr_result_id')
                 ->comment('解析ID')
                 ->index();
+            $table->unsignedBigInteger('user_id')
+                ->nullable()
+                ->comment('ユーザID')
+                ->index();
             $table->unsignedInteger('page_number')
                 ->comment('ページ番号')
                 ->index();
             $table->json('extracted_text')
                 ->nullable()
-                ->comment('結果データ');
+                ->comment('解析結果');
+            $table->text('full_text')
+                ->nullable()
+                ->comment('全文');
             $table->timestamp('created_at')
                 ->nullable()
                 ->comment('登録日');

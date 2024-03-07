@@ -24,6 +24,7 @@ const SERVICES = [
     { value: 'tesseract-v1', label: 'tesseract-v1' },
     { value: 'tesseract-v2', label: 'tesseract-v2' },
     { value: 'azure-v1', label: 'azure-v1' },
+    { value: 'easyocr-v1', label: 'easyocr-v1' },
 ];
 
 const MonitoringSetup = ({

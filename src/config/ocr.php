@@ -37,4 +37,10 @@ return [
         'endpoint'  => env('OCR_EASYOCR_V1_ENDPOINT'),
         'class'     => \App\Services\Ocr\EasyOCR\V1\Ocr::class,
     ],
+
+    'paddleocr-v1' => [
+        'key'       => env('OCR_PADDLEOCR_V1_KEY'),
+        'endpoint'  => env('OCR_PADDLEOCR_V1_ENDPOINT'),
+        'class'     => \App\Services\Ocr\PaddleOCR\V1\Ocr::class,
+    ],
 ];

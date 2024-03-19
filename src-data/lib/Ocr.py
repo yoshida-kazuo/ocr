@@ -9,6 +9,7 @@ from PIL import Image
 from multiprocessing import Process
 import fitz
 import easyocr
+from paddleocr import PaddleOCR
 
 class Ocr:
 
@@ -579,6 +580,8 @@ class Ocr:
                                                 user_network_directory="/opt/data/src/ocr/easyocr",
                                                 download_enabled=False,
                                                 gpu=False)
+        elif engine == "paddleocr":
+            self.paddleocrReader = self._paddleocr()
 
         file_name = os.path.basename(image_path)
         file_name_without_extension, file_extension = os.path.splitext(file_name)
@@ -883,11 +886,82 @@ class Ocr:
 
         return json_list
 
+    def _paddleocr(self):
+        """
+        PaddleOCRのインスタンスを返すメソッド
+
+        Args:
+            None
+
+        Returns:
+            PaddleOCRインスタンス
+        """
+
+        return PaddleOCR(lang='japan',
+                         use_angle_cls=True,
+                         use_gpu=False,
+                         use_space_char=True,
+                         drop_score=0.45, # default float 0.5
+                         det_limit_side_len=3508, # default int 960
+                         det_db_thresh=0.3, # default float 0.3
+                         det_db_box_thresh=0.6,
+                         det_db_unclip_ratio=1.5,
+                         max_batch_size=10,
+                         use_dilation=True, # default bool False
+                         det_db_score_mode='slow', # default str first
+                         binarize=False, # default bool False
+                         show_log=False)
+
+    def run_paddleocr(self,
+                      image_path: str,
+                      lang: str='japan'):
+        """
+        PaddleOCRを使用してOCRを実行するメソッド
+
+        Args:
+            image_path (str): 画像ファイルのパス
+            lang (str): 使用する言語を指定
+
+        Returns:
+            str: OCRの結果を含むJSON形式の文字列
+        """
+
+        results = self.paddleocrReader.ocr(image_path,
+                                           cls=True)
+
+        json_list = []
+        for idx in range(len(results)):
+            res = results[idx]
+            if results[idx]:
+                for result in res:
+                    bounding_box, (text, confidence) = result
+                    x_min = min(point[0] for point in bounding_box)
+                    y_min = min(point[1] for point in bounding_box)
+                    x_max = max(point[0] for point in bounding_box)
+                    y_max = max(point[1] for point in bounding_box)
+                    width = x_max - x_min
+                    height = y_max - y_min
+                    formatted_result = {"x": float(x_min), "y": float(y_min), "w": float(width), "h": float(height), "txt": text, "cnf": float(confidence)}
+                    json_list.append(formatted_result)
+
+        return json_list
+
     def process_engine(self,
                        engine: str):
+        """
+        解析サービスを返すメソッド
+
+        Args:
+            engine (str): 使用するサービス名
+
+        Returns:
+            str: OCRの結果を含むJSON形式の文字列
+        """
+
         switcher = {
             "tesseract": self.run_tesseract,
             "easyocr": self.run_easyocr,
+            "paddleocr": self.run_paddleocr,
         }
         selected_function = switcher.get(engine, lambda: "Invalid engine")
 

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 
 const INTERVAL = 5000;
+const TIMEOUT_DURATION = 10 * 60 * 1000;
 
 const AnalyzeResult = ({
     analyze,
@@ -9,7 +10,8 @@ const AnalyzeResult = ({
     analyzeResult,
 }) => {
     useEffect(() => {
-        let intervalId;
+        let intervalId,
+            timeoutId;
 
         const fetchData = () => {
             axios.get(route('api.user.ocr.analyze', {
@@ -32,13 +34,14 @@ const AnalyzeResult = ({
 
         const stopFetchingData = () => {
             clearInterval(intervalId);
+            clearTimeout(timeoutId);
             setAnalyze(null);
         };
 
         if (analyze) {
             fetchDataWithInterval();
 
-            setTimeout(stopFetchingData, 10 * 60 * 1000);
+            timeoutId = setTimeout(stopFetchingData, TIMEOUT_DURATION);
         }
 
         return () => {

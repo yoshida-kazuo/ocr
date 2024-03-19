@@ -51,7 +51,8 @@ RUN apt update && \
                 fonts-dejavu \
                 fonts-texgyre \
                 fonts-noto-cjk-extra \
-                fonts-takao
+                fonts-takao \
+                swig
 
 RUN mkdir -p /usr/src/php/ext
 WORKDIR /usr/src/php/ext
@@ -113,14 +114,14 @@ RUN echo "* * * * * cd ${APP_SERVER_PATH} && /usr/local/bin/php -d memory_limit=
 RUN rm -rf /opt/data/.venv
 WORKDIR /opt/data
 RUN sed -i '/Components:/ s/$/ contrib/' /etc/apt/sources.list.d/debian.sources
-RUN apt update && \
-        apt install -y \
-                open-jtalk \
-                open-jtalk-mecab-naist-jdic \
-                hts-voice-nitech-jp-atr503-m001 \
-                espeak && \
-        apt clean && \
-        rm -rf /var/lib/apt/lists/*
+# RUN apt update && \
+#         apt install -y \
+#                 open-jtalk \
+#                 open-jtalk-mecab-naist-jdic \
+#                 hts-voice-nitech-jp-atr503-m001 \
+#                 espeak && \
+#         apt clean && \
+#         rm -rf /var/lib/apt/lists/*
 ENV USE_NNPACK 0
 RUN python3 -m venv /opt/data/.venv
 RUN /opt/data/.venv/bin/python -m pip install --upgrade pip
@@ -129,20 +130,25 @@ RUN curl -sSfL https://github.com/VOICEVOX/voicevox_core/releases/latest/downloa
 RUN chmod +x download
 RUN ./download -o .venv/lib
 ENV LD_LIBRARY_PATH /opt/data/.venv/lib:$LD_LIBRARY_PATH
-RUN pip install https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.5/voicevox_core-0.14.5+cpu-cp38-abi3-linux_x86_64.whl \
-        fire \
-        openai-whisper \
-        TTS \
-        opencv-python \
+RUN pip install fire
+# RUN pip install https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.5/voicevox_core-0.14.5+cpu-cp38-abi3-linux_x86_64.whl \
+#         openai-whisper \
+#         TTS
+RUN pip install opencv-python \
         opencv-contrib-python \
         easyocr \
-        PyMuPDF
+        PyMuPDF \
+        paddlepaddle \
+        paddleocr
+
 RUN echo "deb https://notesalexp.org/tesseract-ocr5/$(lsb_release -cs)/ $(lsb_release -cs) main" \
                 | tee /etc/apt/sources.list.d/notesalexp.list > /dev/null
 RUN curl -s https://notesalexp.org/debian/alexp_key.asc | apt-key add - && \
         apt update && \
         apt install -y tesseract-ocr \
-                libtesseract-dev
+                libtesseract-dev && \
+        apt clean && \
+        rm -rf /var/lib/apt/lists/*
 RUN mkdir /opt/data/cache
 ENV HF_HOME /opt/data/cache
 RUN usermod -d /opt/data ${APP_USER}

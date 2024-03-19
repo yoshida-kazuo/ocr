@@ -126,6 +126,8 @@ class Ocr implements OcrInterface
 
             $resultData = [];
             if ($jsonText = reset($pythonResult)) {
+                $jsonTextDecode = json_decode($jsonText, true) ?: [];
+
                 $resultData = [
                     'status'    => 'succeeded',
                     'analyzeResult' => [
@@ -139,9 +141,7 @@ class Ocr implements OcrInterface
                     ],
                 ];
 
-                $jsonTextDecode = json_decode($jsonText, true) ?: [];
-
-                foreach ($jsonTextDecode as $areas) {
+                foreach (data_get($jsonTextDecode, 'words', []) as $areas) {
                     foreach ($areas as $area) {
                         $x = (int) $area['x'];
                         $y = (int) $area['y'];
@@ -159,6 +159,22 @@ class Ocr implements OcrInterface
                             'content'       => $area['txt'],
                         ];
                     }
+                }
+
+                foreach (data_get($jsonTextDecode, 'lines', []) as $area) {
+                    $x = (int) $area['x'];
+                    $y = (int) $area['y'];
+                    $w = (int) $area['width'];
+                    $h = (int) $area['height'];
+
+                    $resultData['analyzeResult']['pages'][0]['lines'][] = [
+                        'polygon' => [
+                            $x, $y,
+                            $x+$w, $y,
+                            $x+$w, $y+$h,
+                            $x, $y+$h,
+                        ],
+                    ];
                 }
             }
             $jsonText = json_encode($resultData);

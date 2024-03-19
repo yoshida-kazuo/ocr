@@ -118,10 +118,18 @@ trait Utility
         return $pdfinfo;
     }
 
+    /**
+     * parsePdftotext function
+     *
+     * @param array $pdftotext
+     * @param integer $dpi
+     *
+     * @return array
+     */
     public function parsePdftotext(
         array $pdftotext,
         int $dpi = 300
-    ) {
+    ): array {
         $pdftotext = collect($pdftotext);
         $pt2pixel = fn(int $pt): int => round($pt / 72 * $dpi);
         $bbox2polygon = fn(array $bbox): array => [

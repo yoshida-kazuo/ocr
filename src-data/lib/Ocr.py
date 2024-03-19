@@ -561,6 +561,7 @@ class Ocr:
     def analyze(self,
                 image_path: str,
                 engine: str="tesseract",
+                layout: bool=True,
                 lang: str="jpn_custom"):
         """
         画像を解析してテキストを抽出するメソッド
@@ -608,25 +609,26 @@ class Ocr:
         linearea_json = self.line_detection(analyze_file_path)
         linearea = json.loads(linearea_json)
 
-        processes = []
-        for idx, area in enumerate(linearea):
-            x, y, w, h = area['x'], area['y'], area['width'], area['height']
-            cv.rectangle(image_analyze, (x, y), (x+w, y+h), (255, 255, 255), -1)
-            cropped_image_path = os.path.join(input_folder, f"cropped_area_line-{x}-{y}-{w}-{h}.png")
-            process = Process(target=self.crop_text_area,
-                              args=(analyze_file_path,
-                                    cropped_image_path,
-                                    x,
-                                    y,
-                                    w,
-                                    h,
-                                    text_crop_padding_size,))
-            process.start()
-            processes.append(process)
-        for process in processes:
-            process.join()
+        if layout == True:
+            processes = []
+            for idx, area in enumerate(linearea):
+                x, y, w, h = area['x'], area['y'], area['width'], area['height']
+                cv.rectangle(image_analyze, (x, y), (x+w, y+h), (255, 255, 255), -1)
+                cropped_image_path = os.path.join(input_folder, f"cropped_area_line-{x}-{y}-{w}-{h}.png")
+                process = Process(target=self.crop_text_area,
+                                args=(analyze_file_path,
+                                        cropped_image_path,
+                                        x,
+                                        y,
+                                        w,
+                                        h,
+                                        text_crop_padding_size,))
+                process.start()
+                processes.append(process)
+            for process in processes:
+                process.join()
 
-        cv.imwrite(analyze_file_path, image_analyze)
+            cv.imwrite(analyze_file_path, image_analyze)
 
         textarea_json = self.text_detection(analyze_file_path)
         textarea = json.loads(textarea_json)
@@ -651,7 +653,10 @@ class Ocr:
 
         cv.imwrite(analyze_file_path, image_analyze)
 
-        ocr_results = []
+        ocr_results = {
+            'words': [],
+            'lines': linearea,
+        }
         try:
             for filename in os.listdir(input_folder):
                 if filename.startswith("cropped_area_"):
@@ -674,7 +679,7 @@ class Ocr:
                             output['x'] = x
                             output['y'] = y
 
-                        ocr_results.append(output_list)
+                        ocr_results['words'].append(output_list)
         except Exception as e:
             # pass
             print("Error while analyze cropped_area files:", e)
@@ -695,7 +700,8 @@ class Ocr:
                        y: int,
                        w: int,
                        h: int,
-                       padding: int=0):
+                       padding: int=0,
+                       crop_threshold=33):
         """
         画像からテキスト領域を切り抜くメソッド
 
@@ -707,10 +713,15 @@ class Ocr:
             w (int): 切り抜く領域の幅
             h (int): 切り抜く領域の高さ
             padding (int, optional): テキスト領域の周囲に追加する余白のサイズ。デフォルトは0。
+            crop_threshold (int, optional): 対象エリアの状態で切り抜きを行うか判定する閾値。デフォルトは33。
         """
 
         image = cv.imread(image_path)
         cropped_area = image[y:y+h, x:x+w]
+
+        avg_color = np.mean(cropped_area, axis=(0, 1))
+        if np.all(np.abs(cropped_area - avg_color) < crop_threshold):
+            return None
 
         background_color = self._get_background_color(cropped_area)
         border_color = (int(background_color[0]), int(background_color[1]), int(background_color[2]))
@@ -898,6 +909,7 @@ class Ocr:
         """
 
         return PaddleOCR(lang='japan',
+                         rec_char_dict_path="/opt/data/src/ocr/paddleocr/japan_dict.txt",
                          use_angle_cls=True,
                          use_gpu=False,
                          use_space_char=True,

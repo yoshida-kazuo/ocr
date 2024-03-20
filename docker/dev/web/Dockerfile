@@ -81,17 +81,6 @@ RUN a2enmod rewrite && \
         find /etc -type f -path "*/ImageMagick-*" -name "policy.xml" -exec sed -i.orig 's/<policy domain="resource" name="map" value="512MiB"\/>/<policy domain="resource" name="map" value="2GiB"\/>/g' {} +
 
 WORKDIR /tmp
-COPY etc/apache/httpd-vhosts.conf /tmp/000-default.conf.template
-RUN envsubst < /tmp/000-default.conf.template > /etc/apache2/sites-enabled/000-default.conf
-COPY etc/php/app.ini /tmp/app.ini.template
-RUN envsubst < /tmp/app.ini.template > /usr/local/etc/php/conf.d/app.ini
-COPY etc/php/xdebug.ini /tmp/docker-php-ext-xdebug.ini.template
-RUN envsubst < /tmp/docker-php-ext-xdebug.ini.template > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-COPY etc/php/igbinary.ini /tmp/igbinary.ini.template
-RUN envsubst < /tmp/igbinary.ini.template > /usr/local/etc/php/conf.d/igbinary.ini
-COPY etc/supervisor/conf.d/worker.conf /tmp/worker.conf.template
-RUN envsubst < /tmp/worker.conf.template > /etc/supervisor/conf.d/worker.conf
-
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
         curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n && \
         bash n ${APP_NODE_VERSION} && \
@@ -126,9 +115,9 @@ ENV USE_NNPACK 0
 RUN python3 -m venv /opt/data/.venv
 RUN /opt/data/.venv/bin/python -m pip install --upgrade pip
 ENV PATH /opt/data/.venv/bin:$PATH
-RUN curl -sSfL https://github.com/VOICEVOX/voicevox_core/releases/latest/download/download-linux-x64 -o download
-RUN chmod +x download
-RUN ./download -o .venv/lib
+# RUN curl -sSfL https://github.com/VOICEVOX/voicevox_core/releases/latest/download/download-linux-x64 -o download
+# RUN chmod +x download
+# RUN ./download -o .venv/lib
 ENV LD_LIBRARY_PATH /opt/data/.venv/lib:$LD_LIBRARY_PATH
 RUN pip install fire
 # RUN pip install https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.5/voicevox_core-0.14.5+cpu-cp38-abi3-linux_x86_64.whl \
@@ -154,6 +143,21 @@ ENV HF_HOME /opt/data/cache
 RUN usermod -d /opt/data ${APP_USER}
 RUN mkdir /opt/data/.EasyOCR
 RUN chown ${APP_USER} /opt/data /opt/data/cache /opt/data/.EasyOCR
+
+
+
+WORKDIR /tmp
+COPY etc/apache/httpd-vhosts.conf /tmp/000-default.conf.template
+RUN envsubst < /tmp/000-default.conf.template > /etc/apache2/sites-enabled/000-default.conf
+COPY etc/php/app.ini /tmp/app.ini.template
+RUN envsubst < /tmp/app.ini.template > /usr/local/etc/php/conf.d/app.ini
+COPY etc/php/xdebug.ini /tmp/docker-php-ext-xdebug.ini.template
+RUN envsubst < /tmp/docker-php-ext-xdebug.ini.template > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+COPY etc/php/igbinary.ini /tmp/igbinary.ini.template
+RUN envsubst < /tmp/igbinary.ini.template > /usr/local/etc/php/conf.d/igbinary.ini
+COPY etc/supervisor/conf.d/worker.conf /tmp/worker.conf.template
+RUN envsubst < /tmp/worker.conf.template > /etc/supervisor/conf.d/worker.conf
+RUN rm -rf /tmp/*
 
 WORKDIR ${APP_SERVER_PATH}
 

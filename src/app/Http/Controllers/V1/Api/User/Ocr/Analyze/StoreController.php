@@ -60,12 +60,13 @@ class StoreController extends Controller
                 'page_number'   => $pageNumber,
             ])) {
                 $processOcr::dispatch([
-                    'filepath'      => $ocrDisk->path($pdfFilepath),
-                    '--service'     => $service,
-                    '--document-id' => $documentId,
-                    '--user-id'     => user('id'),
-                    '--pages'       => $pageNumber,
-                ]);
+                        'filepath'      => $ocrDisk->path($pdfFilepath),
+                        '--service'     => $service,
+                        '--document-id' => $documentId,
+                        '--user-id'     => user('id'),
+                        '--pages'       => $pageNumber,
+                    ])
+                    ->onQueue('ocr');
             }
 
             $status = 'ok';

@@ -124,6 +124,7 @@ class MonitoringFolder extends Command
                         activity()
                             ->error($e->getMessage());
                     })
+                    ->onQueue('ocr-batch')
                     ->dispatch();
             }
         }

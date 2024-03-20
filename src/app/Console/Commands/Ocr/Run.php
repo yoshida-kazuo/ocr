@@ -277,7 +277,7 @@ class Run extends Command
                     $pdftotext = json_decode(
                         implode('', $pythonResult),
                         true
-                    );
+                    ) ?: [];
 
                     if (method_exists($ocr, 'parsePdftotext')) {
                         $pdftotext = $ocr->parsePdftotext(
@@ -324,7 +324,6 @@ class Run extends Command
                     ]));
                 }
 
-                unlink($analyzeFile);
                 unset($operationLocation,
                     $analyzeResult,
                     $pdftotext);

@@ -590,7 +590,7 @@ class Ocr:
         analyze_file_path = os.path.join(input_folder, file_name_without_extension + "_analyze" + file_extension)
         shutil.copyfile(image_path, analyze_file_path)
         image_analyze = cv.imread(analyze_file_path)
-        text_crop_padding_size = 24
+        text_crop_padding_size = 12
 
         processes = []
         try:

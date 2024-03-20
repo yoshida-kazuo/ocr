@@ -21,11 +21,11 @@ const STORAGES = [
     { value: 's3', label: 's3' },
 ];
 const SERVICES = [
-    { value: 'tesseract-v1', label: 'tesseract-v1' },
-    { value: 'tesseract-v2', label: 'tesseract-v2' },
-    { value: 'easyocr-v1', label: 'easyocr-v1' },
-    { value: 'paddleocr-v1', label: 'paddleocr-v1' },
-    { value: 'azure-v1', label: 'azure-v1' },
+    { value: 'tesseract-v1', label: 'OCR Engine V1' },
+    { value: 'tesseract-v2', label: 'OCR Engine V1.1' },
+    { value: 'easyocr-v1', label: 'OCR Engine V2' },
+    { value: 'paddleocr-v1', label: 'OCR Engine V3' },
+    { value: 'azure-v1', label: 'OCR Engine V4' },
 ];
 
 const MonitoringSetup = ({
@@ -159,7 +159,7 @@ const MonitoringSetup = ({
                                         </button>
                                     </td>
                                     <td>{watchedFolder.storage}</td>
-                                    <td>{watchedFolder.service}</td>
+                                    <td>{SERVICES.filter(service => service.value === watchedFolder.service)[0].label}</td>
                                     <td>{OPTIONS.filter(option => option.value === watchedFolder.is_active)[0].label}</td>
                                     <td>{watchedFolder.updated_at}</td>
                                 </tr>

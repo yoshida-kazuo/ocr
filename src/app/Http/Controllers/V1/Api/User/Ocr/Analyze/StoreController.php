@@ -35,7 +35,7 @@ class StoreController extends Controller
         try {
             $pdf = $request->post('pdf');
             $pageNumber = $request->post('pageNumber');
-            $service = config('ocr.service');
+            $service = $request->post('engine');
             $ocrDisk = Storage::disk(config('ocr.storageDriver'));
 
             $documentId = uuid();

@@ -6,6 +6,7 @@ import { pdfjs, Document, Page } from 'react-pdf';
 import SelectablePage from '@/Components/SelectablePage';
 import AnalyzeResult from '@/Components/AnalyzeResult';
 import axios from 'axios';
+import Select from '@/Components/Select';
 
 const options = {
     cMapUrl: `/static/vendor/pdfjs/cmaps/`,
@@ -20,6 +21,14 @@ const ORIENTATIONS = {
         height: 2480,
     },
 };
+const SERVICES = [
+    { value: 'tesseract-v1', label: 'OCR Engine V1' },
+    { value: 'tesseract-v2', label: 'OCR Engine V1.1' },
+    { value: 'easyocr-v1', label: 'OCR Engine V2' },
+    { value: 'paddleocr-v1', label: 'OCR Engine V3' },
+    { value: 'azure-v1', label: 'OCR Engine V4' },
+];
+const SERVICE = 'paddleocr-v1';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.js',
@@ -29,7 +38,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 export default function Example({
     auth,
     lang,
-    timezone
+    timezone,
+    ocrconfig,
 }) {
     const { t } = useTranslation();
 
@@ -43,6 +53,7 @@ export default function Example({
     const [analyze, setAnalyze] = useState();
     const [pdfDocument, setPdfDocument] = useState();
     const [pageOrientations, setPageOrientations] = useState();
+    const [engine, setEngine] = useState(ocrconfig.service);
 
     const inputRef = useRef();
     const canvasRef = useRef();
@@ -71,6 +82,7 @@ export default function Example({
                         selections: selectionsData,
                         pdf: pdfData,
                         pageNumber: currentPage,
+                        engine: engine,
                     })
                     .then(response => {
                         if (response.data.content) {
@@ -84,7 +96,7 @@ export default function Example({
                 console.error(t('Error uploading selections data : ', error));
             }
         }
-    }, [selectionsData, canvasData, pdfData, currentPage]);
+    }, [selectionsData, canvasData, pdfData, currentPage, engine]);
 
     const convertFileToBase64 = useCallback((file) => {
         const reader = new FileReader();
@@ -121,19 +133,20 @@ export default function Example({
             const content = page.content;
             const polygon = page.polygon;
 
-            context.fillStyle = '#000000';
+            context.fillStyle = 'rgb(255,0,0)';
             context.font = '18px Arial';
 
-            context.fillText(content, polygon[0] * unit * 0.5, polygon[1] * unit * 0.5 + 18);
+            context.fillText(content, polygon[0] * unit * 0.5, polygon[1] * unit * 0.5);
 
-            context.fillStyle = 'rgba(255,0,0,0.5)';
+            context.strokeStyle = 'rgba(255,0,0,0.7)';
             context.beginPath();
             context.moveTo(polygon[0] * unit * 0.5, polygon[1] * unit * 0.5);
             for (let i = 2; i < polygon.length; i += 2) {
                 context.lineTo(polygon[i] * unit * 0.5, polygon[i + 1] * unit * 0.5);
             }
             context.closePath();
-            context.fill();
+            // context.fill();
+            context.stroke();
         });
     }, [pageOrientations]);
 
@@ -185,12 +198,19 @@ export default function Example({
             <Head title={t('OCR Analyze Check')} />
 
             <div className="relative">
-                <div className="border">
+                <div className="border flex">
+                    <Select
+                        id="service"
+                        options={SERVICES}
+                        value={engine}
+                        onChange={(e) => setEngine(e.target.value)}
+                        className="select select-bordered"
+                    />
                     <input
                         type="file"
                         ref={inputRef}
                         onChange={handleFileChange}
-                        className="file-input w-full max-w-xs"
+                        className="file-input max-w-xs"
                     />
                 </div>
 

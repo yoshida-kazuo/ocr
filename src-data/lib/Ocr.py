@@ -604,7 +604,8 @@ class Ocr:
             for process in processes:
                 process.join()
         except Exception as e:
-            print("Error while deleting cropped_area files:", e)
+            pass
+            # print("Error while deleting cropped_area files:", e)
 
         linearea_json = self.line_detection(analyze_file_path)
         linearea = json.loads(linearea_json)
@@ -681,8 +682,8 @@ class Ocr:
 
                         ocr_results['words'].append(output_list)
         except Exception as e:
-            # pass
-            print("Error while analyze cropped_area files:", e)
+            pass
+            # print("Error while analyze cropped_area files:", e)
 
         output_json_path = os.path.join(input_folder, "analyze.json")
         with open(output_json_path, 'w') as f:
@@ -897,18 +898,19 @@ class Ocr:
 
         return json_list
 
-    def _paddleocr(self):
+    def _paddleocr(self,
+                   lang: str='japan'):
         """
         PaddleOCRのインスタンスを返すメソッド
 
         Args:
-            None
+            lang (str): 使用する言語を指定
 
         Returns:
             PaddleOCRインスタンス
         """
 
-        return PaddleOCR(lang='japan',
+        return PaddleOCR(lang=lang,
                          rec_char_dict_path="/opt/data/src/ocr/paddleocr/japan_dict.txt",
                          use_angle_cls=True,
                          use_gpu=False,
@@ -916,12 +918,14 @@ class Ocr:
                          drop_score=0.45, # default float 0.5
                          det_limit_side_len=3508, # default int 960
                          det_db_thresh=0.3, # default float 0.3
-                         det_db_box_thresh=0.6,
+                         det_db_box_thresh=0.6, # default float 0.6
                          det_db_unclip_ratio=1.5,
                          max_batch_size=10,
-                         use_dilation=True, # default bool False
+                         use_dilation=False, # default bool False
                          det_db_score_mode='slow', # default str first
                          binarize=False, # default bool False
+                         det_pse_min_area=16, # default float 16
+                         rec_algorithm='CRNN', # default CRNN
                          show_log=False)
 
     def run_paddleocr(self,

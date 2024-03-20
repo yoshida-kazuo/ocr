@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Middleware;
-use Inertia\Inertia;
 use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -51,7 +50,8 @@ class HandleInertiaRequests extends Middleware
                 ! (bool) Str::afterLast(
                     user('email'),
                     config('app.user_dummy_email_domain')
-                )
+                ),
+            'ocrconfig' => config('ocr'),
         ]);
     }
 }

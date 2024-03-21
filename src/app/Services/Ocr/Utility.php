@@ -128,6 +128,7 @@ trait Utility
      */
     public function parsePdftotext(
         array $pdftotext,
+        array $pdflines = [],
         int $dpi = 300
     ): array {
         $pdftotext = collect($pdftotext);
@@ -153,12 +154,29 @@ trait Utility
             }
         }
 
+        $lines = [];
+        foreach ($pdflines as $area) {
+            $x = (int) $area['x'];
+            $y = (int) $area['y'];
+            $w = (int) $area['width'];
+            $h = (int) $area['height'];
+
+            $lines[] = [
+                'polygon' => [
+                    $x, $y,
+                    $x+$w, $y,
+                    $x+$w, $y+$h,
+                    $x, $y+$h,
+                ],
+            ];
+        }
+
         return  [
             'analyzeResult' => [
                 'pages' => [
                     [
                         'unit'  => 'pixel',
-                        'lines' => [],
+                        'lines' => $lines,
                         'words' => $words,
                     ],
                 ],

@@ -863,7 +863,7 @@ class Ocr:
                                               beamWidth=5,
                                               batch_size=1,
                                               workers=0,
-                                              blocklist='|',
+                                              blocklist='|─┌┐└┘',
                                               paragraph=False,
                                               min_size=1,   # (int, default = 10) - Filter text box smaller than minimum value in pixel
                                               rotation_info=None,

@@ -266,6 +266,7 @@ class Run extends Command
                         'analyzeFile'   => $analyzeFile,
                     ]));
 
+                    $pythonResult = [];
                     exec("python /opt/data/src/main.py ocr extract_text_and_coordinates --pdf_filepath={$analyzeFile}", $pythonResult, $resultCode);
                     if ($resultCode !== 0) {
                         throw new Exception(__(':handleId : :file : Failed to retrieve text and coordinates from the PDF.', [
@@ -279,14 +280,34 @@ class Run extends Command
                         true
                     ) ?: [];
 
+                    $imageAnalyzeFile = dirname($analyzeFile) . "/analyze.png";
+                    $pdfinfo = $ocr->pdf2image($analyzeFile, $imageAnalyzeFile);
+                    $pythonResult = [];
+                    exec("python /opt/data/src/main.py ocr line_detection --image_path={$imageAnalyzeFile}", $pythonResult, $resultCode);
+                    if ($resultCode !== 0) {
+                        throw new Exception(__(':handleId : :file : Failed to line detection.', [
+                            'handleId'  => $handleId,
+                            'file'      => $analyzeFile,
+                        ]));
+                    }
+
+                    $lines = json_decode(
+                        implode('', $pythonResult),
+                        true
+                    ) ?: [];
+
                     if (method_exists($ocr, 'parsePdftotext')) {
                         $pdftotext = $ocr->parsePdftotext(
                             pdftotext: $pdftotext,
+                            pdflines: $lines,
                             dpi: $dpi
                         );
                     }
 
                     $analyzeResult = json_encode($pdftotext);
+
+                    $ocrResult->service = 'pdf-text';
+                    $ocrResult->save();
                 }
 
                 if (! isset($analyzeResult)) {

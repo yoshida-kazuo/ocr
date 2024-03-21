@@ -20,7 +20,7 @@ trait JsonParser
                     'analyzeResult.pages.0.words'
                 )
             )
-            ->implode('content', '');
+            ->implode('content', ' ');
     }
 
 }

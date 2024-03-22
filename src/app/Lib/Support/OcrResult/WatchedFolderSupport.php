@@ -123,7 +123,9 @@ class WatchedFolderSupport
         int $onEachSide = 1
     ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
         $conditions = collect($conditions);
-        $watchedFolder = WatchedFolder::on();
+        $watchedFolder = WatchedFolder::withCount([
+            'ocrResults',
+        ]);
 
         if ($conditions->get('user_id')) {
             $watchedFolder->where('user_id', $conditions->get('user_id'));

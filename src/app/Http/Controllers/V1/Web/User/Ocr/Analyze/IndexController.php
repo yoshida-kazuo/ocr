@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup;
+namespace App\Http\Controllers\V1\Web\User\Ocr\Analyze;
 
-use App\Lib\Support\OcrResult\WatchedFolderSupport;
+use App\Lib\Support\OcrResult\OcrResultSupport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -28,27 +28,24 @@ class IndexController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
-     * @param WatchedFolderSupport $watchedFolderSupport
+     * @param OcrResultSupport $ocrResultSupport
      *
      * @return \Inertia\Response
      */
     public function __invoke(
         Request $request,
-        WatchedFolderSupport $watchedFolderSupport
+        OcrResultSupport $ocrResultSupport
     ): \Inertia\Response {
-        $watchedFolders = $watchedFolderSupport->catalog(
+        $ocrResults = $ocrResultSupport->catalog(
             conditions: [
                 'user_id'   => user('id'),
-                'order' => [
-                    'id' => 'ASC',
-                ],
             ],
             perPage: $this->perPage,
             onEachSide: $this->onEachSide
         );
 
-        return Inertia::render('User/Ocr/MonitoringSetup/Index', compact(
-            'watchedFolders'
+        return Inertia::render('User/Ocr/Analyze/Index', compact(
+            'ocrResults'
         ));
     }
 

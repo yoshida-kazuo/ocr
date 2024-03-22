@@ -28,7 +28,6 @@ const SERVICES = [
     { value: 'paddleocr-v1', label: 'OCR Engine V3' },
     { value: 'azure-v1', label: 'OCR Engine V4' },
 ];
-const SERVICE = 'paddleocr-v1';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.js',
@@ -155,7 +154,9 @@ export default function Example({
             pdfDocument.getPage(currentPage)
                 .then(page => {
                     let [, , w, h] = page.view;
-                    if (page.rotaet === 90 || page.rotate === 270) {
+                    if (page.rotaet === 90
+                        || page.rotate === 270
+                    ) {
                         const temp = w;
                         w = h;
                         h = w;

@@ -45,6 +45,20 @@ Route::middleware([
                 Route::delete('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\DestroyController::class)
                     ->name('user.ocr.monitoring-setup.delete');
 
+                Route::get('analyze', \App\Http\Controllers\V1\Web\User\Ocr\Analyze\IndexController::class)
+                    ->name('user.ocr.analyze');
+
+                Route::get('analyze-result/{documentId}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResult\IndexController::class)
+                    ->name('user.ocr.analyze-result');
+
+                Route::get('analyze-result-review/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResultReview\IndexController::class)
+                    ->name('user.ocr.analyze-result-review');
+
+                Route::get('analyze-page-image/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzePageImage\IndexController::class)
+                    ->name('user.ocr.analyze-page-image');
+                Route::get('analyze-page-pdf/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzePagePdf\IndexController::class)
+                    ->name('user.ocr.analyze-page-pdf');
+
             });
 
     });

@@ -34,13 +34,23 @@ class OcrResult extends Model
     }
 
     /**
-     * ocrPagesResult function
+     * ocrPagesResults function
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function ocrPagesResult(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function ocrPagesResults(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(OcrPagesResult::class);
+    }
+
+    /**
+     * watchFolder function
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function watchedFolder(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(WatchedFolder::class);
     }
 
 }

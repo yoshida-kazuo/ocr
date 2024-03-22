@@ -30,8 +30,8 @@ class IndexController extends Controller
             documentId: $documentId,
             userId: user('id')
         );
-        if ($ocrResult->ocrPagesResult->count() > 0) {
-            $ocrPageResult = $ocrResult->ocrPagesResult
+        if ($ocrResult->ocrPagesResults->count() > 0) {
+            $ocrPageResult = $ocrResult->ocrPagesResults
                 ->get(0);
             $status = 'ng';
             if ($ocrPageResult->extracted_text) {

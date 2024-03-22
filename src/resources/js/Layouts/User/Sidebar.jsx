@@ -21,6 +21,11 @@ export default function Sidebar() {
             "route": "user.ocr.monitoring-setup",
             "label": t('Monitoring Setup'),
             "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
+        },
+        {
+            "route": "user.ocr.analyze",
+            "label": t('List of analyses'),
+            "icon": <DesktopComputerIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         }
     ];
 

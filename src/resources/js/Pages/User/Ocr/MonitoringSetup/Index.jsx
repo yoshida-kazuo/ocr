@@ -10,6 +10,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import Modal from '@/Components/Modal';
 import DangerButton from '@/Components/DangerButton';
 import { XCircleIcon, PencilAltIcon } from '@heroicons/react/solid';
+import Pagination from '@/Components/Pagination';
 
 const OPTIONS = [
     { value: 0, label: 'Disable' },
@@ -86,14 +87,16 @@ const MonitoringSetup = ({
         service,
         storage,
         folder_path,
-        is_active
+        is_active,
+        ocr_results_count
     }) => {
         setData({
             id: id,
             service: service,
             storage: storage,
             folder_path: folder_path,
-            is_active: is_active
+            is_active: is_active,
+            ocr_results_count: ocr_results_count
         });
         setMode('edit');
 
@@ -129,43 +132,63 @@ const MonitoringSetup = ({
             </div>
 
             {watchedFolders.total > 0 && (
-                <div className="p-4 shadow sm:rounded-md overflow-x-auto mt-2">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>{t('Folder Path')}</th>
-                                <th>{t('Disk Storage')}</th>
-                                <th>{t('Ocr Service')}</th>
-                                <th>{t('Is Active')}</th>
-                                <th>{t('Registration datetime')}</th>
-                            </tr>
-                        </thead>
-                        {watchedFolders?.data?.map(watchedFolder => (
-                            <tbody key={watchedFolder.id}>
+                <div className="p-4 shadow sm:rounded-md mt-2">
+                    <div className="overflow-x-auto mb-9">
+                        <table className="table">
+                            <thead>
                                 <tr>
-                                    <td className="flex">
-                                        {watchedFolder.folder_path}
-                                        <button
-                                            onClick={(e) => editModal(watchedFolder)}
-                                            className="ml-3"
-                                        >
-                                            <PencilAltIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
-                                        </button>
-                                        <button
-                                            onClick={(ev) => deleteModal(watchedFolder)}
-                                            className="ml-1"
-                                        >
-                                            <XCircleIcon className="flex-shrink-0 w-5 h-5 transition duration-75 text-error" />
-                                        </button>
-                                    </td>
-                                    <td>{watchedFolder.storage}</td>
-                                    <td>{SERVICES.filter(service => service.value === watchedFolder.service)[0].label}</td>
-                                    <td>{OPTIONS.filter(option => option.value === watchedFolder.is_active)[0].label}</td>
-                                    <td>{watchedFolder.updated_at}</td>
+                                    <th>{t('Folder Path')}</th>
+                                    <th>{t('Number of analyses')}</th>
+                                    <th>{t('Disk Storage')}</th>
+                                    <th>{t('Ocr Service')}</th>
+                                    <th>{t('Is Active')}</th>
+                                    <th>{t('Registration datetime')}</th>
                                 </tr>
-                            </tbody>
-                        ))}
-                    </table>
+                            </thead>
+                            {watchedFolders?.data?.map(watchedFolder => (
+                                <tbody key={watchedFolder.id}>
+                                    <tr>
+                                        <td className="flex">
+                                            {watchedFolder.folder_path}
+                                            <button
+                                                onClick={(e) => editModal(watchedFolder)}
+                                                className="ml-3"
+                                            >
+                                                <PencilAltIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                            </button>
+                                            <button
+                                                onClick={(ev) => deleteModal(watchedFolder)}
+                                                className="ml-1"
+                                            >
+                                                <XCircleIcon className="flex-shrink-0 w-5 h-5 transition duration-75 text-error" />
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <div className="badge badge-secondary">{watchedFolder.ocr_results_count}</div>
+                                        </td>
+                                        <td>
+                                            <div className="badge badge-ghost badge-sm">
+                                                {watchedFolder.storage}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="badge badge-ghost badge-sm">
+                                                {SERVICES.filter(service => service.value === watchedFolder.service)[0].label}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="badge badge-secondary">
+                                                {OPTIONS.filter(option => option.value === watchedFolder.is_active)[0].label}
+                                            </div>
+                                        </td>
+                                        <td>{watchedFolder.updated_at}</td>
+                                    </tr>
+                                </tbody>
+                            ))}
+                        </table>
+                    </div>
+
+                    <Pagination items={watchedFolders} />
                 </div>
             )}
 

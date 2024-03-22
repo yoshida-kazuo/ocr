@@ -36,7 +36,8 @@ class StoreController extends Controller
             $pdf = $request->post('pdf');
             $pageNumber = $request->post('pageNumber');
             $service = $request->post('engine');
-            $ocrDisk = Storage::disk(config('ocr.storageDriver'));
+            $storage = config('ocr.storageDriver');
+            $ocrDisk = Storage::disk($storage);
 
             $documentId = uuid();
             $workDir = config('ocr.workDir') . "/{$documentId}";
@@ -57,6 +58,7 @@ class StoreController extends Controller
                 'user_id'       => user('id'),
                 'document_id'   => $documentId,
                 'service'       => $service,
+                'storage'       => $storage,
                 'page_number'   => $pageNumber,
             ])) {
                 $processOcr::dispatch([

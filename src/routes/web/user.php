@@ -53,6 +53,8 @@ Route::middleware([
 
                 Route::get('analyze-result-review/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResultReview\IndexController::class)
                     ->name('user.ocr.analyze-result-review');
+                Route::put('analyze-result-review/update/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResultReview\UpdateController::class)
+                    ->name('user.ocr.analyze-result-review.update');
 
                 Route::get('analyze-page-image/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzePageImage\IndexController::class)
                     ->name('user.ocr.analyze-page-image');

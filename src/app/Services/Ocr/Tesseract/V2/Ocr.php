@@ -155,7 +155,7 @@ class Ocr implements OcrInterface
                                 $x+$w, $y+$h,
                                 $x, $y+$h,
                             ],
-                            'confidence'    => (float) $area['cnf'],
+                            'confidence'    => ((float) $area['cnf']) / 100,
                             'content'       => $area['txt'],
                         ];
                     }

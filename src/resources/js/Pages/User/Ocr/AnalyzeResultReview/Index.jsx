@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { pdfjs, Document, Page } from 'react-pdf';
 import { Rnd } from 'react-rnd';
@@ -9,6 +9,7 @@ import 'react-contexify/ReactContexify.css';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
+import axios from 'axios';
 
 const options = {
     cMapUrl: `/static/vendor/pdfjs/cmaps/`,
@@ -48,11 +49,15 @@ const SELECTING_STYLE = {
     position: 'absolute',
     userSelect: 'none',
 };
+const PAGE_MENU_ID = 'page-menu';
 const SELECTION_MENU_ID = 'selection-menu';
 const DEFAULT_MODAL_DATA = {
     'index': null,
     'content': '',
+    'confidence': null,
 };
+const VISIBILITY_VISIBLE = 'canvas-visible';
+const VISIBILITY_HIDDEN = 'canvas-invisible';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.js',
@@ -81,10 +86,12 @@ const Index = ({
     const [selecting, setSelecting] = useState(SELECTING_STYLE);
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
+    const [canvasVsibility, setCanvasVsibility] = useState(VISIBILITY_VISIBLE);
+    const [rndVisibility, setRndVisibility] = useState(VISIBILITY_VISIBLE);
 
     const { show } = useContextMenu({});
 
-    const getMousePos = (x, y, elm) => {
+    const getMousePos = useCallback((x, y, elm) => {
         const rect = elm.getBoundingClientRect();
 
         return {
@@ -93,9 +100,9 @@ const Index = ({
             w: rect.width,
             h: rect.height,
         };
-    };
+    }, []);
 
-    const handleDocumentOnLoadSuccess = (pdf) => {
+    const handleDocumentOnLoadSuccess = useCallback((pdf) => {
         setSelections([]);
 
         pdf.getPage(pageNumber)
@@ -115,8 +122,8 @@ const Index = ({
                     setPageOrientations('portrait');
                 }
             });
-    };
-    const handlePageOnLoadSuccess = (page) => {
+    }, []);
+    const handlePageOnLoadSuccess = useCallback((page) => {
         pages.words?.map((word, index) => {
             const minX = Math.min(...word.polygon.filter((_, idx) => idx % 2 === 0));
             const minY = Math.min(...word.polygon.filter((_, idx) => idx % 2 === 1));
@@ -139,8 +146,8 @@ const Index = ({
                 },
             ]);
         });
-    };
-    const handleRenderSuccess = () => {
+    }, [pages]);
+    const handleRenderSuccess = useCallback(() => {
         // const context = canvasRef.current.getContext('2d');
         // pages.lines?.map((line, index) => {
         //     const minX = Math.min(...line.polygon.filter((_, idx) => idx % 2 === 0));
@@ -159,8 +166,8 @@ const Index = ({
         //     context.rect(x, y, width, height);
         //     context.stroke();
         // });
-    };
-    const handleMouseDown = (event) => {
+    }, [pages]);
+    const handleMouseDown = useCallback((event) => {
         event.preventDefault();
         if (event.button !== 0) {
             return;
@@ -170,8 +177,8 @@ const Index = ({
         const { x, y } = getMousePos(event.clientX, event.clientY, canvasRef.current);
         setStartX(x);
         setStartY(y);
-    };
-    const handleMouseMove = (event) => {
+    }, [canvasRef]);
+    const handleMouseMove = useCallback((event) => {
         event.preventDefault();
         if (! isSelecting) {
             return;
@@ -186,8 +193,8 @@ const Index = ({
             width: x - startX,
             height: y - startY,
         });
-    };
-    const handleMouseUp = (event) => {
+    }, [isSelecting, selecting, canvasRef]);
+    const handleMouseUp = useCallback((event) => {
         event.preventDefault();
         if (! isSelecting) {
             return;
@@ -218,14 +225,28 @@ const Index = ({
             setModalData({
                 'index': index,
                 'content': '',
+                'confidence': 0.999999
             });
         }
 
         setSelecting(SELECTING_STYLE);
         setIsSelecting(false);
-    };
+    }, [isSelecting, selections, modalWriterRef, canvasRef]);
 
-    const selectionMenu = (index, event) => {
+    const pageMenu = useCallback((event, page) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        show({
+            id: PAGE_MENU_ID,
+            event: event,
+            props: {
+                //
+            },
+        })
+    }, []);
+
+    const selectionMenu = useCallback((index, event) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -236,9 +257,64 @@ const Index = ({
                 index: index
             }
         });
-    };
+    }, []);
 
-    const handleItemClick = ({ id, props, data, triggerEvent }) => {
+    const handlePagecClick = useCallback(({ id, props, data, triggerEvent }) => {
+        switch(id) {
+            case 'toggle-pdf':
+                if (canvasVsibility === VISIBILITY_VISIBLE) {
+                    setCanvasVsibility(VISIBILITY_HIDDEN);
+                } else {
+                    setCanvasVsibility(VISIBILITY_VISIBLE);
+                }
+                break;
+            case 'toggle-rnd':
+                if (rndVisibility === VISIBILITY_VISIBLE) {
+                    setRndVisibility(VISIBILITY_HIDDEN);
+                } else {
+                    setRndVisibility(VISIBILITY_VISIBLE);
+                }
+                break;
+            case 'page-save':
+                handlPageSave();
+                break;
+        }
+    }, [selections]);
+    const handlPageSave = useCallback(() => {
+        const putData = [];
+        selections.map((selection, index) => {
+            const x = Math.round(selection.x * (1 / SCALE));
+            const y = Math.round(selection.y * (1 / SCALE));
+            const w = Math.round(selection.width * (1 / SCALE));
+            const h = Math.round(selection.height * (1 / SCALE));
+
+            putData.push({
+                content: selection.content,
+                confidence: selection.confidence,
+                polygon: [
+                    x, y,
+                    x+w, y,
+                    x+w, y+h,
+                    x, y+h
+                ]
+            });
+        });
+
+        axios.put(route('user.ocr.analyze-result-review.update', [
+                ocrResult.document_id,
+                ocrPagesResult.page_number
+            ]), {
+                extractedText: putData,
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, [ocrResult, ocrPagesResult, selections]);
+
+    const handleItemClick = useCallback(({ id, props, data, triggerEvent }) => {
         switch(id) {
             case 'remove':
                 handleDeleteSelection(props.index);
@@ -247,35 +323,37 @@ const Index = ({
                 modalWriterRef.current.showModal();
                 setModalData({
                     'index': props.index,
-                    'content': selections[props.index].content
+                    'content': selections[props.index].content,
+                    'confidence': selections[props.index].confidence,
                 });
                 break;
         };
-    };
-    const handleDeleteSelection = (index) => {
+    }, [selections, modalWriterRef]);
+    const handleDeleteSelection = useCallback((index) => {
         setSelections(prevSelections => {
             const newSelections = [...prevSelections];
             newSelections.splice(index, 1);
 
             return newSelections;
         });
-    };
-    const updateModalData = (key, value) => {
+    }, [selections]);
+    const updateModalData = useCallback((key, value) => {
         setModalData(prevModalData => ({
             ...prevModalData,
             [key]: value
         }));
-    };
-    const modalUpdate = () => {
+    }, [modalData]);
+    const modalUpdate = useCallback(() => {
         setSelections(prevSelections => {
             const newSelections = [...prevSelections];
             newSelections[modalData.index].content = modalData.content;
+            newSelections[modalData.index].confidence = modalData.confidence;
 
             return newSelections;
         });
 
         modalWriterRef.current.close();
-    };
+    }, [selections, modalData, modalWriterRef]);
 
     return(
         <UserLayout
@@ -303,6 +381,8 @@ const Index = ({
                             onMouseDown={handleMouseDown}
                             onMouseMove={handleMouseMove}
                             onMouseUp={handleMouseUp}
+                            onContextMenu={pageMenu}
+                            className={`${canvasVsibility}`}
                         >
                             {selections?.map((selection, index) => (
                                 <Rnd
@@ -333,8 +413,8 @@ const Index = ({
                                             const newSelections = [...prevSelections];
 
                                             newSelections[index] = {
-                                                width: ref.style.width,
-                                                height: ref.style.height,
+                                                width: parseFloat(ref.style.width.replace('px', '')),
+                                                height: parseFloat(ref.style.height.replace('px', '')),
                                                 content: newSelections[index].content,
                                                 confidence: newSelections[index].confidence,
                                                 ...position,
@@ -347,11 +427,23 @@ const Index = ({
                                     onClick={ev => {
                                         //
                                     }}
-                                    className="whitespace-nowrap"
+                                    className={`whitespace-nowrap ${rndVisibility}`}
                                 >{selection.content}</Rnd>
                             ))}
 
                             <div style={selecting} />
+                            <Menu id={PAGE_MENU_ID}>
+                                <Item id="toggle-pdf" onClick={handlePagecClick}>
+                                    {t('Toggle PDF')}
+                                </Item>
+                                <Item id="toggle-rnd" onClick={handlePagecClick}>
+                                    {t('Toggle Selection')}
+                                </Item>
+                                <Separator />
+                                <Item id="page-save" onClick={handlePagecClick}>
+                                    {t('Save')}
+                                </Item>
+                            </Menu>
                             <Menu id={SELECTION_MENU_ID}>
                                 <Item id="remove" onClick={handleItemClick}>
                                     {t('Remove')}

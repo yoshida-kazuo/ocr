@@ -123,3 +123,7 @@ aside {
     @apply bg-gray-100;
 }
 
+.canvas-invisible canvas,
+.canvas-invisible.react-draggable {
+    visibility: hidden;
+}

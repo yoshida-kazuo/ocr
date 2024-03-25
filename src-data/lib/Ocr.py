@@ -390,7 +390,7 @@ class Ocr:
                     x+w, y+h,
                     x, y+h
                 ],
-                'confidence': float(data['cnf']),
+                'confidence': float(data['cnf'])  / 100,
                 'content': data['txt']
             })
         del tessconf, tsv2json, result

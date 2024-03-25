@@ -144,7 +144,6 @@ export default function Example({
                 context.lineTo(polygon[i] * unit * 0.5, polygon[i + 1] * unit * 0.5);
             }
             context.closePath();
-            // context.fill();
             context.stroke();
         });
     }, [pageOrientations]);

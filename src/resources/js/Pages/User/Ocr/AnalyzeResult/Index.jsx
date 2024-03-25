@@ -32,12 +32,14 @@ const Index = ({
 
             <h3 className="mb-3">
                 {`${t('Document ID')}: ${ocrResult.document_id}`}<br />
-                <div className="badge badge-ghost badge-sm">{ocrResult.service}</div>
+                <div className="badge badge-ghost badge-sm">
+                    {SERVICES.filter(service => service.value === ocrResult.service)[0]?.label || ocrResult.service}
+                </div>
                 <span className="text-sm opacity-50 ml-3">{ocrResult.updated_at}</span>
             </h3>
 
             {ocrPagesResults.total > 0 ? (
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap overflow-x-auto">
                     {ocrPagesResults.data.map(ocrPagesResult => (
                         <div
                             key={ocrPagesResult.id}

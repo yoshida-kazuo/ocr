@@ -70,7 +70,7 @@ const Index = ({
                                             </td>
                                             <td>
                                                 <div className="badge badge-ghost badge-sm">
-                                                    {SERVICES.filter(service => service.value === ocrResult.service)[0]?.label || '-'}
+                                                    {SERVICES.filter(service => service.value === ocrResult.service)[0]?.label || ocrResult.service}
                                                 </div><br />
                                                 <div className="badge badge-ghost badge-sm">
                                                     {ocrResult.storage || '-'}

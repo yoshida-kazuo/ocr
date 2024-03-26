@@ -44,7 +44,7 @@ const Index = ({
             <div className="text-sm breadcrumbs pt-0">
                 <ul>
                     <li><a href={route('user.dashboard')}>{t('Dashboard')}</a></li>
-                    <li><a href={route('user.ocr.analyze')}>{t('List of analyses')}</a></li>
+                    <li><a href={route('user.ocr.analyze')}>{t('OCR analyses list')}</a></li>
                     <li>{t('List of Analyzed Data')}</li>
                 </ul>
             </div>

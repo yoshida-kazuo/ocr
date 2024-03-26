@@ -351,7 +351,7 @@ const Index = ({
             <div className="text-sm breadcrumbs pt-0">
                 <ul>
                     <li><a href={route('user.dashboard')}>{t('Dashboard')}</a></li>
-                    <li><a href={route('user.ocr.analyze')}>{t('List of analyses')}</a></li>
+                    <li><a href={route('user.ocr.analyze')}>{t('OCR analyses list')}</a></li>
                     <li><a href={route('user.ocr.analyze-result', [ocrResult.document_id])}>{t('List of Analyzed Data')}</a></li>
                     <li>{ocrResult.document_id}</li>
                 </ul>

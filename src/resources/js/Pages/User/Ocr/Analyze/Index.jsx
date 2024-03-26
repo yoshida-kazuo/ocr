@@ -57,16 +57,16 @@ const Index = ({
             timezone={timezone}
             lang={lang}
         >
-            <Head title={t('List of analyses')} />
+            <Head title={t('OCR analyses list')} />
 
             <div className="text-sm breadcrumbs pt-0">
                 <ul>
                     <li><a href={route('user.dashboard')}>{t('Dashboard')}</a></li>
-                    <li>{t('List of analyses')}</li>
+                    <li>{t('OCR analyses list')}</li>
                 </ul>
             </div>
 
-            <h2 className="mb-4 font-semibold text-xl leading-tight">{t('List of analyses')}</h2>
+            <h2 className="mb-4 font-semibold text-xl leading-tight">{t('OCR analyses list')}</h2>
 
             <div className="p-4 shadow sm:rounded-md mt-2">
                 {ocrResults.total > 0 ? (

@@ -47,9 +47,13 @@ Route::middleware([
 
                 Route::get('analyze', \App\Http\Controllers\V1\Web\User\Ocr\Analyze\IndexController::class)
                     ->name('user.ocr.analyze');
+                Route::delete('analyze/delete', \App\Http\Controllers\V1\Web\User\Ocr\Analyze\DestroyController::class)
+                    ->name('user.ocr.analyze.destroy');
 
                 Route::get('analyze-result/{documentId}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResult\IndexController::class)
                     ->name('user.ocr.analyze-result');
+                Route::put('analyze-result/update/{documentId}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResult\UpdateController::class)
+                    ->name('user.ocr.analyze-result.update');
 
                 Route::get('analyze-result-review/{documentId}/{pageNumber}', \App\Http\Controllers\V1\Web\User\Ocr\AnalyzeResultReview\IndexController::class)
                     ->name('user.ocr.analyze-result-review');

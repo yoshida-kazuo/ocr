@@ -1,6 +1,6 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import UserLayout from '@/Layouts/UserLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { pdfjs, Document, Page } from 'react-pdf';
 import { Rnd } from 'react-rnd';
@@ -8,8 +8,8 @@ import { Menu, Item, Separator, useContextMenu } from 'react-contexify';
 import 'react-contexify/ReactContexify.css';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
-import InputError from '@/Components/InputError';
 import axios from 'axios';
+import Toast from '@/Components/Toast';
 
 const options = {
     cMapUrl: `/static/vendor/pdfjs/cmaps/`,
@@ -86,8 +86,9 @@ const Index = ({
     const [selecting, setSelecting] = useState(SELECTING_STYLE);
     const [startX, setStartX] = useState(0);
     const [startY, setStartY] = useState(0);
-    const [canvasVsibility, setCanvasVsibility] = useState(VISIBILITY_VISIBLE);
+    const [canvasVisibility, setCanvasVisibility] = useState(VISIBILITY_VISIBLE);
     const [rndVisibility, setRndVisibility] = useState(VISIBILITY_VISIBLE);
+    const [postSuccess, setPostSuccess] = useState(false);
 
     const { show } = useContextMenu({});
 
@@ -146,26 +147,6 @@ const Index = ({
                 },
             ]);
         });
-    }, [pages]);
-    const handleRenderSuccess = useCallback(() => {
-        // const context = canvasRef.current.getContext('2d');
-        // pages.lines?.map((line, index) => {
-        //     const minX = Math.min(...line.polygon.filter((_, idx) => idx % 2 === 0));
-        //     const minY = Math.min(...line.polygon.filter((_, idx) => idx % 2 === 1));
-        //     const maxX = Math.max(...line.polygon.filter((_, idx) => idx % 2 === 0));
-        //     const maxY = Math.max(...line.polygon.filter((_, idx) => idx % 2 === 1));
-
-        //     const x = minX * SCALE - 1;
-        //     const y = minY * SCALE - 1;
-        //     const width = (maxX - minX) * SCALE + 2;
-        //     const height = (maxY - minY) * SCALE + 2;
-
-        //     context.setLineDash([3, 3]);
-        //     context.lineWidth = 1;
-        //     context.strokeStyle = 'green';
-        //     context.rect(x, y, width, height);
-        //     context.stroke();
-        // });
     }, [pages]);
     const handleMouseDown = useCallback((event) => {
         event.preventDefault();
@@ -262,10 +243,10 @@ const Index = ({
     const handlePagecClick = useCallback(({ id, props, data, triggerEvent }) => {
         switch(id) {
             case 'toggle-pdf':
-                if (canvasVsibility === VISIBILITY_VISIBLE) {
-                    setCanvasVsibility(VISIBILITY_HIDDEN);
+                if (canvasVisibility === VISIBILITY_VISIBLE) {
+                    setCanvasVisibility(VISIBILITY_HIDDEN);
                 } else {
-                    setCanvasVsibility(VISIBILITY_VISIBLE);
+                    setCanvasVisibility(VISIBILITY_VISIBLE);
                 }
                 break;
             case 'toggle-rnd':
@@ -279,7 +260,7 @@ const Index = ({
                 handlPageSave();
                 break;
         }
-    }, [selections]);
+    }, [selections, canvasVisibility, rndVisibility]);
     const handlPageSave = useCallback(() => {
         const putData = [];
         selections.map((selection, index) => {
@@ -306,9 +287,7 @@ const Index = ({
             ]), {
                 extractedText: putData,
             })
-            .then(response => {
-                console.log(response);
-            })
+            .then(response => setPostSuccess(true))
             .catch(error => {
                 console.log(error);
             });
@@ -355,12 +334,28 @@ const Index = ({
         modalWriterRef.current.close();
     }, [selections, modalData, modalWriterRef]);
 
+    useEffect(() => {
+        if (postSuccess === true) {
+            setTimeout(() => {
+                setPostSuccess(false);
+            }, 3000);
+        }
+    }, [postSuccess]);
+
     return(
         <UserLayout
             user={auth.user}
             lang={lang}
         >
             <Head title={ocrResult.document_id} />
+            <div className="text-sm breadcrumbs pt-0">
+                <ul>
+                    <li><a href={route('user.dashboard')}>{t('Dashboard')}</a></li>
+                    <li><a href={route('user.ocr.analyze')}>{t('List of analyses')}</a></li>
+                    <li><a href={route('user.ocr.analyze-result', [ocrResult.document_id])}>{t('List of Analyzed Data')}</a></li>
+                    <li>{ocrResult.document_id}</li>
+                </ul>
+            </div>
 
             <Document
                 file={route('user.ocr.analyze-page-pdf', [ocrResult.document_id, ocrPagesResult.page_number])}
@@ -376,13 +371,12 @@ const Index = ({
                             renderAnnotationLayer={false}
                             renderTextLayer={false}
                             onLoadSuccess={handlePageOnLoadSuccess}
-                            onRenderSuccess={handleRenderSuccess}
                             width={ORIENTATIONS[pageOrientations].width}
                             onMouseDown={handleMouseDown}
                             onMouseMove={handleMouseMove}
                             onMouseUp={handleMouseUp}
                             onContextMenu={pageMenu}
-                            className={`${canvasVsibility}`}
+                            className={canvasVisibility}
                         >
                             {selections?.map((selection, index) => (
                                 <Rnd
@@ -468,11 +462,10 @@ const Index = ({
                         <InputLabel htmlFor="content" value={t('Content')} />
                         <TextInput
                             id="content"
-                            className="w-auto"
+                            className="input-bordered w-full"
                             value={modalData.content}
                             onChange={(e) => updateModalData('content', e.target.value)}
                         />
-                        <InputError className="" message="" />
                     </div>
 
                     <div className="modal-action">
@@ -491,6 +484,13 @@ const Index = ({
                     <button>{t('Close')}</button>
                 </form>
             </dialog>
+
+            <Toast
+                show={postSuccess}
+                className="toast-center toast-middle"
+                alertType="success"
+                message={t('You have been registered.')}
+            />
         </UserLayout>
     );
 };

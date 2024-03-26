@@ -35,10 +35,23 @@ class UpdateController extends Controller
                 userId: user('id'),
                 pagesResultPageNumber: $pageNumber
             );
+            $service = $ocrResult->service;
+            if ($ocrResult->service === 'pdf-text') {
+                $service = 'tesseract-v1';
+            }
+            $ocrClass = config("ocr.{$service}.class");
+
             $ocrPagesResult = data_get($ocrResult,'ocrPagesResults.0');
             $extractedText = json_decode($ocrPagesResult->extracted_text, true);
-            data_set($extractedText, 'analyzeResult.pages.0.words', $request->post('extractedText'));
+            data_set(
+                $extractedText,
+                'analyzeResult.pages.0.words',
+                $request->post('extractedText')
+            );
+
             $ocrPagesResult->extracted_text = json_encode($extractedText);
+            $ocrPagesResult->full_text = (new $ocrClass)
+                    ->extractWords($ocrPagesResult->extracted_text);
             $ocrPagesResult->save();
 
             $status = 'ok';

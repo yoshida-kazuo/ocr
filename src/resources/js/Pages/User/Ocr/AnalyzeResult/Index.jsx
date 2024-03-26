@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import UserLayout from '@/Layouts/UserLayout';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import TextInput from '@/Components/TextInput';
+import axios from 'axios';
 
 const SERVICES = [
     { value: 'tesseract-v1', label: 'OCR Engine V1' },
@@ -21,16 +23,43 @@ const Index = ({
 }) => {
     const { t } = useTranslation();
 
+    const [documentName, setDocumentName] = useState(ocrResult.document_name);
+
+    const handleDocumentNameUpdate = useCallback((ev) => {
+        axios.put(route('user.ocr.analyze-result.update', [ocrResult.document_id]), {
+                document_name: ev.target.value
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
     return (
         <UserLayout
             user={auth.user}
             timezone={timezone}
             lang={lang}
-            header={<h2 className="mb-4 font-semibold text-xl leading-tight">{t('List of Analyzed Data')}</h2>}
         >
             <Head title={t('List of Analyzed Data')} />
+            <div className="text-sm breadcrumbs pt-0">
+                <ul>
+                    <li><a href={route('user.dashboard')}>{t('Dashboard')}</a></li>
+                    <li><a href={route('user.ocr.analyze')}>{t('List of analyses')}</a></li>
+                    <li>{t('List of Analyzed Data')}</li>
+                </ul>
+            </div>
+
+            <h2 className="mb-1 font-semibold text-xl leading-tight">{t('List of Analyzed Data')}</h2>
 
             <h3 className="mb-3">
+                <TextInput
+                    id="document_name"
+                    className="*:input-ghost w-full max-w-xs mb-1"
+                    placeholder={t('Click to Change Document Name')}
+                    onBlur={handleDocumentNameUpdate}
+                    onChange={ev => setDocumentName(ev.target.value)}
+                    value={documentName}
+                /><br />
                 {`${t('Document ID')}: ${ocrResult.document_id}`}<br />
                 <div className="badge badge-ghost badge-sm">
                     {SERVICES.filter(service => service.value === ocrResult.service)[0]?.label || ocrResult.service}

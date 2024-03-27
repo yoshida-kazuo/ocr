@@ -46,7 +46,8 @@ class IndexController extends Controller
             content: $pdfBlob,
             status: 200,
             headers: [
-                'Content-Type' => 'application/pdf',
+                'Content-Type'          => 'application/pdf',
+                'Content-Disposition'   => "attachment; filename=\"{$documentId}-{$pageNumber}.pdf\"",
             ]
         );
     }

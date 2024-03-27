@@ -34,6 +34,23 @@ const Index = ({
             });
     }, []);
 
+    const handleDownload = useCallback((ev, url) => {
+        ev.preventDefault();
+
+        axios.get(url)
+            .then(response => {
+                const filename = response.headers
+                    .get("content-disposition").split('"').at(1);
+                const url = URL.createObjectURL(new Blob([response.data]));
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error(t('PDF Download Error.'), error));
+    }, []);
+
     return (
         <UserLayout
             user={auth.user}
@@ -81,9 +98,13 @@ const Index = ({
                                 <div className="card-body">
                                     <h2 className="card-title">{t('Page number')} {ocrPagesResult.page_number}</h2>
                                     <p className="overflow-hidden truncate">{ocrPagesResult.full_text}</p>
-                                    <div className="card-actions justify-end">
+                                    <div className="card-actions justify-end join gap-0">
                                         <a
-                                            className="btn btn-primary"
+                                            className="btn btn-secondary join-item"
+                                            onClick={ev => handleDownload(ev, route('user.ocr.analyze-page-pdf', [ocrPagesResult.ocr_result.document_id, ocrPagesResult.page_number]))}
+                                        >{t('Download')}</a>
+                                        <a
+                                            className="btn btn-primary join-item"
                                             href={route('user.ocr.analyze-result-review', [ocrPagesResult.ocr_result.document_id, ocrPagesResult.page_number])}
                                         >{t('Review Analysis Data')}</a>
                                     </div>

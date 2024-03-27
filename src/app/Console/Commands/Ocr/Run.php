@@ -128,15 +128,7 @@ class Run extends Command
 
             // PDF splitting
             $analyzeFilepath = "{$workDir}/%d.pdf";
-            exec("pdftk {$filepath} burst output {$analyzeFilepath}", $pdftk, $resultCode);
-
-            if ($resultCode !== 0) {
-                throw new Exception(__(':handleId : :filepath : :pages : Failed to split PDF.', [
-                    'handleId'  => $handleId,
-                    'filepath'  => $filepath,
-                    'pages'     => $pages,
-                ]));
-            }
+            $ocr->pdfSplit($filepath, $analyzeFilepath);
 
             $extractPages = $this->parsePages($pages);
             $analyzeFiles = glob("{$workDir}/*.pdf");
@@ -192,7 +184,7 @@ class Run extends Command
 
                 // Check if the target page contains embedded text
                 $pdftotext = [];
-                exec("pdftotext '{$analyzeFile}' -", $pdftotext, $resultCode);
+                exec(escapeshellcmd("pdftotext '{$analyzeFile}' -"), $pdftotext, $resultCode);
                 if ($resultCode !== 0) {
                     throw new Exception(__(':handleId : :analyzeFile : Failed to extract text from PDF.', [
                         'handleId'      => $handleId,
@@ -224,40 +216,26 @@ class Run extends Command
                     if (($pdfinfo->get('width') > $pdfinfo->get('height') && $pdfinfo->get('orientation') === 'portrait')
                         || ($pdfinfo->get('height') > $pdfinfo->get('width') && $pdfinfo->get('orientation') === 'landscape')
                     ) {
-                        exec("convert {$imageAnalyzeFile} -rotate -90 {$imageAnalyzeFile}", $convert, $resultCode);
-                        if ($resultCode !== 0) {
-                            throw new Exception(__(':handleId : :file : Image flip failed.', [
-                                'handleId'  => $handleId,
-                                'file'      => $imageAnalyzeFile,
-                            ]));
-                        }
-                        unset($convert);
+                        $ocr->imageRotate($imageAnalyzeFile, -90);
                     }
-                    unset($convert,
-                        $resultCode,
+                    unset($resultCode,
                         $files);
 
                     // Resize to 300dpi and perform trapezoid correction and rotation correction.
                     if ($this->option('image-correction')) {
                         $basename = basename($imageAnalyzeFile);
-                        $pythonResult = [];
-                        exec("python /opt/data/src/main.py ocr image_correction --file_path={$imageAnalyzeFile} --output_file={$basename} --output_dir={$workDir}", $pythonResult, $resultCode);
-
-                        unset($basename,
-                            $pythonResult);
+                        $ocr->trapezoidalCorrection(
+                            $imageAnalyzeFile,
+                            $workDir,
+                            $basename
+                        );
                     }
 
                     // Create a PDF from a single image
-                    exec("convert {$imageAnalyzeFile} {$analyzeFile}", $convert, $resultCode);
-                    if ($resultCode !== 0) {
-                        throw new Exception(__(':handleId : :file : PDF conversion failed.', [
-                            'handleId'  => $handleId,
-                            'file'      => $imageAnalyzeFile,
-                        ]));
-                    }
+                    $ocr->image2pdf($imageAnalyzeFile, $analyzeFile);
+
                     unlink($imageAnalyzeFile);
                     unset($convert,
-                        $resultCode,
                         $imageAnalyzeFile);
                 } else
                 if ($prioritizeEmbeddedFonts === 'yes') {
@@ -266,35 +244,21 @@ class Run extends Command
                         'analyzeFile'   => $analyzeFile,
                     ]));
 
-                    $pythonResult = [];
-                    exec("python /opt/data/src/main.py ocr extract_text_and_coordinates --pdf_filepath={$analyzeFile}", $pythonResult, $resultCode);
-                    if ($resultCode !== 0) {
-                        throw new Exception(__(':handleId : :file : Failed to retrieve text and coordinates from the PDF.', [
-                            'handleId'  => $handleId,
-                            'file'      => $analyzeFile,
-                        ]));
-                    }
-
+                    $textdata = $ocr->pdf2text($analyzeFile);
                     $pdftotext = json_decode(
-                        implode('', $pythonResult),
+                        implode('', $textdata),
                         true
                     ) ?: [];
+                    unset($textdata);
 
                     $imageAnalyzeFile = dirname($analyzeFile) . "/analyze.png";
                     $pdfinfo = $ocr->pdf2image($analyzeFile, $imageAnalyzeFile);
-                    $pythonResult = [];
-                    exec("python /opt/data/src/main.py ocr line_detection --image_path={$imageAnalyzeFile}", $pythonResult, $resultCode);
-                    if ($resultCode !== 0) {
-                        throw new Exception(__(':handleId : :file : Failed to line detection.', [
-                            'handleId'  => $handleId,
-                            'file'      => $analyzeFile,
-                        ]));
-                    }
-
+                    $linedata = $ocr->lineDetect($imageAnalyzeFile);
                     $lines = json_decode(
-                        implode('', $pythonResult),
+                        implode('', $linedata),
                         true
                     ) ?: [];
+                    unset($linedata);
 
                     if (method_exists($ocr, 'parsePdftotext')) {
                         $pdftotext = $ocr->parsePdftotext(

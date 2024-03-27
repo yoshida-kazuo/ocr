@@ -55,7 +55,7 @@ export default function Dashboard({
                         </div>
                         <div className="stat-title">{t('Total OCR analyses')}</div>
                         <div className="stat-value text-primary">{ocrPagesResultCount}</div>
-                        <div className="stat-desc"><a href="">{t('Review analysis data')}</a></div>
+                        <div className="stat-desc"><a href={route('user.ocr.analyze')}>{t('Review analysis data')}</a></div>
                     </div>
                 </div>
             </div>

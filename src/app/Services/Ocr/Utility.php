@@ -76,6 +76,7 @@ trait Utility
      * @param integer $dpi
      *
      * @return string
+     * @throws Exception
      */
     public function pdf2image(
         string $filepath,
@@ -105,7 +106,7 @@ trait Utility
             ($size->get('width') / $pdfinfo->get('width')) * $pdfinfo->get('height')
         );
 
-        exec("pdftoppm -png -singlefile -scale-dimension-before-rotation -r {$dpi} -scale-to-x {$size->get('width')} -scale-to-y {$ratioHeight} -x 0 -y 0 {$filepath} {$toFilepath}", $convert, $resultCode);
+        exec(escapeshellcmd("pdftoppm -png -singlefile -scale-dimension-before-rotation -r {$dpi} -scale-to-x {$size->get('width')} -scale-to-y {$ratioHeight} -x 0 -y 0 {$filepath} {$toFilepath}"), $convert, $resultCode);
         if ($resultCode !== 0) {
             throw new Exception(__(':filepath : :resizeFilepath : :series : :dpi : Convert Error.', [
                 'filepath'          => $filepath,
@@ -116,6 +117,143 @@ trait Utility
         }
 
         return $pdfinfo;
+    }
+
+    /**
+     * pdf2text function
+     *
+     * @param string $pdffilepath
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function pdf2text(string $pdffilepath): array {
+        $pythonResult = [];
+        exec(escapeshellcmd("python /opt/data/src/main.py ocr extract_text_and_coordinates --pdf_filepath={$pdffilepath}"), $pythonResult, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':pdffilepath : Failed to retrieve text and coordinates from the PDF.', [
+                'pdffilepath' => $pdffilepath,
+            ]));
+        }
+
+        return $pythonResult;
+    }
+
+    /**
+     * lineDetect function
+     *
+     * @param string $imagefilepath
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function lineDetect(string $imagefilepath): array {
+        $pythonResult = [];
+        exec(escapeshellcmd("python /opt/data/src/main.py ocr line_detection --image_path={$imagefilepath}"), $pythonResult, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':imagefilepath : Failed to line detection.', [
+                'imagefilepath' => $imagefilepath,
+            ]));
+        }
+
+        return $pythonResult;
+    }
+
+    /**
+     * image2pdf function
+     *
+     * @param string $imagepath
+     * @param string $pdfpath
+     *
+     * @return boolean
+     * @throws Exception
+     */
+    public function image2pdf(
+        string $imagepath,
+        string $pdfpath
+    ): bool {
+        exec(escapeshellcmd("convert {$imagepath} {$pdfpath}"), $convert, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':imagepath : :pdfpath : Convert command failed.', [
+                'imagepath' => $imagepath,
+                'pdfpath'   => $pdfpath,
+            ]));
+        }
+
+        return true;
+    }
+
+    /**
+     * imageRotate function
+     *
+     * @param string $imagepath
+     * @param integer $rotate
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function imageRotate(
+        string $imagepath,
+        int $rotate
+    ): bool {
+        exec(escapeshellcmd("convert {$imagepath} -rotate {$rotate} {$imagepath}"), $convert, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':file : Image flip failed.', [
+                'file' => $imagepath,
+            ]));
+        }
+
+        return true;
+    }
+
+    /**
+     * pdfSplit function
+     *
+     * @param string $pdffilepath
+     * @param string $outputpath
+     *
+     * @return boolean
+     */
+    public function pdfSplit(
+        string $pdffilepath,
+        string $outputpath,
+    ): bool {
+        exec(escapeshellcmd("pdftk {$pdffilepath} burst output {$outputpath}"), $pdftk, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':pdffilepath : :outputpath : Failed to split PDF.', [
+                'pdffilepath'   => $pdffilepath,
+                'outputpath'    => $outputpath,
+            ]));
+        }
+
+        return true;
+    }
+
+    /**
+     * trapezoidalCorrection function
+     *
+     * @param string $imagefilepath
+     * @param string $outputdir
+     * @param string $filename
+     *
+     * @return boolean
+     * @throws Exception
+     */
+    public function trapezoidalCorrection(
+        string $imagefilepath,
+        string $outputdir,
+        string $filename
+    ): bool {
+        exec(escapeshellcmd("python /opt/data/src/main.py ocr image_correction --file_path={$imagefilepath} --output_file={$filename} --output_dir={$outputdir}"), $pythonResult, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':imagefilepath : :outputdir : :filename : Failed trapezoida correction.', [
+                'imagefilepath' => $imagefilepath,
+                'outputdir'     => $outputdir,
+                'filename'      => $filename,
+            ]));
+        }
+
+        return true;
     }
 
     /**

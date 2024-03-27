@@ -102,7 +102,6 @@ class MonitoringFolder extends Command
                     'document_id'       => $documentId,
                     'service'           => $watchedFolder->service,
                     'storage'           => $watchedFolder->storage,
-                    'file_path'         => $batchDisk->path($batchFile),
                     'page_number'       => $pages,
                 ]);
 

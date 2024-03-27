@@ -5,6 +5,7 @@ return [
     'workDir'                   => env('OCR_WORK_DIR'),
     'batchDir'                  => env('OCR_BATCH_DIR'),
     'utilDir'                   => env('OCR_UTIL_DIR'),
+    'tmpDir'                    => env('OCR_TMP_DIR'),
     'storageDriver'             => env('OCR_STORAGE_DRIVER', 'local'),
     'prioritize_embedded_fonts' => env('OCR_PRIORITIZE_EMBEDDED_FONTS', 'yes'),
 

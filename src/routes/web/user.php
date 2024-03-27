@@ -36,6 +36,9 @@ Route::middleware([
                 Route::get('example', \App\Http\Controllers\V1\Web\User\Ocr\ExampleController::class)
                     ->name('user.ocr.example');
 
+                Route::post('pdf-convert', \App\Http\Controllers\V1\Web\User\Ocr\PdfConvert\IndexController::class)
+                    ->name('user.ocr.pdf-convert');
+
                 Route::get('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\IndexController::class)
                     ->name('user.ocr.monitoring-setup');
                 Route::post('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\StoreController::class)

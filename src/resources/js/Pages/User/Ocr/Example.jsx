@@ -90,19 +90,6 @@ export default function Example({
         pdf.getData()
             .then(arrayBuffer => {
                 const pdfraw = String.fromCharCode.apply(null, arrayBuffer);
-                // console.log(
-                //     `data:application/pdf;base64,${btoa(pdfraw)}`
-                // );
-                // // const blob = new Blob([pdfraw], { type: 'application/pdf' });
-
-                // // const file = new File([blob], 'filename.pdf', { type: 'application/pdf' });
-
-                // // const link = document.createElement('a');
-                // // link.href = URL.createObjectURL(file);
-                // // link.download = 'filename.pdf';
-                // // link.click();
-
-                // convertFileToBase64(file);
                 setPdfData(`data:application/pdf;base64,${btoa(pdfraw)}`);
             });
         setPdfDocument(pdf);

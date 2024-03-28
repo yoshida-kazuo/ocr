@@ -81,7 +81,7 @@ export default function DeleteUserForm({
                             ref={passwordInput}
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
-                            className="mt-1 block w-3/4"
+                            className="input-bordered mt-1 block w-3/4"
                             isFocused
                             placeholder="Password"
                         />

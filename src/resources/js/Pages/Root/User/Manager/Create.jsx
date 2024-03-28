@@ -56,7 +56,7 @@ export default function Create({
 
                             <TextInput
                                 id="name"
-                                className="mt-1 block w-full"
+                                className="input-bordered mt-1 block w-full"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
@@ -73,7 +73,7 @@ export default function Create({
                             <TextInput
                                 id="email"
                                 type="email"
-                                className="mt-1 block w-full"
+                                className="input-bordered mt-1 block w-full"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
@@ -105,7 +105,7 @@ export default function Create({
                                 type="password"
                                 name="password"
                                 value={data.password}
-                                className="mt-1 block w-full"
+                                className="input-bordered mt-1 block w-full"
                                 autoComplete="new-password"
                                 onChange={(e) => setData('password', e.target.value)}
                                 required
@@ -122,7 +122,7 @@ export default function Create({
                                 type="password"
                                 name="password_confirmation"
                                 value={data.password_confirmation}
-                                className="mt-1 block w-full"
+                                className="input-bordered mt-1 block w-full"
                                 autoComplete="new-password"
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 required

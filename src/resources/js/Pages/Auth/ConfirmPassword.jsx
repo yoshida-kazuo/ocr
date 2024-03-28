@@ -45,7 +45,7 @@ export default function ConfirmPassword({
                         type="password"
                         name="password"
                         value={data.password}
-                        className="block w-full"
+                        className="input-bordered block w-full"
                         isFocused={true}
                         onChange={(e) => setData('password', e.target.value)}
                     />

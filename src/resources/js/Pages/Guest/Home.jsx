@@ -160,7 +160,7 @@ export default function Home({
                         <div className="mt-2">
                             <TextArea
                                 id="body"
-                                className="h-72 w-auto"
+                                className="input-bordered h-72 w-auto"
                                 value={data.body}
                                 onChange={(e) => setData('body', e.target.value)}
                             />
@@ -173,7 +173,7 @@ export default function Home({
 
                             <TextInput
                                 id="topic_type"
-                                className="w-auto"
+                                className="input-bordered w-auto"
                                 value={data.topic_type}
                                 onChange={(e) => setData('topic_type', e.target.value)}
                             />

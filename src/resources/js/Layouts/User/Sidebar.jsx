@@ -18,14 +18,14 @@ export default function Sidebar() {
             "icon": <DocumentSearchIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         },
         {
-            "route": "user.ocr.monitoring-setup",
-            "label": t('Monitoring Setup'),
-            "icon": <CogIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
-        },
-        {
             "route": "user.ocr.analyze",
             "label": t('OCR analyses list'),
             "icon": <ViewListIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
+        },
+        {
+            "route": "user.ocr.monitoring-setup",
+            "label": t('Monitoring Setup'),
+            "icon": <CogIcon className="flex-shrink-0 w-5 h-5 transition duration-75" />,
         }
     ];
 

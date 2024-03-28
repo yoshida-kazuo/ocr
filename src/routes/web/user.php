@@ -38,6 +38,8 @@ Route::middleware([
 
                 Route::post('pdf-convert', \App\Http\Controllers\V1\Web\User\Ocr\PdfConvert\IndexController::class)
                     ->name('user.ocr.pdf-convert');
+                Route::get('pdf-convert/{convertFile}', \App\Http\Controllers\V1\Web\User\Ocr\PdfConvert\GetController::class)
+                    ->name('user.ocr.pdf-convert.get');
 
                 Route::get('monitoring-setup', \App\Http\Controllers\V1\Web\User\Ocr\MonitoringSetup\IndexController::class)
                     ->name('user.ocr.monitoring-setup');

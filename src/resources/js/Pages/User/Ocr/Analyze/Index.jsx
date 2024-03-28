@@ -66,8 +66,6 @@ const Index = ({
                 </ul>
             </div>
 
-            <h2 className="mb-4 font-semibold text-xl leading-tight">{t('OCR analyses list')}</h2>
-
             <div className="p-4 shadow sm:rounded-md mt-2">
                 {ocrResults.total > 0 ? (
                     <>

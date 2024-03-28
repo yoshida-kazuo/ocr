@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import UserLayout from '@/Layouts/UserLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import { pdfjs, Document, Page } from 'react-pdf';
 import SelectablePage from '@/Components/SelectablePage';
@@ -59,16 +59,52 @@ export default function Example({
     const analyzeResultRef = useRef();
     const analyzeBtnRef = useRef();
 
+    const downloadConvertfile = useCallback((responseData) => {
+        const url = responseData.url;
+        setFileUrl(url);
+    }, []);
+
     const handleFileChange = useCallback((event) => {
         const selectedFile = event.target.files[0];
 
-        setFileUrl(selectedFile);
-        convertFileToBase64(selectedFile);
+        if (selectedFile.type === 'application/pdf') {
+            setFileUrl(selectedFile);
+            // convertFileToBase64(selectedFile);
+        } else {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            axios.post(route('user.ocr.pdf-convert'), formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                })
+                .then(response => downloadConvertfile(response.data))
+                .catch(error => console.error(t('Error converting image to PDF:'), error));
+        }
     }, []);
 
     const handleClickPage = useCallback((pageNumber) => setCurrentPage(pageNumber), []);
 
     const onLoadSuccess = useCallback((pdf) => {
+        pdf.getData()
+            .then(arrayBuffer => {
+                const pdfraw = String.fromCharCode.apply(null, arrayBuffer);
+                // console.log(
+                //     `data:application/pdf;base64,${btoa(pdfraw)}`
+                // );
+                // // const blob = new Blob([pdfraw], { type: 'application/pdf' });
+
+                // // const file = new File([blob], 'filename.pdf', { type: 'application/pdf' });
+
+                // // const link = document.createElement('a');
+                // // link.href = URL.createObjectURL(file);
+                // // link.download = 'filename.pdf';
+                // // link.click();
+
+                // convertFileToBase64(file);
+                setPdfData(`data:application/pdf;base64,${btoa(pdfraw)}`);
+            });
         setPdfDocument(pdf);
         setCurrentPage(1);
         setNumPages(pdf.numPages);

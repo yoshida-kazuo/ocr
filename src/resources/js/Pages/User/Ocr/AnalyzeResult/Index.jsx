@@ -34,23 +34,6 @@ const Index = ({
             });
     }, []);
 
-    const handleDownload = useCallback((ev, url) => {
-        ev.preventDefault();
-
-        axios.get(url)
-            .then(response => {
-                const filename = response.headers
-                    .get("content-disposition").split('"').at(1);
-                const url = URL.createObjectURL(new Blob([response.data]));
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.click();
-                URL.revokeObjectURL(url);
-            })
-            .catch(error => console.error(t('PDF Download Error.'), error));
-    }, []);
-
     return (
         <UserLayout
             user={auth.user}
@@ -65,8 +48,6 @@ const Index = ({
                     <li>{t('List of Analyzed Data')}</li>
                 </ul>
             </div>
-
-            <h2 className="mb-1 font-semibold text-xl leading-tight">{t('List of Analyzed Data')}</h2>
 
             <h3 className="mb-3">
                 <TextInput
@@ -101,7 +82,7 @@ const Index = ({
                                     <div className="card-actions justify-end join gap-0">
                                         <a
                                             className="btn btn-secondary join-item"
-                                            onClick={ev => handleDownload(ev, route('user.ocr.analyze-page-pdf', [ocrPagesResult.ocr_result.document_id, ocrPagesResult.page_number]))}
+                                            href={route('user.ocr.analyze-page-pdf', [ocrPagesResult.ocr_result.document_id, ocrPagesResult.page_number])}
                                         >{t('Download')}</a>
                                         <a
                                             className="btn btn-primary join-item"

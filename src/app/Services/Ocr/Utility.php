@@ -42,6 +42,37 @@ trait Utility
     ];
 
     /**
+     * pdfMimes
+     *
+     * @var array
+     */
+    protected array $pdfMimeTypees = [
+        'application/pdf',
+    ];
+
+    /**
+     * imageMimes
+     *
+     * @var array
+     */
+    protected array $imageMimeTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/bmp',
+        'image/tiff',
+        'image/svg+xml',
+        'image/webp',
+        'image/jp2',
+        'image/x-portable-anymap',
+        'image/x-portable-bitmap',
+        'image/x-portable-graymap',
+        'image/x-portable-pixmap',
+        'image/pcx',
+        'image/vnd.microsoft.icon',
+    ];
+
+    /**
      * pdfinfo function
      *
      * @param string $filepath
@@ -120,6 +151,35 @@ trait Utility
     }
 
     /**
+     * image2pdf function
+     *
+     * @param string $imagepath
+     * @param string $pdfpath
+     *
+     * @return boolean
+     * @throws Exception
+     */
+    public function image2pdf(
+        string $imagepath,
+        string $pdffilepath
+    ): bool {
+        $cmd = [
+            'convert',
+            $imagepath,
+            $pdffilepath,
+        ];
+        exec(escapeshellcmd(implode(' ', $cmd)), $convert, $resultCode);
+        if ($resultCode !== 0) {
+            throw new Exception(__(':imagepath : :pdffilepath : Convert command failed.', [
+                'imagepath' => $imagepath,
+                'pdffilepath'   => $pdffilepath,
+            ]));
+        }
+
+        return true;
+    }
+
+    /**
      * pdf2text function
      *
      * @param string $pdffilepath
@@ -157,30 +217,6 @@ trait Utility
         }
 
         return $pythonResult;
-    }
-
-    /**
-     * image2pdf function
-     *
-     * @param string $imagepath
-     * @param string $pdfpath
-     *
-     * @return boolean
-     * @throws Exception
-     */
-    public function image2pdf(
-        string $imagepath,
-        string $pdfpath
-    ): bool {
-        exec(escapeshellcmd("convert {$imagepath} {$pdfpath}"), $convert, $resultCode);
-        if ($resultCode !== 0) {
-            throw new Exception(__(':imagepath : :pdfpath : Convert command failed.', [
-                'imagepath' => $imagepath,
-                'pdfpath'   => $pdfpath,
-            ]));
-        }
-
-        return true;
     }
 
     /**
@@ -242,9 +278,10 @@ trait Utility
     public function trapezoidalCorrection(
         string $imagefilepath,
         string $outputdir,
-        string $filename
+        string $filename,
+        int $dpi = 300
     ): bool {
-        exec(escapeshellcmd("python /opt/data/src/main.py ocr image_correction --file_path={$imagefilepath} --output_file={$filename} --output_dir={$outputdir}"), $pythonResult, $resultCode);
+        exec(escapeshellcmd("python /opt/data/src/main.py ocr image_correction --file_path={$imagefilepath} --output_file={$filename} --output_dir={$outputdir} --dpi={$dpi}"), $pythonResult, $resultCode);
         if ($resultCode !== 0) {
             throw new Exception(__(':imagefilepath : :outputdir : :filename : Failed trapezoida correction.', [
                 'imagefilepath' => $imagefilepath,
@@ -320,6 +357,28 @@ trait Utility
                 ],
             ],
         ];
+    }
+
+    /**
+     * isPdf function
+     *
+     * @param string $mimeType
+     *
+     * @return boolean
+     */
+    public function isPdf(string $mimeType): bool {
+        return array_search($mimeType, $this->pdfMimeTypees) !== false;
+    }
+
+    /**
+     * isImage function
+     *
+     * @param string $mimeType
+     *
+     * @return boolean
+     */
+    public function isImage(string $mimeType): bool {
+        return array_search($mimeType, $this->imageMimeTypes) !== false;
     }
 
 }

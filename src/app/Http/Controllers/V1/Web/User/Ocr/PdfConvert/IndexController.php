@@ -18,40 +18,40 @@ class IndexController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request): \Illuminate\Http\Response
-    {
-        $pdfFilename = uuid() . '.pdf';
+    public function __invoke(
+        Request $request
+    ): \Illuminate\Http\Response {
+        $convertFile = uuid() . '.pdf';
         $ocrService = config('ocr.service');
         $ocrClass = config("ocr.{$ocrService}.class");
         $file = $request->file('file');
 
         $imageFilepath = $file->getPathname();
         $newImageFilepath = "{$imageFilepath}.{$file->getClientOriginalExtension()}";
-        rename($imageFilepath, $newImageFilepath);
+        File::copy($imageFilepath, $newImageFilepath);
         $pdfFilepath = "{$imageFilepath}.pdf";
         $ocr = new $ocrClass;
-        $basename = basename($newImageFilepath);
-        $workDir = dirname($newImageFilepath);
-        $ocr->trapezoidalCorrection(
-            $newImageFilepath,
-            $workDir,
-            $basename
-        );
+
         $ocr->image2pdf($newImageFilepath, $pdfFilepath);
         $blob = File::get($pdfFilepath);
+        $appPdfFilepath = config('ocr.tmpDir') . "/{$convertFile}";
+        Storage::put($appPdfFilepath, $blob);
 
-        Storage::delete([
-            $imageFilepath,
+        File::delete([
             $pdfFilepath,
+            $imageFilepath,
             $newImageFilepath,
         ]);
 
         return response(
-            content: $blob,
+            content: [
+                'url' => route('user.ocr.pdf-convert.get', [
+                    $convertFile,
+                ]),
+            ],
             status: 200,
             headers: [
-                'Content-Type'          => 'application/pdf',
-                'Content-Disposition'   => "attachment; filename=\"{$pdfFilename}\"",
+                'Content-Type' => 'application/json',
             ]
         );
     }

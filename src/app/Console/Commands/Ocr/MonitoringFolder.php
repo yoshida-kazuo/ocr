@@ -7,7 +7,6 @@ use App\Lib\Support\OcrResult\OcrResultSupport;
 use App\Lib\Support\OcrResult\WatchedFolderSupport;
 use App\Console\Command;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Str;
@@ -67,6 +66,9 @@ class MonitoringFolder extends Command
             $monitoringFolder = Str::of($monitoringFolder)
                 ->trim('/');
 
+            $ocrClass = config("ocr.{$watchedFolder->service}.class");
+            $ocr = new $ocrClass;
+
             $files = $disk->files($monitoringFolder);
             foreach ($files as $file) {
                 $this->info(__(':handleId : :file : We have initiated the batch processing.', [
@@ -76,6 +78,24 @@ class MonitoringFolder extends Command
 
                 $documentId = uuid();
                 $filename = basename($file);
+                $mimeType = $disk->mimeType($file);
+                $tmpImagefile = null;
+
+                if ($ocr->isImage($mimeType)) {
+                    $convertPdffile = dirname($file) . '/' . pathinfo($filename, PATHINFO_FILENAME) . '.pdf';
+                    $ocr->image2pdf(
+                        $disk->path($file),
+                        $disk->path($convertPdffile)
+                    );
+
+                    $tmpImagefile = $file;
+                    $file = $convertPdffile;
+                    $filename = basename($file);
+                } else
+                if (! $ocr->isPdf($mimeType)) {
+                    continue;
+                }
+
                 $batchFile = "{$batchDir}/{$documentId}/{$filename}";
 
                 if ($batchDisk->put(
@@ -83,6 +103,15 @@ class MonitoringFolder extends Command
                     $disk->get($file)
                 )) {
                     $disk->delete($file);
+                }
+
+                if ($tmpImagefile
+                    && $batchDisk->put(
+                        dirname($batchFile) . '/' . basename($tmpImagefile),
+                        $disk->get($tmpImagefile)
+                    )
+                ) {
+                    $disk->delete($tmpImagefile);
                 }
 
                 $imagick = app(Imagick::class);
@@ -105,7 +134,7 @@ class MonitoringFolder extends Command
                     'page_number'       => $pages,
                 ]);
 
-                $batch = Bus::batch([
+                Bus::batch([
                         new ProcessOcr([
                             'filepath'              => $batchDisk->path($batchFile),
                             '--service'             => $watchedFolder->service,

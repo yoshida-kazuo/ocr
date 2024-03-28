@@ -53,6 +53,7 @@ export default function Example({
     const [pdfDocument, setPdfDocument] = useState();
     const [pageOrientations, setPageOrientations] = useState();
     const [engine, setEngine] = useState(ocrconfig.service);
+    const [type, setType] = useState();
 
     const inputRef = useRef();
     const canvasRef = useRef();
@@ -68,9 +69,11 @@ export default function Example({
         const selectedFile = event.target.files[0];
 
         if (selectedFile.type === 'application/pdf') {
+            setType('pdf');
             setFileUrl(selectedFile);
-            // convertFileToBase64(selectedFile);
+            convertFileToBase64(selectedFile);
         } else {
+            setType('image');
             const formData = new FormData();
             formData.append('file', selectedFile);
 
@@ -82,20 +85,22 @@ export default function Example({
                 .then(response => downloadConvertfile(response.data))
                 .catch(error => console.error(t('Error converting image to PDF:'), error));
         }
-    }, []);
+    }, [setType]);
 
     const handleClickPage = useCallback((pageNumber) => setCurrentPage(pageNumber), []);
 
     const onLoadSuccess = useCallback((pdf) => {
-        pdf.getData()
-            .then(arrayBuffer => {
-                const pdfraw = String.fromCharCode.apply(null, arrayBuffer);
-                setPdfData(`data:application/pdf;base64,${btoa(pdfraw)}`);
-            });
+        if (type === 'image') {
+            pdf.getData()
+                .then(arrayBuffer => {
+                    const pdfraw = String.fromCharCode.apply(null, arrayBuffer);
+                    setPdfData(`data:application/pdf;base64,${btoa(pdfraw)}`);
+                });
+        }
         setPdfDocument(pdf);
         setCurrentPage(1);
         setNumPages(pdf.numPages);
-    }, []);
+    }, [type]);
 
     const handleUpload = useCallback(async () => {
         if (selectionsData && canvasData) {

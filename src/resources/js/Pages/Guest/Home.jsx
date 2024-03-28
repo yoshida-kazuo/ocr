@@ -105,7 +105,7 @@ export default function Home({
             <Head title={t('Home Page')} />
 
             <div className="w-full">
-                {auth.user && (
+                {auth.user?.role_id < 9 && auth.user && (
                     <div className="w-full my-4 sticky top-16 z-10">
                         <div className="m-auto w-32">
                             <PrimaryButton
@@ -117,18 +117,21 @@ export default function Home({
 
                 <div className="sm:flex sm:flex-wrap sm:items-start sm:w-[45rem] sm:min-w-[45rem] mx-auto">
                     {posts.data.length ? posts.data?.map(post => (
-                        <div key={post.id} className="card sm:w-[45rem] bg-base-100 m-2 shadow-md">
+                        <div key={post.id} className="card sm:w-[45rem] bg-base-100 m-2">
                             <div className="card-body p-6">
                                 <Markdown
                                     className="markdown text-wrap break-words"
                                     remarkPlugins={[remarkGfm]}
                                 >{post.body}</Markdown>
-                                <p className="flex justify-end text-sm text-wrap break-words">
-                                    <span className="mr-2">{post.user.name}</span>
-                                    <span>{post.created_at}</span>
-                                </p>
 
-                                {post.user_id === auth.user?.id && (
+                                {auth.user?.role_id < 9 && (
+                                    <p className="flex justify-end text-sm text-wrap break-words">
+                                        <span className="mr-2">{post.user.name}</span>
+                                        <span>{post.created_at}</span>
+                                    </p>
+                                )}
+
+                                {auth.user?.role_id < 9 && post.user_id === auth.user?.id && (
                                     <div className="flex justify-end">
                                         <span className="mr-2">
                                             {post.is_published ? (

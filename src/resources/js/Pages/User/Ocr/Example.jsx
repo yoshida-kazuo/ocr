@@ -93,8 +93,9 @@ export default function Example({
         if (type === 'image') {
             pdf.getData()
                 .then(arrayBuffer => {
-                    const pdfraw = String.fromCharCode.apply(null, arrayBuffer);
-                    setPdfData(`data:application/pdf;base64,${btoa(pdfraw)}`);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    const binaryString = uint8Array.reduce((str, byte) => str + String.fromCharCode(byte), '');
+                    setPdfData(`data:application/pdf;base64,${btoa(binaryString)}`);
                 });
         }
         setPdfDocument(pdf);

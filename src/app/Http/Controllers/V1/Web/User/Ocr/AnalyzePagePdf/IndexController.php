@@ -38,7 +38,7 @@ class IndexController extends Controller
             $dir = config('ocr.batchDir');
         }
 
-        $ocrDisk = Storage::disk(config('ocr.storageDriver'));
+        $ocrDisk = Storage::disk($ocrResult->storage);
         $pdfPath = "{$dir}/{$ocrResult->document_id}/{$ocrResult?->ocrPagesResults?->first()?->page_number}.pdf";
 
         if ($ocrResult?->ocrPagesResults

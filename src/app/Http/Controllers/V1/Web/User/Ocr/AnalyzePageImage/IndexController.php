@@ -57,7 +57,7 @@ class IndexController extends Controller
             [$w, $h] = explode('x', $imageSize);
             $cacheName = "analyze-page-image-{$ocrResult->document_id}-{$ocrResult->ocrPagesResults->first()->page_number}-{$w}-{$h}";
 
-            // if (! $imageBlob = Cache::get($cacheName)) {
+            if (! $imageBlob = Cache::get($cacheName)) {
                 $imagick = new Imagick;
                 $imagick->readImageBlob($ocrDisk->get($pdfPath));
                 $imagick->setIteratorIndex(0);
@@ -68,7 +68,7 @@ class IndexController extends Controller
                 $imagick->destroy();
 
                 Cache::put($cacheName, $imageBlob, $this->cacheExpire);
-            // }
+            }
         }
 
         return response(

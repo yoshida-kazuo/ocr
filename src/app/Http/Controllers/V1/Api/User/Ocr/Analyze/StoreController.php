@@ -61,12 +61,13 @@ class StoreController extends Controller
                 'storage'       => $storage,
                 'page_number'   => $pageNumber,
             ])) {
-                $processOcr::dispatch([
-                        'filepath'      => $ocrDisk->path($pdfFilepath),
+                $processOcr::dispatchSync([
+                        'filepath'      => $pdfFilepath,
                         '--service'     => $service,
                         '--document-id' => $documentId,
                         '--user-id'     => user('id'),
                         '--pages'       => $pageNumber,
+                        '--storage'     => $storage,
                     ])
                     ->onQueue('ocr');
             }

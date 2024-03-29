@@ -18,7 +18,7 @@ class Run extends Command
      */
     protected $signature = 'ocr:run {filepath : 解析対象ファイル}
         {--service=tesseract-v1 : config/ocrのキー}
-        {--storage= : ファイルストレージ設定}
+        {--storage=local : ファイルストレージ設定}
         {--pages=1 : 対象ページ [List of 1-based page numbers to analyze. Ex. "1-3,5,7-9"]}
         {--dpi=300 : 解析解像度 }
         {--image-correction : 画像補正を行う}
@@ -56,7 +56,8 @@ class Run extends Command
         ]));
 
         try {
-            $ocrDisk = Storage::disk(config('ocr.storageDriver'));
+            $ocrDisk = Storage::disk($this->option('storage'));
+            $localDisk = Storage::disk('local');
 
             if (! $userId = $this->option('user-id')) {
                 $userId = user('id');
@@ -71,17 +72,22 @@ class Run extends Command
                 'filepath'      => $this->argument('filepath'),
             ]));
 
-            $workDir = $ocrDisk->path(config('ocr.workDir')) . "/{$documentId}";
-            if (! file_exists($workDir)) {
-                if (! $ocrDisk->makeDirectory(config('ocr.workDir') . "/{$documentId}")) {
+            $ocrFilepath = $this->argument('filepath');
+
+            $fileExt = pathinfo($ocrFilepath, PATHINFO_EXTENSION);
+            $workDir = config('ocr.workDir') . "/{$documentId}";
+            $filepath = "{$workDir}/tmp.{$fileExt}";
+            if (! $localDisk->exists($workDir)) {
+                if (! $localDisk->makeDirectory($workDir)) {
                     throw new Exception(__("{$workDir} : Failed to create directory."));
                 }
             }
 
-            $filepath = $this->argument('filepath');
-            if (strpos($filepath, '/') !== 0) {
-                $filepath = "{$workDir}/{$filepath}";
-            }
+            $result = $localDisk->put(
+                $filepath,
+                $ocrDisk->get($ocrFilepath)
+            );
+            $filepath = $localDisk->path($filepath);
 
             if (! $pages = $this->option('pages')) {
                 throw new Exception(__(":handleId : Page is not specified.", [
@@ -127,11 +133,13 @@ class Run extends Command
                 );
 
             // PDF splitting
-            $analyzeFilepath = "{$workDir}/%d.pdf";
+            $analyzeFilepath = $localDisk->path("{$workDir}/%d.pdf");
             $ocr->pdfSplit($filepath, $analyzeFilepath);
 
             $extractPages = $this->parsePages($pages);
-            $analyzeFiles = glob("{$workDir}/*.pdf");
+            $analyzeFiles = glob(
+                $localDisk->path("{$workDir}/*.pdf")
+            );
 
             foreach ($analyzeFiles as $key => $analyzeFile) {
                 $file = pathinfo(
@@ -226,7 +234,7 @@ class Run extends Command
                         $basename = basename($imageAnalyzeFile);
                         $ocr->trapezoidalCorrection(
                             $imageAnalyzeFile,
-                            $workDir,
+                            $localDisk->path($workDir),
                             $basename
                         );
                     }
@@ -287,6 +295,16 @@ class Run extends Command
                         // Retrieve analysis results
                         $analyzeResult = $ocr->analyzeResult($operationLocation);
                     }
+                }
+
+                if (! $ocrDisk->put(
+                    dirname($ocrFilepath) . '/' . basename($analyzeFile),
+                    $localDisk->get($workDir . '/' . basename($analyzeFile))
+                )) {
+                    throw new Exception(__(':handleId : :workDir : Failed to generate PDF file.', [
+                        'handleId'  => $handleId,
+                        'workDir'   => $workDir,
+                    ]));
                 }
 
                 $fullText = null;

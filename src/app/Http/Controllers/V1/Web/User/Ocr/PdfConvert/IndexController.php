@@ -23,6 +23,7 @@ class IndexController extends Controller
     ): \Illuminate\Http\Response {
         $convertFile = uuid() . '.pdf';
         $ocrService = config('ocr.service');
+        $ocrDisk = Storage::disk(config('ocr.storageDriver'));
         $ocrClass = config("ocr.{$ocrService}.class");
         $file = $request->file('file');
 
@@ -35,7 +36,7 @@ class IndexController extends Controller
         $ocr->image2pdf($newImageFilepath, $pdfFilepath);
         $blob = File::get($pdfFilepath);
         $appPdfFilepath = config('ocr.tmpDir') . "/{$convertFile}";
-        Storage::put($appPdfFilepath, $blob);
+        $ocrDisk->put($appPdfFilepath, $blob);
 
         File::delete([
             $pdfFilepath,

@@ -49,10 +49,12 @@ class MonitoringFolder extends Command
         ]));
 
         $batchDir = config('ocr.batchDir');
-        $batchDisk = Storage::disk('local');
+        $localDisk = Storage::disk('local');
 
         $watchedFolders = $watchedFolderSupport->monitoringFolder();
         foreach ($watchedFolders as $watchedFolder) {
+            $batchDisk = Storage::disk($watchedFolder->storage);
+
             if ($watchedFolder->storage) {
                 $disk = Storage::disk($watchedFolder->storage);
                 $monitoringFolder = $watchedFolder->folder_path;
@@ -78,44 +80,55 @@ class MonitoringFolder extends Command
 
                 $documentId = uuid();
                 $filename = basename($file);
+                $batchFile = "{$batchDir}/{$documentId}/{$filename}";
                 $mimeType = $disk->mimeType($file);
-                $tmpImagefile = null;
 
                 if ($ocr->isImage($mimeType)) {
-                    $convertPdffile = dirname($file) . '/' . pathinfo($filename, PATHINFO_FILENAME) . '.pdf';
+                    $tmpFilepath = config('ocr.tmpDir') . "/{$documentId}/{$filename}";
+                    $tmpConvertPdffile = dirname($tmpFilepath) . '/' . pathinfo($filename, PATHINFO_FILENAME) . '.pdf';
+                    $localDisk->put($tmpFilepath, $disk->get($file));
+
                     $ocr->image2pdf(
-                        $disk->path($file),
-                        $disk->path($convertPdffile)
+                        $localDisk->path($tmpFilepath),
+                        $localDisk->path($tmpConvertPdffile)
                     );
 
-                    $tmpImagefile = $file;
-                    $file = $convertPdffile;
-                    $filename = basename($file);
+                    $batchFile = dirname($batchFile) . '/' . basename($tmpConvertPdffile);
+                    $batchData = $localDisk->get($tmpConvertPdffile);
+
+                    $localDisk->deleteDirectory(
+                        dirname($localDisk->path($tmpFilepath))
+                    );
                 } else
-                if (! $ocr->isPdf($mimeType)) {
+                if ($ocr->isPdf($mimeType)) {
+                    $batchData = $disk->get($file);
+                } else {
                     continue;
                 }
 
-                $batchFile = "{$batchDir}/{$documentId}/{$filename}";
-
                 if ($batchDisk->put(
                     $batchFile,
-                    $disk->get($file)
+                    $batchData
                 )) {
-                    $disk->delete($file);
-                }
+                    if (! $disk->delete($file)) {
+                        activity()
+                            ->error(__(':file : Failed to delete the OCR target file.', [
+                                'file' => $file,
+                            ]));
 
-                if ($tmpImagefile
-                    && $batchDisk->put(
-                        dirname($batchFile) . '/' . basename($tmpImagefile),
-                        $disk->get($tmpImagefile)
-                    )
-                ) {
-                    $disk->delete($tmpImagefile);
+                        continue;
+                    }
+                } else {
+                    activity()
+                        ->error(__(':batchFile : Failed to create batch file.', [
+                            'batchFile' => $batchFile,
+                        ]));
+
+                    continue;
                 }
 
                 $imagick = app(Imagick::class);
-                $imagick->readImage($batchDisk->path($batchFile));
+                $imagick->readImageBlob($batchDisk->get($batchFile));
                 $pageCount = $imagick->getNumberImages();
                 $imagick->clear();
                 $imagick->destroy();

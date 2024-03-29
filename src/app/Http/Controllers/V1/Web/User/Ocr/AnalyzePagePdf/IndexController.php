@@ -33,8 +33,13 @@ class IndexController extends Controller
             pagesResultPageNumber: $pageNumber
         );
 
+        $dir = config('ocr.workDir');
+        if ($ocrResult->watched_folder_id) {
+            $dir = config('ocr.batchDir');
+        }
+
         $ocrDisk = Storage::disk(config('ocr.storageDriver'));
-        $pdfPath = config('ocr.workDir') . "/{$ocrResult->document_id}/{$ocrResult?->ocrPagesResults?->first()?->page_number}.pdf";
+        $pdfPath = "{$dir}/{$ocrResult->document_id}/{$ocrResult?->ocrPagesResults?->first()?->page_number}.pdf";
 
         if ($ocrResult?->ocrPagesResults
             && $ocrDisk->exists($pdfPath)

@@ -42,20 +42,24 @@ class IndexController extends Controller
             pagesResultPageNumber: $pageNumber
         );
 
-        $ocrDisk = Storage::disk(config('ocr.storageDriver'));
-        $pdfPath = config('ocr.workDir') . "/{$ocrResult->document_id}/{$ocrResult?->ocrPagesResults?->first()?->page_number}.pdf";
+        $dir = config('ocr.workDir');
+        if ($ocrResult->watched_folder_id) {
+            $dir = config('ocr.batchDir');
+        }
+
+        $ocrDisk = Storage::disk($ocrResult->storage);
+        $pdfPath = "{$dir}/{$ocrResult->document_id}/{$ocrResult?->ocrPagesResults?->first()?->page_number}.pdf";
 
         if ($ocrResult?->ocrPagesResults
             && $ocrDisk->exists($pdfPath)
         ) {
             $imageSize = strtolower('300x200');
             [$w, $h] = explode('x', $imageSize);
-            $md5file = md5_file($ocrDisk->path($pdfPath));
-            $cacheName = "analyze-page-image-{$md5file}-{$w}-{$h}";
+            $cacheName = "analyze-page-image-{$ocrResult->document_id}-{$ocrResult->ocrPagesResults->first()->page_number}-{$w}-{$h}";
 
             if (! $imageBlob = Cache::get($cacheName)) {
                 $imagick = new Imagick;
-                $imagick->readImage($ocrDisk->path($pdfPath));
+                $imagick->readImageBlob($ocrDisk->get($pdfPath));
                 $imagick->setIteratorIndex(0);
                 $imagick->setImageFormat('jpg');
                 $imagick->thumbnailImage($w, $h, true, true);

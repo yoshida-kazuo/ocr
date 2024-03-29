@@ -149,7 +149,7 @@ class MonitoringFolder extends Command
 
                 Bus::batch([
                         new ProcessOcr([
-                            'filepath'              => $batchDisk->path($batchFile),
+                            'filepath'              => $batchFile,
                             '--service'             => $watchedFolder->service,
                             '--storage'             => $watchedFolder->storage,
                             '--pages'               => $pages,

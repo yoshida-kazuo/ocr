@@ -61,7 +61,7 @@ class StoreController extends Controller
                 'storage'       => $storage,
                 'page_number'   => $pageNumber,
             ])) {
-                $processOcr::dispatchSync([
+                $processOcr::dispatch([
                         'filepath'      => $pdfFilepath,
                         '--service'     => $service,
                         '--document-id' => $documentId,

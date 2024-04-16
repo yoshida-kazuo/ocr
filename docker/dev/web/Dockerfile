@@ -21,7 +21,8 @@ ENV APP_XDEBUG_CLIENT_PORT=${APP_XDEBUG_CLIENT_PORT}
 
 RUN apt update && \
         apt upgrade -y && \
-        apt install -y libfreetype6-dev \
+        apt install -y bc \
+                libfreetype6-dev \
                 zip \
                 libzip-dev \
                 libjpeg-dev \

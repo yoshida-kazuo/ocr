@@ -579,7 +579,7 @@ class Ocr:
             self.easyocrReader = easyocr.Reader(['ja', 'en'],
                                                 model_storage_directory="/opt/data/src/ocr/easyocr",
                                                 user_network_directory="/opt/data/src/ocr/easyocr",
-                                                download_enabled=False,
+                                                download_enabled=True,
                                                 gpu=False)
         elif engine == "paddleocr":
             self.paddleocrReader = self._paddleocr()

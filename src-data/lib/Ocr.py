@@ -580,7 +580,7 @@ class Ocr:
                                                 model_storage_directory="/opt/data/src/ocr/easyocr",
                                                 user_network_directory="/opt/data/src/ocr/easyocr",
                                                 download_enabled=True,
-                                                gpu=False)
+                                                gpu=True)
         elif engine == "paddleocr":
             self.paddleocrReader = self._paddleocr()
 
@@ -913,7 +913,7 @@ class Ocr:
         return PaddleOCR(lang=lang,
                          rec_char_dict_path="/opt/data/src/ocr/paddleocr/japan_dict.txt",
                          use_angle_cls=True,
-                         use_gpu=False, # default False
+                         use_gpu=True, # default False
                          use_space_char=True,
                          drop_score=0.45, # default float 0.5
                          det_limit_side_len=3508, # default int 960

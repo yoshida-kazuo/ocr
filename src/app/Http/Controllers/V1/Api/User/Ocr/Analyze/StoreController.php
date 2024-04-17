@@ -7,7 +7,6 @@ use App\Lib\Support\OcrResult\OcrResultSupport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Imagick;
 use Exception;
 
 class StoreController extends Controller
@@ -76,6 +75,11 @@ class StoreController extends Controller
         } catch(Exception $e) {
             activity()
                 ->error($errors = __('A fatal error has occurred.'));
+            logger()
+                ->error(__(':activity : :trace', [
+                    'activity'  => $errors,
+                    'trace'     => print_r($e->getTrace(), true),
+                ]));
         }
 
         return [

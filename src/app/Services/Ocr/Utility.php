@@ -126,7 +126,7 @@ trait Utility
             ]));
         }
 
-        $pdfinfo = collect(reset($pdfinfo));
+        $pdfinfo = collect($pdfinfo);
         $orientation = strtoupper($pdfinfo->get('orientation'));
         $size = collect(
             data_get(self::PAPERSIZE, "DPI.{$dpi}.{$series}.{$orientation}")

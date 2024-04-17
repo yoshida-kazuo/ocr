@@ -913,7 +913,7 @@ class Ocr:
         return PaddleOCR(lang=lang,
                          rec_char_dict_path="/opt/data/src/ocr/paddleocr/japan_dict.txt",
                          use_angle_cls=True,
-                         use_gpu=False,
+                         use_gpu=False, # default False
                          use_space_char=True,
                          drop_score=0.45, # default float 0.5
                          det_limit_side_len=3508, # default int 960

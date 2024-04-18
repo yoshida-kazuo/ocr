@@ -3,6 +3,7 @@ version: '3.9'
 services:
   web:
     hostname: ${APP_HOST_NAME}
+    runtime: nvidia
     build:
       context: ${APP_BUILD_PATH}
       args:
@@ -26,6 +27,8 @@ services:
       - "${APP_VITE_PORT}:${APP_VITE_PORT}"
     environment:
       - APP_SERVER_PATH=${APP_SERVER_PATH}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_CAPABILITIES=all
     networks:
       default:
         ipv4_address: ${APP_IP_ADDRESS}
